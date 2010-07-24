@@ -53,16 +53,20 @@ function renderBlip(markup){
           if(el.properties.url){
             var img = document.createElement('img');
             img.src = el.properties.url;
-            if(small_screen){
-              img.style.width = "100%";
-              img.onclick = function(){
-                if(img.style.width.indexOf('%') == -1){
-                  img.style.width = "100%";
-                }else{
-                  img.style.width = "";
-                }
-              }
-            }
+						(function(img){
+							img.onload = function(){
+		           	if(small_screen && img.width > screen_size){
+		             	img.style.width = "100%";
+		             	img.onclick = function(){
+		               	if(img.style.width.indexOf('%') == -1){
+		                 	img.style.width = "100%";
+		               	}else{
+		                 	img.style.width = "";
+		               	}
+		             	}
+		           	}
+							}
+          	})(img);
             cont.appendChild(img);
           }
           doc.appendChild(cont);
@@ -81,17 +85,20 @@ function renderBlip(markup){
           if(el.properties.mimeType.indexOf('image/') == 0){
             var img = document.createElement('img');
             img.src = el.properties.attachmentUrl;
-            if(small_screen){
-              img.style.width = "100%";
-              img.onclick = function(){
-                if(img.style.width.indexOf('%') == -1){
-                  img.style.width = "100%";
-                }else{
-                  img.style.width = "";
-                }
-              }
-            }
-            
+						(function(img){
+							img.onload = function(){
+		           	if(small_screen && img.width > screen_size){
+		             	img.style.width = "100%";
+		             	img.onclick = function(){
+		               	if(img.style.width.indexOf('%') == -1){
+		                 	img.style.width = "100%";
+		               	}else{
+		                 	img.style.width = "";
+		               	}
+		             	}
+		           	}
+							}
+          	})(img);
             //alert(img.style.width)
             cont.appendChild(img);
           }else{

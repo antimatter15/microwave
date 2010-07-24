@@ -23,5 +23,6 @@ conn = httplib.HTTPConnection('closure-compiler.appspot.com')
 conn.request('POST', '/compile', params, headers)
 response = conn.getresponse()
 data = response.read()#.replace('\n','')
+print data
 sys.stdout.write(data.strip())
-conn.close
+conn.close()

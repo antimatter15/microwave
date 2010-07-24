@@ -19,8 +19,7 @@
 				<div style="padding-bottom:3px;">
 				  <form class="searchbox" name="searchbox" onsubmit="autosearchbox();return false">
 				    <div class="button" onclick="autosearchbox();return false">
-				      <div style='margin-left: 6px; margin-top: -6px' id="search_go">&#9654;</div>
-				      <div style='margin-left: 3px; margin-top: -3px;display:none' id="search_back">&#10226;</div>
+				      <div style='margin-left: 6px; margin-top: -1px' id="search_go">&#9654;</div>
 				    </div>
 				    <input type="text" value="in:inbox " id="query">
 				  </form>
@@ -54,16 +53,38 @@
       <div id="floating_menu" style="display:none">
         <span style="padding-left: 4px;width:20px;float:left;" onclick="toggle_float()">&lt;</span>
         <div id="menu_contents">
-          Wave 
           <a href="#read" onclick='markWaveRead();return false'>Read</a> /
           <a href="#archive" onclick='archiveWave();return false'>Archive</a> /
-          <a href="#top" onclick='blip_scroll(0);hide_float();return false'>Newest</a> /
-          <a href="#top" onclick='document.body.scrollTop=0;hide_float();return false'>Top</a>
+          <a href="#newest" onclick='blip_scroll(0);hide_float();return false'>Newest</a> /
+          <a href="#bottom" onclick='scrollTo(0,document.body.scrollHeight);hide_float();return false'>Bottom</a> /
+<a href="#top" onclick='document.body.scrollTop=0;hide_float();return false'>Top</a>
         </div>
       </div>
     </div>
-    <script type="text/javascript" src="microwave.js"></script>
-    
+
+<!--START_JS-->
+<script type="text/javascript" src="js/lib/libopt.js"></script>
+<script type="text/javascript" src="js/globals.js"></script>
+<script type="text/javascript" src="js/opt.js"></script>
+<script type="text/javascript" src="js/blip.js"></script>
+<script type="text/javascript" src="js/createwave.js"></script>
+<script type="text/javascript" src="js/edit.js"></script>    
+<script type="text/javascript" src="js/gadgets.js"></script>
+<script type="text/javascript" src="js/loading.js"></script>
+<script type="text/javascript" src="js/nav.js"></script>
+<script type="text/javascript" src="js/ops.js"></script>
+<script type="text/javascript" src="js/opt.js"></script>
+<script type="text/javascript" src="js/ordering.js"></script>
+<script type="text/javascript" src="js/render.js"></script>
+<script type="text/javascript" src="js/rpc.js"></script>
+<script type="text/javascript" src="js/search.js"></script>
+<script type="text/javascript" src="js/url.js"></script>
+<script type="text/javascript" src="js/wave.js"></script>
+<script type="text/javascript" src="js/lib/json.js"></script>
+<script type="text/javascript" src="js/startup.js"></script>
+<!--END_JS-->
+
+
     <!-- Woopra Code Start ->
 
 <script type="text/javascript" src="//static.woopra.com/js/woopra.v2.js"></script>

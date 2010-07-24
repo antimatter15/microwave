@@ -75,10 +75,10 @@ function loadWave(waveId, waveletId){
     var header = document.createElement('div');
     header.className = 'wavelet';
     //header.innerHTML = "<b>By </b> ";
-    header.appendChild(userList(waveContent.data.waveletData.participants));
     var add = document.createElement('a');
     add.innerHTML = ' Add Participant'
     add.className = 'addparticipant';
+		add.style['float'] = "right";
     add.href="javascript:void(0)";
     add.onclick = function(){
       var participant = prompt('Enter Participant ID to Add');
@@ -93,6 +93,8 @@ function loadWave(waveId, waveletId){
       }
     }
     header.appendChild(add);
+		
+    header.appendChild(userList(waveContent.data.waveletData.participants));
     
     wave_container.appendChild(header);
 

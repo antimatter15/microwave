@@ -13,18 +13,23 @@ function blip_scroll(index){
   return false;
 }
 
-document.onscroll = window.onscroll = function(){
-  if(current_page == 0){
-    searchscroll = scrollY;
+
+
+
+function blip_next(id){
+  try{
+    if([].indexOf){
+      var index = chronological_blips.indexOf(id);
+    }else{
+      //copied from MAH AWESUM VX JS LIBRARY
+      var indexFn = function(v,a,i){for(i=a.length;i--&&a[i]!=v;);return i};
+      var index = indexFn(id, chronological_blips);
+    }
+    while(index && blip_scroll(--index) == false){}
+
+  }catch(err){
   }
-  document.getElementById('floating_menu').style.top = (scrollY+window.innerHeight-40)+'px';
 }
-
-if(mobilewebkit){
-  setInterval(document.onscroll, 1000);
-}
-
-
 
 ////blow is the floaty bar
 function hide_float(){
@@ -45,21 +50,18 @@ function archiveWave(){
   runQueue();
 }
 
-function blip_next(id){
-  try{
-    if([].indexOf){
-      var index = chronological_blips.indexOf(id);
-    }else{
-      //copied from MAH AWESUM VX JS LIBRARY
-      var indexFn = function(v,a,i){for(i=a.length;i--&&a[i]!=v;);return i};
-      var index = indexFn(id, chronological_blips);
-    }
-    while(index && blip_scroll(--index) == false){}
 
-  }catch(err){
+
+window.onresize = document.onscroll = window.onscroll = function(){
+  if(current_page == 0){
+    searchscroll = scrollY;
   }
+  document.getElementById('floating_menu').style.top = (scrollY+window.innerHeight-50)+'px';
 }
 
+if(mobilewebkit){
+  setInterval(document.onscroll, 1000);
+}
 
 function toggle_float(){
   if(document.getElementById('floating_menu').className == "expanded"){

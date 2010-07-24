@@ -15,7 +15,7 @@ function diff(a, b){
 
 
 var current_blip = null, context_box, reply_box, reply_text, cancel, post;
-function create_context_box(indented){
+function create_reply_box(indented){
   if(window.content_box){
     try{
     content_box.innerHTML = '';
@@ -106,14 +106,14 @@ function create_contextmenu(blip){
   div.style.zIndex = 32;
   var actions = {
     "Reply": function(){
-      current_blip.dom.parentNode.insertBefore(create_context_box(),current_blip.dom.nextSibling);
+      current_blip.dom.parentNode.insertBefore(create_reply_box(),current_blip.dom.nextSibling);
       context_box.className = blip.childBlipIds.length > 0?"thread":"";
       context_box.style.display = '';
       reply_text.focus();
       closectx();
     },/*
     "Indented": function(){
-      current_blip.dom.parentNode.insertBefore(create_context_box(true),current_blip.dom.nextSibling);
+      current_blip.dom.parentNode.insertBefore(create_reply_box(true),current_blip.dom.nextSibling);
       context_box.className = blip.childBlipIds.length > 0?"thread":"";
       context_box.style.display = '';
       reply_text.focus();
