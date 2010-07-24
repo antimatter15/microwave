@@ -1808,8 +1808,8 @@ setTimeout(auto_start, 0);
 
 
 function addTouchScroll(){
-    var TS_CSS = 'touchscroll.css';
-    var TS_JS = 'touchscroll.min.js';
+    var TS_CSS = 'lib/touchscroll.css';
+    var TS_JS = 'lib/touchscroll.min.js';
     var elements = arguments;
     var link = document.createElement('link');
     link.href = TS_CSS;
