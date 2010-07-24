@@ -1,6 +1,3 @@
-
-
-
 function startup(){
   wave.robot.notifyCapabilitiesHash(); //switch to l83s7 v3rz10n
   getUsername(); //get the username of the user
