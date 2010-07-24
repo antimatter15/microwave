@@ -1,0 +1,63 @@
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
+<script>
+  function handleFiles(files){
+    console.log(files);
+    var reader = new FileReader();  
+    reader.onload = function(text){
+      console.log("loaded", text);
+      var parser = new DOMParser();
+      xmlDoc = parser.parseFromString(text.target.result,"text/xml");
+      window.X = $(xmlDoc);
+      console.log(X);
+      
+      setTimeout(function(){
+        importDocument();
+      },100)
+    }
+    reader.readAsText(files[0]);
+  }
+  xcf = {};
+  wave = {};
+  function createPost(title, date, link, content){
+    window.xcf = {};
+    window.wave = frames['microwave'].wave;
+    
+    wave.robot.createWavelet(['public@a.gwave.com'], xcf)
+    var div = document.createElement('div');
+    div.innerHTML = (date+'\n'+link+'\n'+content);
+    wave.blip.replace($(div).text(), xcf.rootBlipId, xcf.waveId, xcf.waveletId);
+    wave.wavelet.setTitle(title, xcf.waveId, xcf.waveletId)
+    wave.wavelet.addTag(title, xcf.waveId, xcf.waveletId);
+    wave.wavelet.addTag('WP2Wave', xcf.waveId, xcf.waveletId);
+    wave.wavelet.addTag('http://antimatter15.com/wp/', xcf.waveId, xcf.waveletId);
+  }
+  
+  function addComment(author, date, content){
+    wave.wavelet.appendBlip2(author+'\n'+date+'\n'+content, xcf.waveId, xcf.waveletId);
+  }
+  
+  function importDocument(){
+    X.find('channel item').each(function(i,post){
+      var title = $(post).find('title').text()
+      var date = $(post).find('pubdate').text()
+      var link = $(post).find('link').text()
+      
+      var content = $(post).find('[nodeName=content:encoded]').text();
+      createPost(title, date, link, content);
+      console.log('-------',title, date, link, content);
+      
+      $(post).find('comment').each(function(x, comment){
+        var content = $(comment).find('comment_content').text();
+        var date = $(comment).find('comment_date').text();
+        var author = $(comment).find('comment_author').text();
+        console.log(author, date, content);
+        addComment(author, date, content);
+      })
+      
+      frames['microwave'].runQueue();
+      
+    })
+  }
+</script>
+<input type="file" id="input" onchange="handleFiles(this.files)" />
+<iframe src="ui.html" name="microwave" style="width:100%;padding:0;border:0;margin:0;height:500px"></iframe>

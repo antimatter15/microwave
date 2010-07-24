@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+  <head>
+    <title>&mu;wave</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no, maximum-scale=1" id="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon-precomposed" href="/static/apple-touch-icon.png"/>
+    <meta charset="utf-8">
+    <link rel='stylesheet' href="style.css" type="text/css" media="screen,handheld">
+
+  </head>
+  <body>
+
+    <div id='appheader'>
+     
+    <div style="float:right">
+      <input type="checkbox" id="chronos" name="chronos">
+      <label for="chronos">Classic Forum Order</label>
+    </div>
+    <h1 onclick="opt.fn.show()" id='header'>&mu;wave</h1>
+
+      
+    <div> 
+
+    <div style="padding-bottom:3px;">
+      <form class="searchbox" name="searchbox" onsubmit="autosearchbox();return false">
+        <div class="button" onclick="autosearchbox();return false">
+          <div style='margin-left: 6px; margin-top: -6px' id="search_go">&#9654;</div>
+          <div style='margin-left: 3px; margin-top: -3px;display:none' id="search_back">&#10226;</div>
+        </div>
+        <input type="text" value="in:inbox " id="query">
+      </form>
+    </div>
+    
+         
+       <div class="alert links" id="suggest">
+          <!-- ch(this) is short for clickhandler which fixes some problems with opera mini and speeds up iphone -->
+          
+        <a href="javascript:create_wave()" style='color: green'>New Wave</a> 
+        <div style="float:right"> 
+
+        <a href="#search:with:public%20" onclick='ch(this)'>Public</a> /
+        <a href="#search:%20" onclick='ch(this)'>All</a> / 
+        <a href="#search:in:inbox%20" onclick='ch(this)'>Inbox</a> 
+        </div> 
+      </div> 
+     
+
+    </div>
+</div>
+
+    <div id="content">
+      <div style="position: relative; margin: 0; padding: 0; border: 0;display:none" id="loading">
+        <div style="position: absolute; z-index: 42; padding:0;margin:0" class="wavelet loading">
+          <div style='z-index: 99;padding:7px' id="loadingtext">Loading</div>
+        </div>
+      </div>
+
+      <div id='search_parent_container'>
+        <div id='search_parent'>
+          <div id='search_container'>
+          </div>
+        </div>
+      </div>
+      <div id='wave_container_parent'>
+        <div id='wave_container'>
+        </div>
+      </div>
+      
+      <div id="floating_menu" style="display:none">
+        <span style="padding-left: 4px;width:20px;float:left;" onclick="toggle_float()">&lt;</span>
+        <div id="menu_contents">
+          Wave 
+          <a href="#read" onclick='markWaveRead();return false'>Read</a> /
+          <a href="#archive" onclick='archiveWave();return false'>Archive</a> /
+          <a href="#top" onclick='blip_scroll(0);hide_float();return false'>Newest</a> /
+          <a href="#top" onclick='document.body.scrollTop=0;hide_float();return false'>Top</a>
+        </div>
+      </div>
+      
+    </div>
+    <script type="text/javascript" src="microwave.js"></script>
+    
+    <!-- Woopra Code Start ->
+
+<script type="text/javascript" src="//static.woopra.com/js/woopra.v2.js"></script>
+<script type="text/javascript">
+woopraTracker.track();
+</script>
+
+<!-- Woopra Code End -->
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-17007539-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</body>
+</html>

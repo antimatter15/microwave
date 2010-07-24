@@ -1,0 +1,108 @@
+
+  <script>
+
+var REMOTE_RPC_RELAY_URL =
+    "http://www.gmodules.com/gadgets/files/container/rpc_relay.html";
+
+var DEFAULT_GADGET_MODE = {'${playback}': '1', '${edit}': '0'};
+
+function registerRpc(service, handler) {
+  gadgets.rpc.register(service, function() {
+    var service = this['s'];
+    var gadgetId = this['f'];
+    var args = this['a'];
+    handler(service, gadgetId, args);
+  });
+}
+
+function init_gadget_handler(callback){
+  if(!window.gadgets){
+    var frame_id = 'gadget_frame'+Math.random().toString(36).substr(4);
+    var js = document.createElement("script");
+    js.src = 'https://wave.google.com/gadgets/js/core:rpc?debug=1&c=1';
+    (function(){
+      if(window.gadgets){
+        initGadgetSystem();
+        callback();
+      }else setTimeout(arguments.callee, 100);
+    })()
+    document.body.appendChild(js);
+  }else{
+    callback()
+  }
+}
+
+function extractGadgetState(gadgetId) {
+  // TODO: Use global objects or pool?
+  var state = {"antimatter15@googlewave.com:answer":"y","antimatter15@googlewave.com:order":"0"};
+  var participants = {"myId":"anonymous@a.gwave.com","authorId":"antimatter15@googlewave.com","participants":{"antimatter15@googlewave.com":{"id":"antimatter15@googlewave.com","displayName":"antimatter15@googlewave.com","thumbnailUrl":""}}};
+
+
+  
+  console.log(JSON.stringify(participants));
+
+  // TODO: Enable gadget updates.
+  gadgets.rpc.call(gadgetId, "wave_gadget_mode", null, DEFAULT_GADGET_MODE);
+  gadgets.rpc.call(gadgetId, "wave_participants", null, participants);
+  gadgets.rpc.call(gadgetId, "wave_gadget_state", null, state);
+  // TODO: Deliver the real private state to the gadgets.
+  gadgets.rpc.call(gadgetId, "wave_private_gadget_state", null, {});
+
+}
+
+/**
+ * Initializes the gadget system, call this once at startup.
+ */
+function initGadgetSystem() {
+  // Once a gadget has called us back, we can inject the state/participants.
+  registerRpc("wave_enable", function(service, gadgetId, args) {
+    gadgets.rpc.setRelayUrl(gadgetId, REMOTE_RPC_RELAY_URL);
+    extractGadgetState(gadgetId);
+  });
+
+  registerRpc("resize_iframe", function(service, gadgetId, args) {
+    document.getElementById(gadgetId).height = args[0]
+  });
+
+  gadgets.rpc.registerDefault(function() {
+    var eventType = this['s'];
+    var eventObj = this['a'][0];
+    console.log(eventType,eventObj);
+  });
+}
+
+
+function create_gadget_frame(id, gadget_url, container){
+    //thanks to douwe.osinga@googlewave.com for this code!
+    var frameDiv = document.createElement('div');
+    frameDiv.innerHTML = '<iframe name="' + id + '" >';
+    var frame = frameDiv.firstChild;
+    frame.id = id;
+    frame.width = '320px';
+    frame.height = '240px';
+    frame.frameBorder = 'yes';
+    frame.scrolling = 'no';
+    frame.marginHeight = 0;
+    frame.marginWidth = 0;
+    // Create in specified div, or if none, in main body
+    container = container || document.body;
+    container.appendChild(frame);
+    frame.src = gadget_url;
+    return frame; 
+}
+
+var frame_id = 'gadget_frame'+Math.random().toString(36).substr(4);
+var url = 'http://wave-api.appspot.com/public/gadgets/areyouin/gadget.xml'
+gadget_url = 'http://www.gmodules.com/gadgets/ifr?container=wave&view=default&debug=0&lang=en&country=ALL&nocache=0&wave=1&mid='+encodeURIComponent(frame_id)+'&parent='+encodeURIComponent(location.protocol+'//'+location.host+location.pathname)+'&url='+encodeURIComponent(url);
+
+window.onload = function(){
+  console.log('onload');
+  init_gadget_handler(function(){
+    console.log('handled');
+    create_gadget_frame(frame_id, gadget_url, document.body);
+  })
+}
+
+
+  </script>
+  
