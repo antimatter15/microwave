@@ -1,3 +1,17 @@
+username = 'wheisenberg@googlewave.com';
+
+//TODO: move this into wave.robot.getUserAddress
+function getUsername(){
+  //ROFLMAO this is an EPIC HACK
+  callbacks[wave.robot.fetchWave('googlewave.com!w+bWEBb5mBA', //wave that nobody can read
+                                 'googlewave.com!conv+poop') //just be a little more certain
+                                 ] = function(json){
+    username = json.error.message.match(/internalError: (.+@.+) is not a participant/)[1]
+    return true //trigger to not get user to see message of user
+  };
+}
+
+
 opt.x.use_protocol_21 = 'Use old 0.21 version of wave protocol';
 
 wave = {
