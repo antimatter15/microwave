@@ -1,3 +1,12 @@
+function autosearchbox(){
+  var query = document.forms.searchbox.query.value;
+  if(query.toLowerCase().indexOf("wave:") == 0 || query.toLowerCase().indexOf("new:") == 0){
+    hashHandler("#"+query, true);
+  }else{
+    hashHandler("#search:"+query, true);
+  }
+}
+
 
 function autosearch(query){
   if(query == current_search && current_page == 1 && search_outdated == false){

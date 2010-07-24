@@ -22,6 +22,6 @@ headers = { "Content-type": "application/x-www-form-urlencoded" }
 conn = httplib.HTTPConnection('closure-compiler.appspot.com')
 conn.request('POST', '/compile', params, headers)
 response = conn.getresponse()
-data = response.read().replace('\n','')
+data = response.read()#.replace('\n','')
 sys.stdout.write(data.strip())
 conn.close

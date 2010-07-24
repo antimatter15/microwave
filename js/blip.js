@@ -1,3 +1,41 @@
+function userList(users, expanded){ //because participant is a long word
+  var USER_CUTOFF = small_screen?2:5;
+  var span = document.createElement('span');
+  if(users.length <= USER_CUTOFF || expanded){
+    //todo: check if contributors are named robert<script>table.drop('students')</@googlewave.com
+    
+    span.innerHTML = users.join(", ")
+          .replace(/antimatter15@googlewave.com/g,"<a href='http://antimatter15.com'>antimatter15</a>")
+          .replace(/@.*?(\,|$)/g, "$1");
+    if(expanded){
+      var fewer = document.createElement('a');
+      fewer.innerHTML = " (fewer)";
+      fewer.href = "javascript:void(0)";
+      fewer.onclick = function(){
+        span.parentNode.replaceChild(userList(users), span);
+        return false;
+      }
+      span.appendChild(fewer);
+    }
+  }else{
+    span.innerHTML = users.slice(0,USER_CUTOFF).join(", ")
+          .replace(/antimatter15@googlewave.com/g,"<a href='http://antimatter15.com'>antimatter15</a>")
+          .replace(/@.*?(\,|$)/g, "$1");
+    var more = document.createElement('a');
+    more.innerHTML = " ... (" + (users.length-USER_CUTOFF) + " more)";
+    more.href = "javascript:void(0)";
+    more.onclick = function(){
+      span.parentNode.replaceChild(userList(users, true), span);
+      return false;
+    }
+    span.appendChild(more);
+  }
+  return span
+}
+
+
+
+
 function format_time(date){
   if(typeof date == "number"){
     var date2 = new Date();
