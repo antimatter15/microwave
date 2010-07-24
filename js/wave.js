@@ -76,7 +76,7 @@ function loadWave(waveId, waveletId){
     header.className = 'wavelet';
     //header.innerHTML = "<b>By </b> ";
     var add = document.createElement('a');
-    add.innerHTML = ' Add Participant'
+    add.innerHTML = ' Add'
     add.className = 'addparticipant';
 		add.style['float'] = "right";
     add.href="javascript:void(0)";
@@ -126,6 +126,7 @@ function loadWave(waveId, waveletId){
     footer.innerHTML = '<a href="https://wave.google.com/wave/#restored:wave:'+escape(escape(waveId))+'" target="_blank">Open this wave in the official wave client</a>';
     footer.className = 'footer';
     wave_container.appendChild(footer);
+		wave_container.appendChild(document.createElement('br'))
   }
   if(opt.prefetch && prefetched_waves[waveId]){
     load_callback(JSON.parse(JSON.stringify(prefetched_waves[waveId])));

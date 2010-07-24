@@ -258,6 +258,19 @@ a.searchlink:hover * {
   background: -moz-linear-gradient(top, #63F280, #5BD255);
   -webkit-box-shadow: none; 
   -moz-box-shadow: none; 
+  position: absolute; 
+	z-index:1337;
+	top: 0;
+	-webkit-transition-property: opacity;
+  -webkit-transition-duration: .5s;
+}
+
+#loadingtext {
+	z-index: 99; 
+	padding-left: 5px; 
+	padding-right: 5px; 
+	padding-top: 3px; 
+	padding-bottom: 3px
 }
 
 .bubble {
@@ -425,10 +438,9 @@ a.searchlink:hover * {
   -webkit-transition-duration: .5s;
   position:absolute;
   width:30px;
-	padding-left: 5px;
   overflow: hidden;
   right:0;
-  height: 34px;
+  height: 35px;
   border: 1px solid #93ADED;
   border-radius: 5px;
   -webkit-border-radius: 5px;
@@ -438,7 +450,6 @@ a.searchlink:hover * {
   -webkit-border-top-right-radius: 0;
   -webkit-border-bottom-right-radius: 0;
   background-color:#C9E2FC;
-  padding-bottom: 5px;
   z-index: 99999;
 }
 
@@ -449,7 +460,9 @@ a.searchlink:hover * {
 
 
 #floating_menu span {
-
+	margin-top: -3px;
+	padding-right: 10px;
+	cursor: pointer;
   font-size: xx-large;
   color: #345699;
 }
@@ -459,7 +472,7 @@ a.searchlink:hover * {
 }
 
 #menu_contents {
-  padding-top: 12px;
+  padding-top: 10px;
 	padding-left: 35px;
 }
 
