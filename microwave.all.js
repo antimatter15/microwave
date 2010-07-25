@@ -101,7 +101,6 @@ current_search = '';
 var edit_box, edit_text;
 var search_container = document.getElementById('search_container');
 var wave_container = document.getElementById('wave_container');
-opt.appName = '&mu;wave'
 var mobilewebkit = navigator.userAgent.indexOf("WebKit") != -1 && navigator.userAgent.indexOf("Mobile")!=-1;
 var current_wave = "";
 var current_wavelet = "";
@@ -123,20 +122,50 @@ if(!window.onLine) window.onLine = function(){return true};
 //File: js/opt.js
 
 
+opt.appName = '&mu;wave' //set the app name
+
+
 opt.x.multipane = 'Enable multipane viewing experience (note, you must reload the page for changes to take effect)'
 opt.x.touchscroll = "Add the TouchScroll library to do cool scrolly things on iPad Multipane"
 
+opt.x.no_scrollhistory = "Do not save search scroll position and restore to it"
+opt.x.old_results = "Old results panel style";
+
+opt.x.largeFont = 'Use a larger font';
+
+opt.x.prefetch = "Prefetch waves and load them, way faster and also not real time";
+
+opt.x.gadgets = 'Enable real wave gadget support (slow on mobile)';
+opt.x.render_state = 'If a gadget can not be internally rendered, display the gadget state';
 
 
+opt.x.recursive_renderer = 'Use old version of tree wave renderer, only works on Wave Protocol 0.21 or below';
+opt.x.no_sig = 'Do not automatically add <i>posted with micro-wave</i> signature';
 
 
+opt.x.use_protocol_21 = 'Use old 0.21 version of wave protocol';
 
-if(opt.multipane === undefined && screen_size > 900 && !mobilewebkit){
-  opt.fn.set('multipane', true)
+opt.x.gsa = 'Show interface for changing gadget states (must have native gadgets enabled)';
+
+
+opt.x.owner_utils = 'Enable utilities for wave creators';
+opt.x.no_autoscroll = 'Disable smart autoscroll to latest blip';
+
+if(opt.gadgets === undefined && screen_size > 900){
+  opt.fn.set('gadgets', true)
 }
 
 
 
+
+if(opt.multipane === undefined && screen_size > 900){
+  //default multipane on large screened
+  opt.fn.set('multipane', true);
+  if(mobilewebkit && opt.touchscroll === undefined){
+    //default touchscroll on if multipane on for mobilewebkit
+    opt.fn.set('touchscroll', true);
+  }
+}
 
 if(opt.multipane) {
   document.getElementById('search_parent').insertBefore(document.getElementById('appheader'), document.getElementById('search_parent').firstChild)
@@ -152,10 +181,7 @@ if(opt.multipane) {
 }
 
 
-opt.x.no_scrollhistory = "Do not save search scroll position and restore to it"
-opt.x.old_results = "Old results panel style";
 
-opt.x.largeFont = 'Use a larger font';
 opt.c.largeFont = function(v){
   if(v == true){
     document.body.style.fontSize = '16px'
@@ -170,7 +196,7 @@ var unread_blips = {};
 
 
 opt.c.largeFont(opt.largeFont);
-opt.x.prefetch = "Prefetch waves and load them, way faster and also not real time";
+
 
 
 
@@ -199,7 +225,7 @@ function addTouchScroll(){
 } 
 
 
-if(opt.touchscroll){
+if(opt.touchscroll && opt.multipane){
   addTouchScroll('wave_container_parent', 'search_parent_container')
   document.getElementById('wave_container_parent').style.width = (innerWidth-300)+'px';
   document.getElementById('wave_container').style.width = (innerWidth-300)+'px';
@@ -734,14 +760,8 @@ function native_gadget(url, state){
   
 }
 
-opt.x.gadgets = 'Enable real wave gadget support';
-if(opt.gadgets === undefined && screen_size > 900){
-  opt.fn.set('gadgets', true)
-}
 
 
-
-opt.x.render_state = 'If a gadget can not be internally rendered, display the gadget state';
 
 function renderGadget(el, blip){
   var state = {}, keys = [];
@@ -827,6 +847,7 @@ function renderGadget(el, blip){
   }
   return cont
 }
+
 
 
 //File: js/loading.js
@@ -963,8 +984,6 @@ function getUsername(){
   };
 }
 
-
-opt.x.use_protocol_21 = 'Use old 0.21 version of wave protocol';
 
 wave = {
   robot:{
@@ -1110,20 +1129,50 @@ wave = {
 //File: js/opt.js
 
 
+opt.appName = '&mu;wave' //set the app name
+
+
 opt.x.multipane = 'Enable multipane viewing experience (note, you must reload the page for changes to take effect)'
 opt.x.touchscroll = "Add the TouchScroll library to do cool scrolly things on iPad Multipane"
 
+opt.x.no_scrollhistory = "Do not save search scroll position and restore to it"
+opt.x.old_results = "Old results panel style";
+
+opt.x.largeFont = 'Use a larger font';
+
+opt.x.prefetch = "Prefetch waves and load them, way faster and also not real time";
+
+opt.x.gadgets = 'Enable real wave gadget support (slow on mobile)';
+opt.x.render_state = 'If a gadget can not be internally rendered, display the gadget state';
 
 
+opt.x.recursive_renderer = 'Use old version of tree wave renderer, only works on Wave Protocol 0.21 or below';
+opt.x.no_sig = 'Do not automatically add <i>posted with micro-wave</i> signature';
 
 
+opt.x.use_protocol_21 = 'Use old 0.21 version of wave protocol';
 
-if(opt.multipane === undefined && screen_size > 900 && !mobilewebkit){
-  opt.fn.set('multipane', true)
+opt.x.gsa = 'Show interface for changing gadget states (must have native gadgets enabled)';
+
+
+opt.x.owner_utils = 'Enable utilities for wave creators';
+opt.x.no_autoscroll = 'Disable smart autoscroll to latest blip';
+
+if(opt.gadgets === undefined && screen_size > 900){
+  opt.fn.set('gadgets', true)
 }
 
 
 
+
+if(opt.multipane === undefined && screen_size > 900){
+  //default multipane on large screened
+  opt.fn.set('multipane', true);
+  if(mobilewebkit && opt.touchscroll === undefined){
+    //default touchscroll on if multipane on for mobilewebkit
+    opt.fn.set('touchscroll', true);
+  }
+}
 
 if(opt.multipane) {
   document.getElementById('search_parent').insertBefore(document.getElementById('appheader'), document.getElementById('search_parent').firstChild)
@@ -1139,10 +1188,7 @@ if(opt.multipane) {
 }
 
 
-opt.x.no_scrollhistory = "Do not save search scroll position and restore to it"
-opt.x.old_results = "Old results panel style";
 
-opt.x.largeFont = 'Use a larger font';
 opt.c.largeFont = function(v){
   if(v == true){
     document.body.style.fontSize = '16px'
@@ -1157,7 +1203,7 @@ var unread_blips = {};
 
 
 opt.c.largeFont(opt.largeFont);
-opt.x.prefetch = "Prefetch waves and load them, way faster and also not real time";
+
 
 
 
@@ -1186,7 +1232,7 @@ function addTouchScroll(){
 } 
 
 
-if(opt.touchscroll){
+if(opt.touchscroll && opt.multipane){
   addTouchScroll('wave_container_parent', 'search_parent_container')
   document.getElementById('wave_container_parent').style.width = (innerWidth-300)+'px';
   document.getElementById('wave_container').style.width = (innerWidth-300)+'px';
@@ -1671,12 +1717,7 @@ function searchmode(mode){
 
 
 
-opt.x.recursive_renderer = 'Use old version of tree wave renderer, only works on Wave Protocol 0.21 or below';
-opt.x.no_sig = 'Do not automatically add <i>posted with micro-wave</i> signature';
 
-
-opt.x.owner_utils = 'Enable utilities for wave creators';
-opt.x.no_autoscroll = 'Disable smart autoscroll to latest blip';
 
 function set_user_mode(mode){
   var wavehost = username.replace(/^.+@/,'');
