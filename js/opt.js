@@ -15,6 +15,16 @@ opt.x.gadgets = 'Enable real wave gadget support';
 opt.x.render_state = 'If a gadget can not be internally rendered, display the gadget state';
 
 
+opt.x.recursive_renderer = 'Use old version of tree wave renderer, only works on Wave Protocol 0.21 or below';
+opt.x.no_sig = 'Do not automatically add <i>posted with micro-wave</i> signature';
+
+
+opt.x.use_protocol_21 = 'Use old 0.21 version of wave protocol';
+
+
+opt.x.owner_utils = 'Enable utilities for wave creators';
+opt.x.no_autoscroll = 'Disable smart autoscroll to latest blip';
+
 if(opt.gadgets === undefined && screen_size > 900){
   opt.fn.set('gadgets', true)
 }

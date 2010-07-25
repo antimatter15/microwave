@@ -12,8 +12,6 @@ function getUsername(){
 }
 
 
-opt.x.use_protocol_21 = 'Use old 0.21 version of wave protocol';
-
 wave = {
   robot:{
     fetchWave: function(waveId, waveletId){

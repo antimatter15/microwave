@@ -41,12 +41,7 @@ function searchmode(mode){
 
 
 
-opt.x.recursive_renderer = 'Use old version of tree wave renderer, only works on Wave Protocol 0.21 or below';
-opt.x.no_sig = 'Do not automatically add <i>posted with micro-wave</i> signature';
 
-
-opt.x.owner_utils = 'Enable utilities for wave creators';
-opt.x.no_autoscroll = 'Disable smart autoscroll to latest blip';
 
 function set_user_mode(mode){
   var wavehost = username.replace(/^.+@/,'');
