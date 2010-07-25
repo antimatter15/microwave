@@ -342,6 +342,7 @@ a.searchlink:hover * {
 
 .addparticipant {
   text-decoration: none;
+	font-weight: bold;
   color: lightgreen !important;
 }
 

@@ -4,6 +4,8 @@ print "Reading Developement HTML"
 codes = open('../dev.html','r').read()
 compile_regex = r'START_JS(.*?)END_JS'
 js = ''
+rwith = '<script type="text/javascript" src="microwave.min.js"></script>'
+
 for match in re.finditer(compile_regex, codes, re.DOTALL):
 		print "Found script compile block"
 		includetext = match.group(1)
@@ -11,18 +13,17 @@ for match in re.finditer(compile_regex, codes, re.DOTALL):
 			fn = include.group(1)
 			js += "//File: "+fn+ '\n\n\n'
 			js +=  open('../'+fn,'r').read() + '\n\n\n'
-
+		html = codes.replace(match.group(0),rwith)
 
 print "Writing concatenated JS"
 open('../microwave.all.js','w').write(js)
 
-
-print "Querying Closure Compiler REST API for compressed JS"
-html = re.sub(compile_regex, '<script type="text/javascript" src="microwave.min.js"></script>', codes)
 html = html.replace('<!--RELEASE','')
 html = html.replace('RELEASE-->','')
 print "Writing compiled HTML"
 open('../ui.html','w').write(html)
+
+print "Querying Closure Compiler REST API for compressed JS"
 
 
 params = urllib.urlencode([
