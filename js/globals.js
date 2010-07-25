@@ -6,7 +6,6 @@ current_search = '';
 var edit_box, edit_text;
 var search_container = document.getElementById('search_container');
 var wave_container = document.getElementById('wave_container');
-opt.appName = '&mu;wave'
 var mobilewebkit = navigator.userAgent.indexOf("WebKit") != -1 && navigator.userAgent.indexOf("Mobile")!=-1;
 var current_wave = "";
 var current_wavelet = "";

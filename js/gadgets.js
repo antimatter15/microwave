@@ -145,14 +145,8 @@ function native_gadget(url, state){
   
 }
 
-opt.x.gadgets = 'Enable real wave gadget support';
-if(opt.gadgets === undefined && screen_size > 900){
-  opt.fn.set('gadgets', true)
-}
 
 
-
-opt.x.render_state = 'If a gadget can not be internally rendered, display the gadget state';
 
 function renderGadget(el, blip){
   var state = {}, keys = [];

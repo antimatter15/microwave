@@ -112,16 +112,21 @@ var search_outdated = false;
 var searchscroll = 0;
 var scrollto_position = -1;
 
+if(mobilewebkit) document.body.className += ' mobilewebkit'; //yeah i know browser detection is bad, but how do i get around it here? 
+
+if(!window.onLine) window.onLine = function(){return true};
+
+
+
+
 
 //File: js/opt.js
 
 
-if(mobilewebkit){
-  document.body.className += ' mobilewebkit'; //yeah i know browser detection is bad, but how do i get around it here? 
-}
-if(!window.onLine){
-	window.onLine = function(){return true};
-}
+opt.x.multipane = 'Enable multipane viewing experience (note, you must reload the page for changes to take effect)'
+opt.x.touchscroll = "Add the TouchScroll library to do cool scrolly things on iPad Multipane"
+
+
 
 
 
@@ -131,7 +136,6 @@ if(opt.multipane === undefined && screen_size > 900 && !mobilewebkit){
 }
 
 
-opt.x.multipane = 'Enable multipane viewing experience (note, you must reload the page for changes to take effect)'
 
 
 if(opt.multipane) {
@@ -194,7 +198,7 @@ function addTouchScroll(){
     document.body.appendChild(script)
 } 
 
-opt.x.touchscroll = "Add the TouchScroll library to do cool scrolly things on iPad Multipane"
+
 if(opt.touchscroll){
   addTouchScroll('wave_container_parent', 'search_parent_container')
   document.getElementById('wave_container_parent').style.width = (innerWidth-300)+'px';
@@ -1106,12 +1110,10 @@ wave = {
 //File: js/opt.js
 
 
-if(mobilewebkit){
-  document.body.className += ' mobilewebkit'; //yeah i know browser detection is bad, but how do i get around it here? 
-}
-if(!window.onLine){
-	window.onLine = function(){return true};
-}
+opt.x.multipane = 'Enable multipane viewing experience (note, you must reload the page for changes to take effect)'
+opt.x.touchscroll = "Add the TouchScroll library to do cool scrolly things on iPad Multipane"
+
+
 
 
 
@@ -1121,7 +1123,6 @@ if(opt.multipane === undefined && screen_size > 900 && !mobilewebkit){
 }
 
 
-opt.x.multipane = 'Enable multipane viewing experience (note, you must reload the page for changes to take effect)'
 
 
 if(opt.multipane) {
@@ -1184,7 +1185,7 @@ function addTouchScroll(){
     document.body.appendChild(script)
 } 
 
-opt.x.touchscroll = "Add the TouchScroll library to do cool scrolly things on iPad Multipane"
+
 if(opt.touchscroll){
   addTouchScroll('wave_container_parent', 'search_parent_container')
   document.getElementById('wave_container_parent').style.width = (innerWidth-300)+'px';
@@ -1873,9 +1874,9 @@ function loadWave(waveId, waveletId){
     window.msg = waveContent;
     if(msg.error){
       if(msg.error.message.indexOf('not a participant') != -1){
-        alert('You are not a participant of the wave/wavelet. ')
-        //\nThis may be due to a bug in the current version of the data api which does not allow acces
-        //s to waves unless you are explicitly a participant. don\'t blame me'
+        alert('You are not a participant of the wave/wavelet. '+
+        '\nThis may be due to a bug in the current version of the data api which does not allow acces'+
+        's to waves unless you are explicitly a participant. don\'t blame me');
         return true;
       }else{
         return false;
@@ -1917,7 +1918,7 @@ function loadWave(waveId, waveletId){
         if(!opt.no_autoscroll){
           if(unread_blips[waveId]){ //ignore if zero or undefined
             //scrollto_blipid = chronological_blips[0];
-            scrollto_position = unread_blips[waveId];
+            scrollto_position = unread_blips[waveId]-1;
 						//if there are unread blips, scroll to the blip that was modified
 						//the unread'th place, this is hard to explain
           }
@@ -1985,8 +1986,8 @@ function loadWave(waveId, waveletId){
     var t = waveContent.data.waveletData.tags.join(', ');
     if(t.length == 0) t = "(None)";
     tags.innerHTML = "<b>Tags:</b> "; //todo: fix xss risk
+    tags.innerHTML = ' <a href="javascript:add_tag()" style="float:right">Add</a>';
     tags.appendChild(document.createTextNode(t))
-    tags.innerHTML += ' <a href="javascript:add_tag()" style="float:right">Add</a>';
     tags.className = 'tags';
     wave_container.appendChild(tags);
     var footer = document.createElement('div');
