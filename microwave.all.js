@@ -1,3 +1,6 @@
+//File: js/lib/libopt.js
+
+
 /*
   libopt.js
   
@@ -84,6 +87,126 @@ opt.fn = {
   }
 };
 opt.fn.init();
+
+
+
+//File: js/globals.js
+
+
+if(!window.console) console = {log: function(){}};
+var screen_size = (document.documentElement.clientWidth||innerWidth), small_screen = (screen_size<500);
+var loadIds = {};
+searchLastIndex = 0;
+current_search = '';
+var edit_box, edit_text;
+var search_container = document.getElementById('search_container');
+var wave_container = document.getElementById('wave_container');
+opt.appName = '&mu;wave'
+var mobilewebkit = navigator.userAgent.indexOf("WebKit") != -1 && navigator.userAgent.indexOf("Mobile")!=-1;
+var current_wave = "";
+var current_wavelet = "";
+var auto_reload = false;
+var lasthash = 'chunkybacon';
+var current_page = 0; //0 = search, 1 = wave
+var search_outdated = false;
+var searchscroll = 0;
+var scrollto_position = -1;
+
+
+//File: js/opt.js
+
+
+if(mobilewebkit){
+  document.body.className += ' mobilewebkit'; //yeah i know browser detection is bad, but how do i get around it here? 
+}
+if(!window.onLine){
+	window.onLine = function(){return true};
+}
+
+
+
+
+if(opt.multipane === undefined && screen_size > 900 && !mobilewebkit){
+  opt.fn.set('multipane', true)
+}
+
+
+opt.x.multipane = 'Enable multipane viewing experience (note, you must reload the page for changes to take effect)'
+
+
+if(opt.multipane) {
+  document.getElementById('search_parent').insertBefore(document.getElementById('appheader'), document.getElementById('search_parent').firstChild)
+  document.body.className += ' multipane';
+  document.getElementById('header').innerHTML = '&mu;wave';
+  wave_container.innerHTML = "<div style='padding:40px'>No waves loaded yet</div>";
+  if(location.hash.indexOf('search:') == -1){
+    setTimeout(function(){
+      autosearch('in:inbox')
+      runQueue();
+    },500);
+  }
+}
+
+
+opt.x.no_scrollhistory = "Do not save search scroll position and restore to it"
+opt.x.old_results = "Old results panel style";
+
+opt.x.largeFont = 'Use a larger font';
+opt.c.largeFont = function(v){
+  if(v == true){
+    document.body.style.fontSize = '16px'
+  }else{
+    document.body.style.fontSize = '13px'
+  }
+}
+
+
+var prefetched_waves = {};
+var unread_blips = {};
+
+
+opt.c.largeFont(opt.largeFont);
+opt.x.prefetch = "Prefetch waves and load them, way faster and also not real time";
+
+
+
+function addTouchScroll(){
+    var TS_CSS = 'lib/touchscroll.css';
+    var TS_JS = 'lib/touchscroll.min.js';
+    var elements = arguments;
+    var link = document.createElement('link');
+    link.href = TS_CSS;
+    link.type = 'text/css';
+    link.rel = 'stylesheet';
+    document.body.appendChild(link);
+    var script = document.createElement('script');
+    script.src = TS_JS;
+    script.onload = function(){
+        setTimeout(function(){
+            for(var i = 0; i < elements.length; i++){
+                var el = elements[i];
+                console.log(el);
+                if(typeof(el) == "string") el = document.getElementById(el);
+                new TouchScroll(el, {elastic: true});
+            }
+        },100)
+    }
+    document.body.appendChild(script)
+} 
+
+opt.x.touchscroll = "Add the TouchScroll library to do cool scrolly things on iPad Multipane"
+if(opt.touchscroll){
+  addTouchScroll('wave_container_parent', 'search_parent_container')
+  document.getElementById('wave_container_parent').style.width = (innerWidth-300)+'px';
+  document.getElementById('wave_container').style.width = (innerWidth-300)+'px';
+}
+
+
+
+
+//File: js/blip.js
+
+
 function userList(users, expanded){ //because participant is a long word
   var USER_CUTOFF = small_screen?2:5;
   var span = document.createElement('span');
@@ -190,7 +313,13 @@ function blip_render(blipid, parent){ //a wrapper around renderBlip that adds ch
   }
   
   return doc;
-}function create_wave(){
+}
+
+
+//File: js/createwave.js
+
+
+function create_wave(){
   var loadID = loading("Creating wave...")
   setTimeout(function(){
     var xcf = {};
@@ -206,6 +335,12 @@ function blip_render(blipid, parent){ //a wrapper around renderBlip that adds ch
     runQueue();
   },500)
 }
+
+
+
+//File: js/edit.js
+
+
 //crappy diff algorithm which handles simple replace cases
 //hello world blah blah blah blah blah cheetoes blah blah blah
 //hello world blah blah blah blah cheetoes blah blah blah
@@ -223,7 +358,7 @@ function diff(a, b){
 
 
 var current_blip = null, context_box, reply_box, reply_text, cancel, post;
-function create_context_box(indented){
+function create_reply_box(indented){
   if(window.content_box){
     try{
     content_box.innerHTML = '';
@@ -314,14 +449,14 @@ function create_contextmenu(blip){
   div.style.zIndex = 32;
   var actions = {
     "Reply": function(){
-      current_blip.dom.parentNode.insertBefore(create_context_box(),current_blip.dom.nextSibling);
+      current_blip.dom.parentNode.insertBefore(create_reply_box(),current_blip.dom.nextSibling);
       context_box.className = blip.childBlipIds.length > 0?"thread":"";
       context_box.style.display = '';
       reply_text.focus();
       closectx();
     },/*
     "Indented": function(){
-      current_blip.dom.parentNode.insertBefore(create_context_box(true),current_blip.dom.nextSibling);
+      current_blip.dom.parentNode.insertBefore(create_reply_box(true),current_blip.dom.nextSibling);
       context_box.className = blip.childBlipIds.length > 0?"thread":"";
       context_box.style.display = '';
       reply_text.focus();
@@ -438,7 +573,13 @@ function create_edit_box(){
   edit_text.className = 'edit_box'
 
   return edit_box;
-}var gstates = {};
+}
+
+
+//File: js/gadgets.js
+
+
+var gstates = {};
 var REMOTE_RPC_RELAY_URL =
     "http://www.gmodules.com/gadgets/files/container/rpc_relay.html";
 
@@ -677,23 +818,45 @@ function renderGadget(el, blip){
     cont.innerHTML += '<div class="monospace">'+pel.innerHTML+'</div>'
   }
   return cont
-}function loading(text, nodelay){ 
+}
+
+
+//File: js/loading.js
+
+
+function loading(text, nodelay){ 
   //we need to adjust for the possibility that the load is cancelled before it's actually loaded
-  if(typeof text == "number"){
-    document.getElementById("loading").style.display = "none";
-    delete loadIds[text];
+	var load = document.getElementById("loading");
+	var has_opacity = typeof document.createElement('div').style.opacity != 'undefined';
+	
+	load.style.top = scrollY+'px';
+	if(typeof text == "number"){
+    if(has_opacity)
+			load.style.opacity = "0";
+		else
+			load.style.display = "none";
+		delete loadIds[text];
   }else{
     var id = Math.random()*42;
-    setTimeout(function(){
+    loadIds[id] = true;
+		setTimeout(function(){
       if(loadIds[id]){
-        document.getElementById("loading").style.display = "";
+        if(has_opacity)
+					load.style.opacity = "1";
+				else
+					load.style.display = "";
         document.getElementById("loadingtext").innerHTML = "<b>Loading</b> "+text;
       }
-    }, nodelay?0:700); //it's unnerving when things flash, so only show after a wait
-    loadIds[id] = true;
+    }, nodelay?0:0); //it's unnerving when things flash, so only show after a wait
     return id;
   }
 }
+
+
+
+//File: js/nav.js
+
+
 //navigation stuffs
 var lastscrolled = ""
 function blip_scroll(index){
@@ -709,18 +872,23 @@ function blip_scroll(index){
   return false;
 }
 
-document.onscroll = window.onscroll = function(){
-  if(current_page == 0){
-    searchscroll = scrollY;
+
+
+
+function blip_next(id){
+  try{
+    if([].indexOf){
+      var index = chronological_blips.indexOf(id);
+    }else{
+      //copied from MAH AWESUM VX JS LIBRARY
+      var indexFn = function(v,a,i){for(i=a.length;i--&&a[i]!=v;);return i};
+      var index = indexFn(id, chronological_blips);
+    }
+    while(index && blip_scroll(--index) == false){}
+
+  }catch(err){
   }
-  document.getElementById('floating_menu').style.top = (scrollY+window.innerHeight-40)+'px';
 }
-
-if(mobilewebkit){
-  setInterval(document.onscroll, 1000);
-}
-
-
 
 ////blow is the floaty bar
 function hide_float(){
@@ -741,21 +909,18 @@ function archiveWave(){
   runQueue();
 }
 
-function blip_next(id){
-  try{
-    if([].indexOf){
-      var index = chronological_blips.indexOf(id);
-    }else{
-      //copied from MAH AWESUM VX JS LIBRARY
-      var indexFn = function(v,a,i){for(i=a.length;i--&&a[i]!=v;);return i};
-      var index = indexFn(id, chronological_blips);
-    }
-    while(index && blip_scroll(--index) == false){}
 
-  }catch(err){
+
+window.onresize = document.onscroll = window.onscroll = function(){
+  if(current_page == 0){
+    searchscroll = scrollY;
   }
+  document.getElementById('floating_menu').style.top = (scrollY+window.innerHeight-50)+'px';
 }
 
+if(mobilewebkit){
+  setInterval(document.onscroll, 1000);
+}
 
 function toggle_float(){
   if(document.getElementById('floating_menu').className == "expanded"){
@@ -764,6 +929,12 @@ function toggle_float(){
     document.getElementById('floating_menu').className = "expanded";
   }
 }
+
+
+
+
+//File: js/ops.js
+
 
 username = 'wheisenberg@googlewave.com';
 
@@ -919,24 +1090,11 @@ wave = {
   }
 }
 
-if(!window.console) console = {log: function(){}};
-var screen_size = (document.documentElement.clientWidth||innerWidth), small_screen = (screen_size<500);
-var loadIds = {};
-searchLastIndex = 0;
-current_search = '';
-var edit_box, edit_text;
-var search_container = document.getElementById('search_container');
-var wave_container = document.getElementById('wave_container');
-opt.appName = '&mu;wave'
-var mobilewebkit = navigator.userAgent.indexOf("WebKit") != -1 && navigator.userAgent.indexOf("Mobile")!=-1;
-var current_wave = "";
-var current_wavelet = "";
-var auto_reload = false;
-var lasthash = 'chunkybacon';
-var current_page = 0; //0 = search, 1 = wave
-var search_outdated = false;
-var searchscroll = 0;
-var scrollto_position = -1;
+
+
+
+//File: js/opt.js
+
 
 if(mobilewebkit){
   document.body.className += ' mobilewebkit'; //yeah i know browser detection is bad, but how do i get around it here? 
@@ -1022,6 +1180,12 @@ if(opt.touchscroll){
   document.getElementById('wave_container_parent').style.width = (innerWidth-300)+'px';
   document.getElementById('wave_container').style.width = (innerWidth-300)+'px';
 }
+
+
+
+
+//File: js/ordering.js
+
 
 function chronological_blip_render(parent){
   var blips = []
@@ -1121,7 +1285,13 @@ function thread_render(blipid, parent){
     }
   }
   return doc;
-}function renderBlip(markup){
+}
+
+
+//File: js/render.js
+
+
+function renderBlip(markup){
   var content = markup.content + ' '; //render an extra space at the end for rendering the user cursor annotations
   var annotation_starts = {}, annotation_ends = {};
   var user_colors = {};
@@ -1176,16 +1346,20 @@ function thread_render(blipid, parent){
           if(el.properties.url){
             var img = document.createElement('img');
             img.src = el.properties.url;
-            if(small_screen){
-              img.style.width = "100%";
-              img.onclick = function(){
-                if(img.style.width.indexOf('%') == -1){
-                  img.style.width = "100%";
-                }else{
-                  img.style.width = "";
-                }
-              }
-            }
+						(function(img){
+							img.onload = function(){
+		           	if(small_screen && img.width > screen_size){
+		             	img.style.width = "100%";
+		             	img.onclick = function(){
+		               	if(img.style.width.indexOf('%') == -1){
+		                 	img.style.width = "100%";
+		               	}else{
+		                 	img.style.width = "";
+		               	}
+		             	}
+		           	}
+							}
+          	})(img);
             cont.appendChild(img);
           }
           doc.appendChild(cont);
@@ -1204,17 +1378,20 @@ function thread_render(blipid, parent){
           if(el.properties.mimeType.indexOf('image/') == 0){
             var img = document.createElement('img');
             img.src = el.properties.attachmentUrl;
-            if(small_screen){
-              img.style.width = "100%";
-              img.onclick = function(){
-                if(img.style.width.indexOf('%') == -1){
-                  img.style.width = "100%";
-                }else{
-                  img.style.width = "";
-                }
-              }
-            }
-            
+						(function(img){
+							img.onload = function(){
+		           	if(small_screen && img.width > screen_size){
+		             	img.style.width = "100%";
+		             	img.onclick = function(){
+		               	if(img.style.width.indexOf('%') == -1){
+		                 	img.style.width = "100%";
+		               	}else{
+		                 	img.style.width = "";
+		               	}
+		             	}
+		           	}
+							}
+          	})(img);
             //alert(img.style.width)
             cont.appendChild(img);
           }else{
@@ -1312,6 +1489,12 @@ function thread_render(blipid, parent){
   if(htmlbuffer) section.appendChild(document.createTextNode(htmlbuffer));
   return doc;
 }
+
+
+//File: js/rpc.js
+
+
+
 var queue = [];
 var callbacks = {};
 var id_count = 0;
@@ -1416,6 +1599,12 @@ function runQueue(){
   })
   queue = [];
 }
+
+
+
+
+//File: js/search.js
+
 
 function autosearchbox(){
   var query = document.forms.searchbox.query.value;
@@ -1589,32 +1778,11 @@ function extend_search(startIndex, callback){
     
   }
 }
-function startup(){
-  wave.robot.notifyCapabilitiesHash(); //switch to l83s7 v3rz10n
-  getUsername(); //get the username of the user
-  
-  if(location.hash.length < 2){
-    hashHandler('#search:in:inbox');
-  }else{
-    hashHandler(location.hash);
-  }
-}
 
-//yeah, okay, so i'm using the onload thing, sure that's 
-//evil but i dont have a library and i'm not sure i know
-//if window.addEventListener("DOMContentReady" or is it loaded)
-//whatever, it's not x-platofrm though this doesn twork in ie anyway
 
-function auto_start(){
-  if(!window.NO_STARTUP){
-    startup();
-  }
-  if(window.offline_cache){
-		setTimeout(offline_cache, 1337)
-	}
-}
 
-setTimeout(auto_start, 0);
+//File: js/url.js
+
 
 //ch(this) is short for clickhandler which fixes some problems with opera mini and speeds up iphone 
 //or at least  user agents which don't support window.onhashchange so we dont need to poll, but we poll anyway
@@ -1658,6 +1826,12 @@ if(typeof window.onhashchange == "undefined"){
 window.onhashchange = function(){  
   hashHandler(location.hash);
 }
+
+
+
+//File: js/wave.js
+
+
 var chronological_blips = [];
 function loadWave(waveId, waveletId){  
   var loadId = loading(waveId);
@@ -1736,9 +1910,9 @@ function loadWave(waveId, waveletId){
     header.className = 'wavelet';
     //header.innerHTML = "<b>By </b> ";
     var add = document.createElement('a');
-    add.innerHTML = ' Add Participant'
+    add.innerHTML = ' Add'
     add.className = 'addparticipant';
-		add.style.float = "right"
+		add.style['float'] = "right";
     add.href="javascript:void(0)";
     add.onclick = function(){
       var participant = prompt('Enter Participant ID to Add');
@@ -1786,6 +1960,7 @@ function loadWave(waveId, waveletId){
     footer.innerHTML = '<a href="https://wave.google.com/wave/#restored:wave:'+escape(escape(waveId))+'" target="_blank">Open this wave in the official wave client</a>';
     footer.className = 'footer';
     wave_container.appendChild(footer);
+		wave_container.appendChild(document.createElement('br'))
   }
   if(opt.prefetch && prefetched_waves[waveId]){
     load_callback(JSON.parse(JSON.stringify(prefetched_waves[waveId])));
@@ -1793,6 +1968,12 @@ function loadWave(waveId, waveletId){
     callbacks[wave.robot.fetchWave(waveId, waveletId)] = load_callback;
   }
 }
+
+
+
+//File: js/lib/json.js
+
+
 /*
     http://www.JSON.org/json2.js
     2010-03-20
@@ -2275,3 +2456,38 @@ replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
         };
     }
 }());
+
+
+//File: js/startup.js
+
+
+function startup(){
+  wave.robot.notifyCapabilitiesHash(); //switch to l83s7 v3rz10n
+  getUsername(); //get the username of the user
+  
+  if(location.hash.length < 2){
+    hashHandler('#search:in:inbox');
+  }else{
+    hashHandler(location.hash);
+  }
+}
+
+//yeah, okay, so i'm using the onload thing, sure that's 
+//evil but i dont have a library and i'm not sure i know
+//if window.addEventListener("DOMContentReady" or is it loaded)
+//whatever, it's not x-platofrm though this doesn twork in ie anyway
+
+function auto_start(){
+  if(!window.NO_STARTUP){
+    startup();
+  }
+  if(window.offline_cache){
+		setTimeout(offline_cache, 1337)
+	}
+}
+
+setTimeout(auto_start, 0);
+
+
+
+
