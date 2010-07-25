@@ -62,7 +62,7 @@ function loadWave(waveId, waveletId){
         if(!opt.no_autoscroll){
           if(unread_blips[waveId]){ //ignore if zero or undefined
             //scrollto_blipid = chronological_blips[0];
-            scrollto_position = unread_blips[waveId];
+            scrollto_position = unread_blips[waveId]-1;
 						//if there are unread blips, scroll to the blip that was modified
 						//the unread'th place, this is hard to explain
           }
