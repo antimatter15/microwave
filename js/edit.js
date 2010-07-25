@@ -136,7 +136,10 @@ function create_contextmenu(blip){
       //TODO: MAKE THIS PURTIER
       var rep_start = 0;
       try{
-        if(current_blip.annotations[0].name == 'conv/title') rep_start = current_blip.annotations[0].range.end;
+        for(var l = current_blip.annoations.length, i = 0;
+          i < l && 
+          current_blip.annotations[i].name != 'conv/title' &&
+          rep_start = current_blip.annotations[i].range.end; i++){};
       }catch(err){}
       
       edit_text.value = current_blip.content.substr(rep_start + 1); //first char is a newline
@@ -202,7 +205,10 @@ function create_edit_box(){
     setTimeout(function(){
       var rep_start = 0;
       try{
-        if(current_blip.annotations[0].name == 'conv/title') rep_start = current_blip.annotations[0].range.end;
+        for(var l = current_blip.annoations.length, i = 0;
+          i < l && 
+          current_blip.annotations[i].name != 'conv/title' &&
+          rep_start = current_blip.annotations[i].range.end; i++){};
         //TODO: replace this with something which always works, sometimes it doesn't when there's an annotation above it
       }catch(err){}
       
