@@ -23,15 +23,18 @@ function blip_scroll(index){
 
 
 function animated_scroll(el, pos){
-	var time = 500;
-	var fn, target = +new Date + time, startpos = el.scrollTop;
-	(fn = function(){
-		var progress = 1 - ((target - new Date)/time);
-		if(progress < 1){
-			pos = 0;
-			el.scrollTop = (startpos-pos)*progress + startpos;
-			setTimeout(fn, 0);
+	var isWin = el==window;
+	var startpos = isWin?scrollX:el.scrollTop;
+	if(startpos == pos) return;
+	var time = 2*Math.sqrt(42*Math.abs(pos-startpos));
+	var fn, target = +new Date + time;
+	;(fn = function(){
+		var progress = Math.min(1, 1 - ((target - new Date)/time));
+		var val = (pos-startpos)*progress + startpos;
+		if(isWin) scrollTo(0, val); else{
+			el.scrollTop = val;
 		}
+		if(progress < 1) setTimeout(fn, 0);
 	})()
 }
 
@@ -40,11 +43,12 @@ function scroll_wavepanel(pos){
 		if(opt.touchscroll){
 			touchscroll0.scrollTo(0, pos)
 		}else{
-			
-			document.getElementById('wave_container_parent').scrollTop = pos;
+			//document.getElementById('wave_container_parent').scrollTop = pos;
+			animated_scroll(document.getElementById('wave_container_parent'), pos);
 		}
 	}else{
-		scrollTo(0, pos)
+		//scrollTo(0, pos);
+		animated_scroll(window, pos);
 	}
 }
 
@@ -53,10 +57,12 @@ function scroll_searchpanel(pos){
 		if(opt.touchscroll){
 			touchscroll1.scrollTo(0, pos)
 		}else{
-			document.getElementById('search_parent_container').scrollTop = pos;
+			//document.getElementById('search_parent_container').scrollTop = pos;
+			animated_scroll(document.getElementById('search_parent_container'), pos)
 		}
 	}else{
-		scrollTo(0, pos)
+		//scrollTo(0, pos)
+		animated_scroll(window, pos);
 	}
 }
 

@@ -244,7 +244,7 @@ function userList(users, expanded){ //because participant is a long word
     //todo: check if contributors are named robert<script>table.drop('students')</@googlewave.com
     
     span.innerHTML = users.join(", ")
-          .replace(/antimatter15@googlewave.com/g,"<a href='http://antimatter15.com'>antimatter15</a>")
+          .replace(/antimatter15@googlewave.com/g,"<a href='http://antimatter15.com' target='_blank'>antimatter15</a>")
           .replace(/@.*?(\,|$)/g, "$1");
     if(expanded){
       var fewer = document.createElement('a');
@@ -344,6 +344,7 @@ function blip_render(blipid, parent){ //a wrapper around renderBlip that adds ch
   
   return doc;
 }
+
 
 
 //File: js/createwave.js
@@ -900,24 +901,40 @@ function blip_scroll(index){
   if(msg.data.blips[chronological_blips[index]].dom){
     msg.data.blips[lastscrolled].info.className = 'info selected';
 		var blip = msg.data.blips[chronological_blips[index]].dom;
-		if(!opt.touchscroll){
-			blip.scrollIntoView(true);
-		}else{
+		//if(!opt.touchscroll){
+		//	blip.scrollIntoView(true);
+		//}else{
 			//this totally screws up iPad/Touchscroll
-			touchscroll0.scrollTo(0, blip.offsetTop)
-		}
+			//touchscroll0.scrollTo(0, blip.offsetTop)
+			scroll_wavepanel(blip.offsetTop)
+		//}
    return true;
   }
   return false;
 }
 
 
+
+function animated_scroll(el, pos){
+	var time = 500;
+	var fn, target = +new Date + time, startpos = el.scrollTop;
+	(fn = function(){
+		var progress = 1 - ((target - new Date)/time);
+		if(progress < 1){
+			pos = 0;
+			el.scrollTop = (startpos-pos)*progress + startpos;
+			setTimeout(fn, 0);
+		}
+	})()
+}
+
 function scroll_wavepanel(pos){
 	if(opt.multipane){
 		if(opt.touchscroll){
 			touchscroll0.scrollTo(0, pos)
 		}else{
-			document.getElementById('wave_container').scrollTop = pos;
+			
+			document.getElementById('wave_container_parent').scrollTop = pos;
 		}
 	}else{
 		scrollTo(0, pos)
@@ -1714,14 +1731,13 @@ function autosearchbox(){
 
 
 function autosearch(query){
-  if(query == current_search && current_page == 1 && search_outdated == false){
+  if(query == current_search && current_page == 1 && search_outdated == false && !opt.multipane){
     document.getElementById('suggest').style.display = '';
     searchmode(0);
     current_page = 0;
     search_container.style.display = '';
-    if(!opt.no_scrollhistory){
-//      document.body.scrollTop = searchscroll;
-      scrollTo(0, searchscroll)
+    if(!opt.no_scrollhistory && !opt.multipane){
+      scroll_searchpanel(searchscroll)
     }
     if(!opt.multipane){
       wave_container.style.display = 'none';
