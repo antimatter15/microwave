@@ -5,7 +5,7 @@ function userList(users, expanded){ //because participant is a long word
     //todo: check if contributors are named robert<script>table.drop('students')</@googlewave.com
     
     span.innerHTML = users.join(", ")
-          .replace(/antimatter15@googlewave.com/g,"<a href='http://antimatter15.com'>antimatter15</a>")
+          .replace(/antimatter15@googlewave.com/g,"<a href='http://antimatter15.com' target='_blank'>antimatter15</a>")
           .replace(/@.*?(\,|$)/g, "$1");
     if(expanded){
       var fewer = document.createElement('a');
