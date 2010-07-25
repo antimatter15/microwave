@@ -41,14 +41,20 @@ function animated_scroll(el, pos){
 function scroll_wavepanel(pos){
 	if(opt.multipane){
 		if(opt.touchscroll){
-			touchscroll0.scrollTo(0, pos)
+			touchscroll0.scrollTo(0, pos); //todo: animate this
 		}else{
-			//document.getElementById('wave_container_parent').scrollTop = pos;
-			animated_scroll(document.getElementById('wave_container_parent'), pos);
+			if(opt.no_animate){
+				document.getElementById('wave_container_parent').scrollTop = pos;
+			}else{
+				animated_scroll(document.getElementById('wave_container_parent'), pos);
+			}
 		}
 	}else{
-		//scrollTo(0, pos);
-		animated_scroll(window, pos);
+		if(opt.no_animate){
+			scrollTo(0, pos);
+		}else{
+			animated_scroll(window, pos);
+		}
 	}
 }
 
@@ -57,12 +63,18 @@ function scroll_searchpanel(pos){
 		if(opt.touchscroll){
 			touchscroll1.scrollTo(0, pos)
 		}else{
-			//document.getElementById('search_parent_container').scrollTop = pos;
-			animated_scroll(document.getElementById('search_parent_container'), pos)
+			if(opt.no_animate){
+				document.getElementById('search_parent_container').scrollTop = pos;
+			}else{
+				animated_scroll(document.getElementById('search_parent_container'), pos)
+			}
 		}
 	}else{
-		//scrollTo(0, pos)
-		animated_scroll(window, pos);
+		if(opt.no_animate){
+			scrollTo(0, pos)
+		}else{
+			animated_scroll(window, pos);
+		}
 	}
 }
 
