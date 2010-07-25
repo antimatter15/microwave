@@ -9,14 +9,13 @@ function autosearchbox(){
 
 
 function autosearch(query){
-  if(query == current_search && current_page == 1 && search_outdated == false){
+  if(query == current_search && current_page == 1 && search_outdated == false && !opt.multipane){
     document.getElementById('suggest').style.display = '';
     searchmode(0);
     current_page = 0;
     search_container.style.display = '';
-    if(!opt.no_scrollhistory){
-//      document.body.scrollTop = searchscroll;
-      scrollTo(0, searchscroll)
+    if(!opt.no_scrollhistory && !opt.multipane){
+      scroll_searchpanel(searchscroll)
     }
     if(!opt.multipane){
       wave_container.style.display = 'none';
