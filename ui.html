@@ -51,7 +51,7 @@
           <a href="#read" onclick='markWaveRead();return false'>Read</a> /
           <a href="#archive" onclick='archiveWave();return false'>Archive</a> /
           <a href="#newest" onclick='blip_scroll(0);hide_float();return false'>Newest</a> /
-          <a href="#bottom" onclick='scroll_wavepanel(pageYOffset);hide_float();return false'>Bottom</a> /
+          <a href="#bottom" onclick='scroll_wavepanel(document.body.clientHeight);hide_float();return false'>Bottom</a> /
 					<a href="#top" onclick='scroll_wavepanel(0);hide_float();return false'>Top</a>
         </div>
       </div>
