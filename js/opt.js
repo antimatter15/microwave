@@ -53,8 +53,8 @@ opt.x.prefetch = "Prefetch waves and load them, way faster and also not real tim
 
 
 function addTouchScroll(){
-    var TS_CSS = 'lib/touchscroll.css';
-    var TS_JS = 'lib/touchscroll.min.js';
+    var TS_CSS = 'js/lib/touchscroll.css';
+    var TS_JS = 'js/lib/touchscroll.min.js';
     var elements = arguments;
     var link = document.createElement('link');
     link.href = TS_CSS;
