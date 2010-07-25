@@ -8,24 +8,40 @@ function blip_scroll(index){
   if(msg.data.blips[chronological_blips[index]].dom){
     msg.data.blips[lastscrolled].info.className = 'info selected';
 		var blip = msg.data.blips[chronological_blips[index]].dom;
-		if(!opt.touchscroll){
-			blip.scrollIntoView(true);
-		}else{
+		//if(!opt.touchscroll){
+		//	blip.scrollIntoView(true);
+		//}else{
 			//this totally screws up iPad/Touchscroll
-			touchscroll0.scrollTo(0, blip.offsetTop)
-		}
+			//touchscroll0.scrollTo(0, blip.offsetTop)
+			scroll_wavepanel(blip.offsetTop)
+		//}
    return true;
   }
   return false;
 }
 
 
+
+function animated_scroll(el, pos){
+	var time = 500;
+	var fn, target = +new Date + time, startpos = el.scrollTop;
+	(fn = function(){
+		var progress = 1 - ((target - new Date)/time);
+		if(progress < 1){
+			pos = 0;
+			el.scrollTop = (startpos-pos)*progress + startpos;
+			setTimeout(fn, 0);
+		}
+	})()
+}
+
 function scroll_wavepanel(pos){
 	if(opt.multipane){
 		if(opt.touchscroll){
 			touchscroll0.scrollTo(0, pos)
 		}else{
-			document.getElementById('wave_container').scrollTop = pos;
+			
+			document.getElementById('wave_container_parent').scrollTop = pos;
 		}
 	}else{
 		scrollTo(0, pos)
