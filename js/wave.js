@@ -130,8 +130,8 @@ function loadWave(waveId, waveletId){
     var t = waveContent.data.waveletData.tags.join(', ');
     if(t.length == 0) t = "(None)";
     tags.innerHTML = "<b>Tags:</b> "; //todo: fix xss risk
+    tags.innerHTML = ' <a href="javascript:add_tag()" style="float:right">Add</a>';
     tags.appendChild(document.createTextNode(t))
-    tags.innerHTML += ' <a href="javascript:add_tag()" style="float:right">Add</a>';
     tags.className = 'tags';
     wave_container.appendChild(tags);
     var footer = document.createElement('div');
