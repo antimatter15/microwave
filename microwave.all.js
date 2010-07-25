@@ -1476,8 +1476,18 @@ function renderBlip(markup){
         }else if(note == 'lang'){
           //section.title = "Language: "+val;
         }else if(note == 'link/manual' || note == 'link/auto'){
-          section.href = val;
-          section.target = "_blank"
+					//handle waveid links
+					if(/^waveid:\/\//.test(val)){
+						section.href = '#wave:'+val.substr(9);
+						section.setAttribute('onclick', 'ch(this)')
+						//https://wave.google.com/wave/#restored:wave:googlewave.com%252Fw%252B7mNEVnmbA
+					}else if(/wave:/.test(val)){
+						section.href = '#wave:'+val.match(/wave:(.+?)(\,$)/)[1];
+						section.setAttribute('onclick', 'ch(this)')
+					}else{
+          	section.href = val;
+	          section.target = "_blank"
+					}
         }else if(note == 'link/wave'){
           section.href = '#wave:'+val;
           section.setAttribute('onclick', 'ch(this)')
@@ -1847,8 +1857,16 @@ var chronological_blips = [];
 function loadWave(waveId, waveletId){  
   var loadId = loading(waveId);
   if(onLine() == false) return window.offline_loadWave(waveId);
-  waveId = waveId.replace("/", '!');
-  waveletId = waveletId || waveId.replace(/[\/!].+/,'!conv+root')
+  var blipNavId = null;
+	var matches, waveidregex = /(\w+\.\w+)\/(w\+\w+)\/\~\/(\w+\+\w+)\/(b\+\w+)/; //matches googlewave.com/w+dsf/~/conv+root/b+dsf
+	if(matches = waveId.match(waveidregex)){
+		waveId = matches[1]+'!'+matches[2];
+		waveletId = matches[1]+'!'+matches[3];
+		blipNavId = matches[4];
+	}else{
+		waveId = waveId.replace("/", '!');
+  	waveletId = waveletId || waveId.replace(/[\/!].+/,'!conv+root');
+	}
   var load_callback = function(waveContent){
     loading(loadId);
     console.log(waveContent);
@@ -1894,17 +1912,21 @@ function loadWave(waveId, waveletId){
     }
     scrollto_position = -1;
     if(!auto_reload){
-    
       if(!opt.no_scrollhistory){
-        
-        //document.body.scrollTop = 0;
         scrollTo(0,0);
         if(!opt.no_autoscroll){
           if(unread_blips[waveId]){ //ignore if zero or undefined
             //scrollto_blipid = chronological_blips[0];
             scrollto_position = unread_blips[waveId];
+						//if there are unread blips, scroll to the blip that was modified
+						//the unread'th place, this is hard to explain
           }
         }
+				if(blipNavId){
+					try{
+						scrollto_position = chronological_blips.indexOf(blipNavId);
+					}catch(err){}
+				}
       }
     }
     

@@ -172,8 +172,18 @@ function renderBlip(markup){
         }else if(note == 'lang'){
           //section.title = "Language: "+val;
         }else if(note == 'link/manual' || note == 'link/auto'){
-          section.href = val;
-          section.target = "_blank"
+					//handle waveid links
+					if(/^waveid:\/\//.test(val)){
+						section.href = '#wave:'+val.substr(9);
+						section.setAttribute('onclick', 'ch(this)')
+						//https://wave.google.com/wave/#restored:wave:googlewave.com%252Fw%252B7mNEVnmbA
+					}else if(/wave:/.test(val)){
+						section.href = '#wave:'+val.match(/wave:(.+?)(\,$)/)[1];
+						section.setAttribute('onclick', 'ch(this)')
+					}else{
+          	section.href = val;
+	          section.target = "_blank"
+					}
         }else if(note == 'link/wave'){
           section.href = '#wave:'+val;
           section.setAttribute('onclick', 'ch(this)')
