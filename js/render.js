@@ -177,7 +177,7 @@ function renderBlip(markup){
 						section.href = '#wave:'+val.substr(9);
 						section.setAttribute('onclick', 'ch(this)')
 						//https://wave.google.com/wave/#restored:wave:googlewave.com%252Fw%252B7mNEVnmbA
-					}else if(/wave:/.test(val)){
+					}else if(/wave:(.+?)(\,$)/.test(val)){
 						section.href = '#wave:'+val.match(/wave:(.+?)(\,$)/)[1];
 						section.setAttribute('onclick', 'ch(this)')
 					}else{
