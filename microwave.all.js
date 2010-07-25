@@ -840,6 +840,7 @@ function loading(text, nodelay){
     var id = Math.random()*42;
     loadIds[id] = true;
 		setTimeout(function(){
+		  load.style.top = scrollY+'px';
       if(loadIds[id]){
         if(has_opacity)
 					load.style.opacity = "1";
@@ -915,6 +916,8 @@ window.onresize = document.onscroll = window.onscroll = function(){
   if(current_page == 0){
     searchscroll = scrollY;
   }
+  var load = document.getElementById("loading");
+  load.style.top = scrollY+'px';
   document.getElementById('floating_menu').style.top = (scrollY+window.innerHeight-50)+'px';
 }
 
