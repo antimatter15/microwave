@@ -73,6 +73,7 @@ function bootstrap_thread_render(parent){
 
 function thread_render(blipid, parent){
   var blip = msg.data.blips[blipid];
+	if(!blip) return;
   if(blip.dom) return;
   var doc = blip_render(blipid, parent); //render the blip and attach it to the current "parent" (including header and content)
   
