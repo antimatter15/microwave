@@ -26,7 +26,7 @@ function animated_scroll(el, pos){
 	var isWin = el==window;
 	var startpos = isWin?pageYOffset:el.scrollTop; //pageyOffset seems like somethings wrong
 	if(startpos == pos) return;
-	var time = 2*Math.sqrt(42*Math.abs(pos-startpos));
+	var time = Math.min(1000,2*Math.sqrt(42*Math.abs(pos-startpos)));
 	var fn, target = +new Date + time;
 	;(fn = function(){
 		var progress = Math.min(1, 1 - ((target - new Date)/time));
