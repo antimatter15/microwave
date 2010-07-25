@@ -18,9 +18,9 @@ function loadWave(waveId, waveletId){
     window.msg = waveContent;
     if(msg.error){
       if(msg.error.message.indexOf('not a participant') != -1){
-        alert('You are not a participant of the wave/wavelet. ')
-        //\nThis may be due to a bug in the current version of the data api which does not allow acces
-        //s to waves unless you are explicitly a participant. don\'t blame me'
+        alert('You are not a participant of the wave/wavelet. '+
+        '\nThis may be due to a bug in the current version of the data api which does not allow acces'+
+        's to waves unless you are explicitly a participant. don\'t blame me');
         return true;
       }else{
         return false;
