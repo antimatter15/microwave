@@ -128,6 +128,8 @@ opt.appName = '&mu;wave' //set the app name
 opt.x.multipane = 'Enable multipane viewing experience (note, you must reload the page for changes to take effect)'
 opt.x.touchscroll = "Add the TouchScroll library to do cool scrolly things on iPad Multipane"
 
+opt.x.no_animate = "Disable animated scrolling effect";
+
 opt.x.no_scrollhistory = "Do not save search scroll position and restore to it"
 opt.x.old_results = "Old results panel style";
 
@@ -227,6 +229,7 @@ function addTouchScroll(){
 
 if(opt.touchscroll && opt.multipane){
   addTouchScroll('wave_container_parent', 'search_parent_container')
+	document.getElementById('wave_container_parent').style.overflow = 'hidden'
   document.getElementById('wave_container_parent').style.width = (innerWidth-300)+'px';
   document.getElementById('wave_container').style.width = (innerWidth-300)+'px';
 }
@@ -916,28 +919,38 @@ function blip_scroll(index){
 
 
 function animated_scroll(el, pos){
-	var time = 500;
-	var fn, target = +new Date + time, startpos = el.scrollTop;
-	(fn = function(){
-		var progress = 1 - ((target - new Date)/time);
-		if(progress < 1){
-			pos = 0;
-			el.scrollTop = (startpos-pos)*progress + startpos;
-			setTimeout(fn, 0);
+	var isWin = el==window;
+	var startpos = isWin?pageYOffset:el.scrollTop; //pageyOffset seems like somethings wrong
+	if(startpos == pos) return;
+	var time = 2*Math.sqrt(42*Math.abs(pos-startpos));
+	var fn, target = +new Date + time;
+	;(fn = function(){
+		var progress = Math.min(1, 1 - ((target - new Date)/time));
+		var val = (pos-startpos)*progress + startpos;
+		if(isWin) scrollTo(0, val); else{
+			el.scrollTop = val;
 		}
+		if(progress < 1) setTimeout(fn, 0);
 	})()
 }
 
 function scroll_wavepanel(pos){
 	if(opt.multipane){
 		if(opt.touchscroll){
-			touchscroll0.scrollTo(0, pos)
+			touchscroll0.scrollTo(0, pos); //todo: animate this
 		}else{
-			
-			document.getElementById('wave_container_parent').scrollTop = pos;
+			if(opt.no_animate){
+				document.getElementById('wave_container_parent').scrollTop = pos;
+			}else{
+				animated_scroll(document.getElementById('wave_container_parent'), pos);
+			}
 		}
 	}else{
-		scrollTo(0, pos)
+		if(opt.no_animate){
+			scrollTo(0, pos);
+		}else{
+			animated_scroll(window, pos);
+		}
 	}
 }
 
@@ -946,10 +959,18 @@ function scroll_searchpanel(pos){
 		if(opt.touchscroll){
 			touchscroll1.scrollTo(0, pos)
 		}else{
-			document.getElementById('search_parent_container').scrollTop = pos;
+			if(opt.no_animate){
+				document.getElementById('search_parent_container').scrollTop = pos;
+			}else{
+				animated_scroll(document.getElementById('search_parent_container'), pos)
+			}
 		}
 	}else{
-		scrollTo(0, pos)
+		if(opt.no_animate){
+			scrollTo(0, pos)
+		}else{
+			animated_scroll(window, pos);
+		}
 	}
 }
 
@@ -1180,6 +1201,8 @@ opt.appName = '&mu;wave' //set the app name
 opt.x.multipane = 'Enable multipane viewing experience (note, you must reload the page for changes to take effect)'
 opt.x.touchscroll = "Add the TouchScroll library to do cool scrolly things on iPad Multipane"
 
+opt.x.no_animate = "Disable animated scrolling effect";
+
 opt.x.no_scrollhistory = "Do not save search scroll position and restore to it"
 opt.x.old_results = "Old results panel style";
 
@@ -1279,6 +1302,7 @@ function addTouchScroll(){
 
 if(opt.touchscroll && opt.multipane){
   addTouchScroll('wave_container_parent', 'search_parent_container')
+	document.getElementById('wave_container_parent').style.overflow = 'hidden'
   document.getElementById('wave_container_parent').style.width = (innerWidth-300)+'px';
   document.getElementById('wave_container').style.width = (innerWidth-300)+'px';
 }
