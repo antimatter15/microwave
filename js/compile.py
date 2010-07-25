@@ -1,7 +1,8 @@
 #/usr/bin/python
 import  httplib, urllib, fileinput, sys, re
 print "Reading Developement HTML"
-codes = open('../dev.html','r').read()
+prefix = './'
+codes = open(prefix+'dev.html','r').read()
 compile_regex = r'START_JS(.*?)END_JS'
 js = ''
 for match in re.finditer(compile_regex, codes, re.DOTALL):
@@ -10,17 +11,17 @@ for match in re.finditer(compile_regex, codes, re.DOTALL):
 		for include in re.finditer(r'src=[\"\'](.*)[\"\']', includetext):
 			fn = include.group(1)
 			js += "//File: "+fn+ '\n\n\n'
-			js +=  open('../'+fn,'r').read() + '\n\n\n'
+			js +=  open(prefix+fn,'r').read() + '\n\n\n'
 		html = codes.replace(match.group(0),'')
 
 print "Writing concatenated JS"
-open('../microwave.all.js','w').write(js)
+open(prefix+'microwave.all.js','w').write(js)
 
 html = html.replace('<!--RELEASE','')
 html = html.replace('RELEASE-->','')
 html = html.replace('<!---->','')
 print "Writing compiled HTML"
-open('../ui.html','w').write(html)
+open(prefix+'ui.html','w').write(html)
 
 print "Querying Closure Compiler REST API for compressed JS"
 
@@ -40,4 +41,4 @@ response = conn.getresponse()
 data = response.read()#.replace('\n','')
 
 print "Writing compressed JS"
-open('../microwave.min.js','w').write(data)
+open(prefix+'microwave.min.js','w').write(data)
