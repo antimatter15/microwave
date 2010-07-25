@@ -24,7 +24,7 @@ function blip_scroll(index){
 
 function animated_scroll(el, pos){
 	var isWin = el==window;
-	var startpos = isWin?scrollX:el.scrollTop;
+	var startpos = isWin?pageYOffset:el.scrollTop; //pageyOffset seems like somethings wrong
 	if(startpos == pos) return;
 	var time = 2*Math.sqrt(42*Math.abs(pos-startpos));
 	var fn, target = +new Date + time;

@@ -105,6 +105,7 @@ function addTouchScroll(){
 
 if(opt.touchscroll && opt.multipane){
   addTouchScroll('wave_container_parent', 'search_parent_container')
+	document.getElementById('wave_container_parent').style.overflow = 'hidden'
   document.getElementById('wave_container_parent').style.width = (innerWidth-300)+'px';
   document.getElementById('wave_container').style.width = (innerWidth-300)+'px';
 }
