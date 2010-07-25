@@ -117,6 +117,8 @@ blockquote {
 
 .tags {
   background-color: #89FF85;
+	padding: 4px;
+	margin: 3px 3px 5px;
 }
 
 .tags a {
