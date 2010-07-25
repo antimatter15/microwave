@@ -56,6 +56,8 @@ window.onresize = document.onscroll = window.onscroll = function(){
   if(current_page == 0){
     searchscroll = scrollY;
   }
+  var load = document.getElementById("loading");
+  load.style.top = scrollY+'px';
   document.getElementById('floating_menu').style.top = (scrollY+window.innerHeight-50)+'px';
 }
 
