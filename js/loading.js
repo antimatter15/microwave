@@ -14,6 +14,7 @@ function loading(text, nodelay){
     var id = Math.random()*42;
     loadIds[id] = true;
 		setTimeout(function(){
+		  load.style.top = scrollY+'px';
       if(loadIds[id]){
         if(has_opacity)
 					load.style.opacity = "1";
