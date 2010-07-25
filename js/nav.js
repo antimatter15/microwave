@@ -7,14 +7,42 @@ function blip_scroll(index){
   lastscrolled = chronological_blips[index];
   if(msg.data.blips[chronological_blips[index]].dom){
     msg.data.blips[lastscrolled].info.className = 'info selected';
-    msg.data.blips[chronological_blips[index]].dom.scrollIntoView(true);
-    return true;
+		var blip = msg.data.blips[chronological_blips[index]].dom;
+		if(!opt.touchscroll){
+			blip.scrollIntoView(true);
+		}else{
+			//this totally screws up iPad/Touchscroll
+			touchscroll0.scrollTo(0, blip.offsetTop)
+		}
+   return true;
   }
   return false;
 }
 
 
+function scroll_wavepanel(pos){
+	if(opt.multipane){
+		if(opt.touchscroll){
+			touchscroll0.scrollTo(0, pos)
+		}else{
+			document.getElementById('wave_container').scrollTop = pos;
+		}
+	}else{
+		scrollTo(0, pos)
+	}
+}
 
+function scroll_searchpanel(pos){
+	if(opt.multipane){
+		if(opt.touchscroll){
+			touchscroll1.scrollTo(0, pos)
+		}else{
+			document.getElementById('search_parent_container').scrollTop = pos;
+		}
+	}else{
+		scrollTo(0, pos)
+	}
+}
 
 function blip_next(id){
   try{

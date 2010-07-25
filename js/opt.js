@@ -93,7 +93,7 @@ function addTouchScroll(){
                 var el = elements[i];
                 console.log(el);
                 if(typeof(el) == "string") el = document.getElementById(el);
-                new TouchScroll(el, {elastic: true});
+                window['touchscroll'+i] = new TouchScroll(el, {elastic: true});
             }
         },100)
     }
