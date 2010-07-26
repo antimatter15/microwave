@@ -513,7 +513,7 @@ function create_contextmenu(blip){
       //TODO: MAKE THIS PURTIER
       var rep_start = 0;
       try{
-        for(var l = current_blip.annoations.length, i = 0;
+        for(var l = current_blip.annotations.length, i = 0;
           i < l && current_blip.annotations[i].name != 'conv/title'; i++){};
         if(i < l) rep_start = current_blip.annotations[i].range.end;
       }catch(err){}
@@ -581,7 +581,7 @@ function create_edit_box(){
     setTimeout(function(){
       var rep_start = 0;
       try{
-        for(var l = current_blip.annoations.length, i = 0;
+        for(var l = current_blip.annotations.length, i = 0;
           i < l && current_blip.annotations[i].name != 'conv/title'; i++){};
         if(i < l) rep_start = current_blip.annotations[i].range.end;
       }catch(err){}
