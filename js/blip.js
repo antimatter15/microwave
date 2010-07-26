@@ -74,7 +74,11 @@ function blip_render(blipid, parent){ //a wrapper around renderBlip that adds ch
 
   var nextblip = '';
   if(chronological_blips[0] == blipid){
-		nextblip = ' <span class="blipend">&larr;</span>'
+		if(chronological_blips.length == 1){
+			nextblip = ' <span class="blipend">X</span>'
+		}else{
+			nextblip = ' <span class="blipend">&larr;</span>'
+		}
 	}else if(chronological_blips[chronological_blips.length-1] == blipid){
 		nextblip = " <span class='blipstart'>&rarr;</span></div>"
 	}else{
