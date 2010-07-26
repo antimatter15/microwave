@@ -1572,7 +1572,11 @@ function renderBlip(markup){
             img.src = el.properties.url;
 						(function(img){
 							img.onload = function(){
-		           	if(small_screen && img.width > screen_size){
+								var width = screen_size;
+								try{
+									width = parseInt(getComputedStyle(document.documentElement,document.getElementById('search_parent_container')).width);
+								}catch(e){width = screen_size}
+		           	if(img.width > width){
 		             	img.style.width = "100%";
 		             	img.onclick = function(){
 		               	if(img.style.width.indexOf('%') == -1){
@@ -1604,7 +1608,11 @@ function renderBlip(markup){
             img.src = el.properties.attachmentUrl;
 						(function(img){
 							img.onload = function(){
-		           	if(small_screen && img.width > screen_size){
+								var width = screen_size;
+								try{
+									width = parseInt(getComputedStyle(document.documentElement,document.getElementById('search_parent_container')).width);
+								}catch(e){width = screen_size}
+		           	if(img.width > width){
 		             	img.style.width = "100%";
 		             	img.onclick = function(){
 		               	if(img.style.width.indexOf('%') == -1){
