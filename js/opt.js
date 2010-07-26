@@ -125,6 +125,11 @@ if(opt.touchscroll && opt.multipane){
 	window.addEventListener('resize', reset_touchscroll, true)
 }
 
+
+if(!mobilewebkit && window.addEventListener && opt.keyboard === undefined){
+	opt.fn.set('keyboard', true)
+}
+
 if(opt.keyboard){
 	document.body.onkeydown = function(e){
 		if(e.target.tagName=='BODY'){
