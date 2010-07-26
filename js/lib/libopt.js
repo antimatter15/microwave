@@ -51,7 +51,7 @@ opt.fn = {
   show: function(){
     opt.fn.close();
     var e = opt.fn._el = document.createElement('div');
-    var h = '<div style="padding:7px;padding-bottom:100px;"><h1 onclick="opt.fn.close()">'+(opt.appName||'')+' Settings</h1>';
+    var h = '<div style="padding:7px;padding-bottom:100px;"><h1 onclick="opt.fn.close()">'+(opt.appName||'')+' settings</h1>';
     for(var i in opt.x){
       h += '<input type="checkbox" name="'+i+'" id="'+i+'" '+(opt[i]?'checked':'')+' onchange="opt.fn.handleBoolean(this)"> <label for="'+i+'">'+opt.x[i]+' <i>('+i+')</i></label><br>';
     }
