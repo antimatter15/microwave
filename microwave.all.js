@@ -54,7 +54,7 @@ opt.fn = {
   show: function(){
     opt.fn.close();
     var e = opt.fn._el = document.createElement('div');
-    var h = '<div style="padding:7px;padding-bottom:100px;"><h1 onclick="opt.fn.close()">'+(opt.appName||'')+' Settings</h1>';
+    var h = '<div style="padding:7px;padding-bottom:100px;"><h1 onclick="opt.fn.close()">'+(opt.appName||'')+' settings</h1>';
     for(var i in opt.x){
       h += '<input type="checkbox" name="'+i+'" id="'+i+'" '+(opt[i]?'checked':'')+' onchange="opt.fn.handleBoolean(this)"> <label for="'+i+'">'+opt.x[i]+' <i>('+i+')</i></label><br>';
     }
@@ -126,7 +126,7 @@ opt.appName = '&mu;wave' //set the app name
 
 
 opt.x.multipane = 'Enable multipane viewing experience (note, you must reload the page for changes to take effect)'
-opt.x.touchscroll = "Add the TouchScroll library to do cool scrolly things on iPad Multipane"
+opt.x.touchscroll = "Add the TouchScroll library to do cool scrolly things on iPad Multipane (do not use on Desktop)"
 
 opt.x.no_animate = "Disable animated scrolling effect";
 
@@ -148,7 +148,6 @@ opt.x.no_sig = 'Do not automatically add <i>posted with micro-wave</i> signature
 opt.x.use_protocol_21 = 'Use old 0.21 version of wave protocol';
 
 opt.x.gsa = 'Show interface for changing gadget states (must have native gadgets enabled)';
-
 
 opt.x.owner_utils = 'Enable utilities for wave creators';
 opt.x.no_autoscroll = 'Disable smart autoscroll to latest blip';
@@ -247,6 +246,11 @@ if(opt.touchscroll && opt.multipane){
 	reset_touchscroll()
 	window.onorientationchange = reset_touchscroll;
 	window.addEventListener('resize', reset_touchscroll, true)
+}
+
+
+if(!mobilewebkit && window.addEventListener && opt.keyboard === undefined){
+	opt.fn.set('keyboard', true)
 }
 
 if(opt.keyboard){
@@ -1258,7 +1262,7 @@ opt.appName = '&mu;wave' //set the app name
 
 
 opt.x.multipane = 'Enable multipane viewing experience (note, you must reload the page for changes to take effect)'
-opt.x.touchscroll = "Add the TouchScroll library to do cool scrolly things on iPad Multipane"
+opt.x.touchscroll = "Add the TouchScroll library to do cool scrolly things on iPad Multipane (do not use on Desktop)"
 
 opt.x.no_animate = "Disable animated scrolling effect";
 
@@ -1280,7 +1284,6 @@ opt.x.no_sig = 'Do not automatically add <i>posted with micro-wave</i> signature
 opt.x.use_protocol_21 = 'Use old 0.21 version of wave protocol';
 
 opt.x.gsa = 'Show interface for changing gadget states (must have native gadgets enabled)';
-
 
 opt.x.owner_utils = 'Enable utilities for wave creators';
 opt.x.no_autoscroll = 'Disable smart autoscroll to latest blip';
@@ -1379,6 +1382,11 @@ if(opt.touchscroll && opt.multipane){
 	reset_touchscroll()
 	window.onorientationchange = reset_touchscroll;
 	window.addEventListener('resize', reset_touchscroll, true)
+}
+
+
+if(!mobilewebkit && window.addEventListener && opt.keyboard === undefined){
+	opt.fn.set('keyboard', true)
 }
 
 if(opt.keyboard){

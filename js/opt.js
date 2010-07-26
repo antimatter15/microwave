@@ -25,7 +25,6 @@ opt.x.use_protocol_21 = 'Use old 0.21 version of wave protocol';
 
 opt.x.gsa = 'Show interface for changing gadget states (must have native gadgets enabled)';
 
-
 opt.x.owner_utils = 'Enable utilities for wave creators';
 opt.x.no_autoscroll = 'Disable smart autoscroll to latest blip';
 
