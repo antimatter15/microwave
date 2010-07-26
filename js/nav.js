@@ -49,8 +49,10 @@ function animated_scroll(el, pos){
 	var time = Math.min(1000,2*Math.sqrt(42*Math.abs(pos-startpos)));
 	var fn, target = +new Date + time;
 	;(fn = function(){
-		var progress = Math.min(1, 1 - ((target - new Date)/time));
+		var progress = -Math.cos(Math.min(1, 1 - ((target - new Date)/time))*Math.PI)/2) + 0.5; 
+		
 		var val = (pos-startpos)*progress + startpos;
+		
 		if(isWin) scrollTo(0, val); else{
 			el.scrollTop = val;
 		}

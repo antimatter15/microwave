@@ -15,9 +15,9 @@ oauth_secret = localStorage.oauth_secret;
          document.getElementById('login_error').style.display = '';
          var parts = xhr.responseText.split(';');
          oauth_key = parts[0];
-		localStorage.oauth_key = oauth_key;
+				 localStorage.oauth_key = oauth_key;
          oauth_secret = parts[1];
-		localStorage.oauth_secret = oauth_secret;
+				 localStorage.oauth_secret = oauth_secret;
          document.getElementById('appheader').style.display = "";
          document.getElementById('setupoauth').style.display = "none";
          startup()
