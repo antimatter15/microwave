@@ -2,7 +2,7 @@ opt.appName = '&mu;wave' //set the app name
 
 
 opt.x.multipane = 'Enable multipane viewing experience (note, you must reload the page for changes to take effect)'
-opt.x.touchscroll = "Add the TouchScroll library to do cool scrolly things on iPad Multipane"
+opt.x.touchscroll = "Add the TouchScroll library to do cool scrolly things on iPad Multipane (do not use on Desktop)"
 
 opt.x.no_animate = "Disable animated scrolling effect";
 
