@@ -41,7 +41,7 @@ function loadWave(waveId, waveletId){
     current_page = 1;
 
     wave_container.style.display = '';
-    window.onscroll();
+    update_scroll();
     document.getElementById('floating_menu').style.display = '';
     if(!opt.no_autoscroll){ //ignore if zero or undefined
       //Okay, so now what? Uh.

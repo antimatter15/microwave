@@ -49,9 +49,9 @@ function animated_scroll(el, pos){
 	var time = Math.min(1000,2*Math.sqrt(42*Math.abs(pos-startpos)));
 	var fn, target = +new Date + time;
 	;(fn = function(){
-		var progress = -Math.cos(Math.min(1, 1 - ((target - new Date)/time))*Math.PI)/2) + 0.5; 
+		var progress = Math.min(1, 1 - ((target - new Date)/time));
 		
-		var val = (pos-startpos)*progress + startpos;
+		var val = (pos-startpos)*((-Math.cos(progress*Math.PI)/2) + 0.5) + startpos;
 		
 		if(isWin) scrollTo(0, val); else{
 			el.scrollTop = val;
@@ -129,7 +129,7 @@ function archiveWave(){
 
 
 
-window.onresize = document.onscroll = window.onscroll = function(){
+function update_scroll(){
   if(current_page == 0){
     searchscroll = scrollY;
   }
@@ -137,6 +137,8 @@ window.onresize = document.onscroll = window.onscroll = function(){
   load.style.top = scrollY+'px';
   document.getElementById('floating_menu').style.top = (scrollY+window.innerHeight-50)+'px';
 }
+
+window.onresize = document.onscroll = window.onscroll = update_scroll;
 
 if(mobilewebkit){
   setInterval(document.onscroll, 1000);
