@@ -346,7 +346,11 @@ function blip_render(blipid, parent){ //a wrapper around renderBlip that adds ch
 
   var nextblip = '';
   if(chronological_blips[0] == blipid){
-		nextblip = ' <span class="blipend">&larr;</span>'
+		if(chronological_blips.length == 1){
+			nextblip = ' <span class="blipend">X</span>'
+		}else{
+			nextblip = ' <span class="blipend">&larr;</span>'
+		}
 	}else if(chronological_blips[chronological_blips.length-1] == blipid){
 		nextblip = " <span class='blipstart'>&rarr;</span></div>"
 	}else{
@@ -984,7 +988,9 @@ function animated_scroll(el, pos){
 	var fn, target = +new Date + time;
 	;(fn = function(){
 		var progress = Math.min(1, 1 - ((target - new Date)/time));
-		var val = (pos-startpos)*progress + startpos;
+		
+		var val = (pos-startpos)*((-Math.cos(progress*Math.PI)/2) + 0.5) + startpos;
+		
 		if(isWin) scrollTo(0, val); else{
 			el.scrollTop = val;
 		}
@@ -1061,7 +1067,7 @@ function archiveWave(){
 
 
 
-window.onresize = document.onscroll = window.onscroll = function(){
+function update_scroll(){
   if(current_page == 0){
     searchscroll = scrollY;
   }
@@ -1069,6 +1075,8 @@ window.onresize = document.onscroll = window.onscroll = function(){
   load.style.top = scrollY+'px';
   document.getElementById('floating_menu').style.top = (scrollY+window.innerHeight-50)+'px';
 }
+
+window.onresize = document.onscroll = window.onscroll = update_scroll;
 
 if(mobilewebkit){
   setInterval(document.onscroll, 1000);
@@ -2088,7 +2096,7 @@ function loadWave(waveId, waveletId){
     current_page = 1;
 
     wave_container.style.display = '';
-    window.onscroll();
+    update_scroll();
     document.getElementById('floating_menu').style.display = '';
     if(!opt.no_autoscroll){ //ignore if zero or undefined
       //Okay, so now what? Uh.
