@@ -107,7 +107,7 @@ function reset_touchscroll(){
   document.getElementById('wave_container_parent').style.width = (innerWidth-search_width)+'px';
   document.getElementById('wave_container').style.width = (innerWidth-search_width)+'px';
   document.getElementById('search_parent').style.width = search_width+'px';
-
+  document.getElementById('search_parent_container').style.width = search_width+'px';
 }
 
 if(opt.touchscroll && opt.multipane){
