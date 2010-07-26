@@ -40,12 +40,12 @@ function animated_scroll(el, pos){
 
 function scroll_wavepanel(pos){
 	if(opt.multipane){
+		var wcp = document.getElementById('wave_container_parent');
+		pos = pos<0?(wcp.scrollHeight+1+pos):pos;
 		if(opt.touchscroll){
 			//todo: find out how to get scroll to bottom to work
 			touchscroll0.scrollTo(0, pos); //todo: animate this
 		}else{
-			var wcp = document.getElementById('wave_container_parent');
-			pos = pos<0?(wcp.scrollHeight+1+pos):pos;
 			if(opt.no_animate){
 				wcp.scrollTop = pos;
 			}else{
@@ -64,12 +64,11 @@ function scroll_wavepanel(pos){
 
 function scroll_searchpanel(pos){
 	if(opt.multipane){
-		pos = pos<0?(innerHeight+1+pox):pos;
+		var spc = document.getElementById('search_parent_container');
+		pos = pos<0?(spc.scrollHeight+1+pos):pos;
 		if(opt.touchscroll){
 			touchscroll1.scrollTo(0, pos)
 		}else{
-			var spc = document.getElementById('search_parent_container');
-			pos = pos<0?(spc.scrollHeight+1+pos):pos;
 			if(opt.no_animate){
 				spc.scrollTop = pos;
 			}else{
