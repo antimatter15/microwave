@@ -19,7 +19,7 @@ function autosearch(query){
     }
     if(!opt.multipane){
       wave_container.style.display = 'none';
-      msg = {};
+      if(!opt.multipane) msg = {};
       wave_container.innerHTML = '';
     }
   }else{  
@@ -68,7 +68,7 @@ function add_tag(){
 function update_search(startIndex){
   current_page  = 0;
   var loadId = loading(current_search);
-  msg = {};
+  if(!opt.multipane) msg = {};
   
   extend_search(0, function(){
     loading(loadId);
