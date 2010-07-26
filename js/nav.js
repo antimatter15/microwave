@@ -14,7 +14,32 @@ function blip_scroll(index){
   return false;
 }
 
+function blip_index(id){
+	if([].indexOf){
+		var index = chronological_blips.indexOf(id);
+	}else{
+		//copied from MAH AWESUM VX JS LIBRARY
+		var indexFn = function(v,a,i){for(i=a.length;i--&&a[i]!=v;);return i};
+		var index = indexFn(id, chronological_blips);
+	}
+	return index;
+}
 
+function blip_next(id){
+  try{
+    var index = blip_index(id);
+    while(index && blip_scroll(--index) == false){}
+  }catch(err){
+  }
+}
+
+function blip_prev(id){
+  try{
+    var index = blip_index(id), cbl = chronological_blips.length;
+    while(index && index < cbl && blip_scroll(++index) == false){}
+  }catch(err){
+  }
+}
 
 function animated_scroll(el, pos){
 	var isWin = el==window;
@@ -78,20 +103,7 @@ function scroll_searchpanel(pos){
 	}
 }
 
-function blip_next(id){
-  try{
-    if([].indexOf){
-      var index = chronological_blips.indexOf(id);
-    }else{
-      //copied from MAH AWESUM VX JS LIBRARY
-      var indexFn = function(v,a,i){for(i=a.length;i--&&a[i]!=v;);return i};
-      var index = indexFn(id, chronological_blips);
-    }
-    while(index && blip_scroll(--index) == false){}
 
-  }catch(err){
-  }
-}
 
 ////blow is the floaty bar
 function hide_float(){
