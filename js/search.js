@@ -26,7 +26,7 @@ function autosearch(query){
     current_search = document.forms.searchbox.query.value = query;
     update_search();
   }
-  if(!opt.multipane) msg = {};document.getElementById('floating_menu').style.display = 'none';
+  if(!opt.multipane) document.getElementById('floating_menu').style.display = 'none';
 }
 
 function searchmode(mode){
