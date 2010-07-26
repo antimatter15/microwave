@@ -29,6 +29,10 @@ opt.x.gsa = 'Show interface for changing gadget states (must have native gadgets
 opt.x.owner_utils = 'Enable utilities for wave creators';
 opt.x.no_autoscroll = 'Disable smart autoscroll to latest blip';
 
+
+opt.x.keyboard = 'Enable keyboard shortcuts'
+
+
 if(opt.gadgets === undefined && screen_size > 900){
   opt.fn.set('gadgets', true)
 }
@@ -121,3 +125,14 @@ if(opt.touchscroll && opt.multipane){
 	window.addEventListener('resize', reset_touchscroll, true)
 }
 
+if(opt.keyboard){
+	document.body.onkeydown = function(e){
+		if(e.target.tagName=='BODY'){
+			if((e.shiftKey && e.keyCode == 32) || e.keyCode == 75){
+				//up
+			}else if(e.keyCode==32 || e.keyCode == 74){
+				//down
+			}
+		}
+	}
+}

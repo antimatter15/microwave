@@ -8,13 +8,7 @@ function blip_scroll(index){
   if(msg.data.blips[chronological_blips[index]].dom){
     msg.data.blips[lastscrolled].info.className = 'info selected';
 		var blip = msg.data.blips[chronological_blips[index]].dom;
-		//if(!opt.touchscroll){
-		//	blip.scrollIntoView(true);
-		//}else{
-			//this totally screws up iPad/Touchscroll
-			//touchscroll0.scrollTo(0, blip.offsetTop)
-			scroll_wavepanel(blip.offsetTop)
-		//}
+		scroll_wavepanel(blip.offsetTop)
    return true;
   }
   return false;
