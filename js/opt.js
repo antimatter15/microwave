@@ -106,11 +106,18 @@ function reset_touchscroll(){
 	var search_width = 250;
   document.getElementById('wave_container_parent').style.width = (innerWidth-search_width)+'px';
   document.getElementById('wave_container').style.width = (innerWidth-search_width)+'px';
+  document.getElementById('search_parent').style.width = search_width+'px';
+
+
+
 }
 
 if(opt.touchscroll && opt.multipane){
   addTouchScroll('wave_container_parent', 'search_parent_container')
 	document.getElementById('wave_container_parent').style.overflow = 'hidden'
+  document.getElementById('search_parent').style.overflow = 'hidden';
+  document.getElementById('search_parent_container').style.overflow = 'hidden';
+  document.getElementById('wave_container').style.overflow = 'hidden';
 	reset_touchscroll()
 	window.onorientationchange = reset_touchscroll;
 	window.addEventListener('resize', reset_touchscroll, true)

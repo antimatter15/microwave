@@ -407,14 +407,6 @@ a.searchlink:hover * {
   top: 0;
 }
 
-.touchScroll #search_parent, .touchScroll#search_parent_container {
-  width: 300px;
-  overflow: hidden;
-}
-
-.touchScroll#wave_container_parent, .touchScroll #wave_container {
-  overflow: hidden;
-}
 
 
 .multipane  #search_container {
