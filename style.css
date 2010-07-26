@@ -480,6 +480,15 @@ a.searchlink:hover * {
   padding-left: 4px;
 }
 
+.blipstart {
+  background-color:#F7E5B2;
+  border-radius: 7px;
+  -webkit-border-radius: 7px;
+  -moz-border-radius: 7px;
+  padding-right: 4px;
+  padding-left: 4px;
+}
+
 .blipend {
   background-color:#F7B2B2;
   border-radius: 7px;

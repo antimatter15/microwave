@@ -71,8 +71,16 @@ function blip_render(blipid, parent){ //a wrapper around renderBlip that adds ch
   info.className = "info";
 
   blip.info = info;
-    
-  var nextblip = (chronological_blips[0] == blipid)?' <span class="blipend">X</span>':" <span class='nextarr'>&rarr;</span></div>";
+
+  var nextblip = '';
+  if(chronological_blips[0] == blipid){
+		nextblip = ' <span class="blipend">&larr;</span>'
+	}else if(chronological_blips[chronological_blips.length-1] == blipid){
+		nextblip = " <span class='blipstart'>&rarr;</span></div>"
+	}else{
+		nextblip = " <span class='nextarr'>&harr;</span></div>";
+	}
+  
   info.innerHTML = "<div style='float:right;color:#555'>"+format_time(blip.lastModifiedTime).toString()+nextblip;//<b>By</b> ";
   info.appendChild(userList(blip.contributors));
   info.onclick = function(e){
