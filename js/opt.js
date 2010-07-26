@@ -102,11 +102,17 @@ function addTouchScroll(){
     document.body.appendChild(script)
 } 
 
+function reset_touchscroll(){
+	var search_width = 250;
+  document.getElementById('wave_container_parent').style.width = (innerWidth-search_width)+'px';
+  document.getElementById('wave_container').style.width = (innerWidth-search_width)+'px';
+}
 
 if(opt.touchscroll && opt.multipane){
   addTouchScroll('wave_container_parent', 'search_parent_container')
 	document.getElementById('wave_container_parent').style.overflow = 'hidden'
-  document.getElementById('wave_container_parent').style.width = (innerWidth-300)+'px';
-  document.getElementById('wave_container').style.width = (innerWidth-300)+'px';
+	reset_touchscroll()
+	window.onorientationchange = reset_touchscroll;
+	window.addEventListener('resize', reset_touchscroll, true)
 }
 
