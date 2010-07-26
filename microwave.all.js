@@ -231,9 +231,7 @@ function reset_touchscroll(){
   document.getElementById('wave_container_parent').style.width = (innerWidth-search_width)+'px';
   document.getElementById('wave_container').style.width = (innerWidth-search_width)+'px';
   document.getElementById('search_parent').style.width = search_width+'px';
-
-
-
+  document.getElementById('search_parent_container').style.width = search_width+'px';
 }
 
 if(opt.touchscroll && opt.multipane){
@@ -949,16 +947,19 @@ function animated_scroll(el, pos){
 
 function scroll_wavepanel(pos){
 	if(opt.multipane){
+		var wcp = document.getElementById('wave_container_parent');
+		pos = pos<0?(wcp.scrollHeight+1+pos):pos;
 		if(opt.touchscroll){
 			touchscroll0.scrollTo(0, pos); //todo: animate this
 		}else{
 			if(opt.no_animate){
-				document.getElementById('wave_container_parent').scrollTop = pos;
+				wcp.scrollTop = pos;
 			}else{
-				animated_scroll(document.getElementById('wave_container_parent'), pos);
+				animated_scroll(wcp, pos);
 			}
 		}
 	}else{
+		pos = pos<0?(innerHeight+1+pos):pos;
 		if(opt.no_animate){
 			scrollTo(0, pos);
 		}else{
@@ -969,16 +970,19 @@ function scroll_wavepanel(pos){
 
 function scroll_searchpanel(pos){
 	if(opt.multipane){
+		var spc = document.getElementById('search_parent_container');
+		pos = pos<0?(spc.scrollHeight+1+pos):pos;
 		if(opt.touchscroll){
 			touchscroll1.scrollTo(0, pos)
 		}else{
 			if(opt.no_animate){
-				document.getElementById('search_parent_container').scrollTop = pos;
+				spc.scrollTop = pos;
 			}else{
-				animated_scroll(document.getElementById('search_parent_container'), pos)
+				animated_scroll(spc, pos)
 			}
 		}
 	}else{
+		pos = pos<0?(innerHeight+1+pos):pos;
 		if(opt.no_animate){
 			scrollTo(0, pos)
 		}else{
@@ -1317,9 +1321,7 @@ function reset_touchscroll(){
   document.getElementById('wave_container_parent').style.width = (innerWidth-search_width)+'px';
   document.getElementById('wave_container').style.width = (innerWidth-search_width)+'px';
   document.getElementById('search_parent').style.width = search_width+'px';
-
-
-
+  document.getElementById('search_parent_container').style.width = search_width+'px';
 }
 
 if(opt.touchscroll && opt.multipane){
@@ -1791,14 +1793,14 @@ function autosearch(query){
     }
     if(!opt.multipane){
       wave_container.style.display = 'none';
-      msg = {};
+      if(!opt.multipane) msg = {};
       wave_container.innerHTML = '';
     }
   }else{  
     current_search = document.forms.searchbox.query.value = query;
     update_search();
   }
-  document.getElementById('floating_menu').style.display = 'none';
+  if(!opt.multipane) document.getElementById('floating_menu').style.display = 'none';
 }
 
 function searchmode(mode){
@@ -1840,7 +1842,7 @@ function add_tag(){
 function update_search(startIndex){
   current_page  = 0;
   var loadId = loading(current_search);
-  msg = {};
+  if(!opt.multipane) msg = {};
   
   extend_search(0, function(){
     loading(loadId);
