@@ -36,7 +36,8 @@ function blip_next(id){
 function blip_prev(id){
   try{
     var index = blip_index(id), cbl = chronological_blips.length;
-    while(index && index < cbl && blip_scroll(++index) == false){}
+    if(index < 0) return;
+    while(index < cbl && blip_scroll(++index) == false){}
   }catch(err){
   }
 }

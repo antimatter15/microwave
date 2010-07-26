@@ -128,12 +128,14 @@ if(opt.touchscroll && opt.multipane){
 if(opt.keyboard){
 	document.body.onkeydown = function(e){
 		if(e.target.tagName=='BODY'){
-			if((e.shiftKey && e.keyCode == 32) || e.keyCode == 75){
+			if((e.shiftKey && e.keyCode == 32) || (!e.shiftKey && !e.ctrlKey && e.keyCode == 75)){
 				//up
 				blip_prev(lastscrolled);
-			}else if(e.keyCode==32 || e.keyCode == 74){
+				e.preventDefault();
+			}else if(e.keyCode==32 || (!e.shiftKey && !e.ctrlKey && e.keyCode == 74)){
 				//down
 				blip_next(lastscrolled)
+				e.preventDefault();
 			}
 		}
 	}
