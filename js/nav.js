@@ -43,7 +43,6 @@ function scroll_wavepanel(pos){
 		var wcp = document.getElementById('wave_container_parent');
 		pos = pos<0?(wcp.scrollHeight+1+pos):pos;
 		if(opt.touchscroll){
-			//todo: find out how to get scroll to bottom to work
 			touchscroll0.scrollTo(0, pos); //todo: animate this
 		}else{
 			if(opt.no_animate){
