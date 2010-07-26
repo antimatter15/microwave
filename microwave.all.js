@@ -153,6 +153,10 @@ opt.x.gsa = 'Show interface for changing gadget states (must have native gadgets
 opt.x.owner_utils = 'Enable utilities for wave creators';
 opt.x.no_autoscroll = 'Disable smart autoscroll to latest blip';
 
+
+opt.x.keyboard = 'Enable keyboard shortcuts'
+
+
 if(opt.gadgets === undefined && screen_size > 900){
   opt.fn.set('gadgets', true)
 }
@@ -245,6 +249,21 @@ if(opt.touchscroll && opt.multipane){
 	window.addEventListener('resize', reset_touchscroll, true)
 }
 
+if(opt.keyboard){
+	document.body.onkeydown = function(e){
+		if(e.target.tagName=='BODY'){
+			if((e.shiftKey && e.keyCode == 32) || (!e.shiftKey && !e.ctrlKey && e.keyCode == 75)){
+				//up
+				blip_prev(lastscrolled);
+				e.preventDefault();
+			}else if(e.keyCode==32 || (!e.shiftKey && !e.ctrlKey && e.keyCode == 74)){
+				//down
+				blip_next(lastscrolled)
+				e.preventDefault();
+			}
+		}
+	}
+}
 
 
 
@@ -324,8 +343,16 @@ function blip_render(blipid, parent){ //a wrapper around renderBlip that adds ch
   info.className = "info";
 
   blip.info = info;
-    
-  var nextblip = (chronological_blips[0] == blipid)?' <span class="blipend">X</span>':" <span class='nextarr'>&rarr;</span></div>";
+
+  var nextblip = '';
+  if(chronological_blips[0] == blipid){
+		nextblip = ' <span class="blipend">&larr;</span>'
+	}else if(chronological_blips[chronological_blips.length-1] == blipid){
+		nextblip = " <span class='blipstart'>&rarr;</span></div>"
+	}else{
+		nextblip = " <span class='nextarr'>&harr;</span></div>";
+	}
+  
   info.innerHTML = "<div style='float:right;color:#555'>"+format_time(blip.lastModifiedTime).toString()+nextblip;//<b>By</b> ";
   info.appendChild(userList(blip.contributors));
   info.onclick = function(e){
@@ -915,19 +942,39 @@ function blip_scroll(index){
   if(msg.data.blips[chronological_blips[index]].dom){
     msg.data.blips[lastscrolled].info.className = 'info selected';
 		var blip = msg.data.blips[chronological_blips[index]].dom;
-		//if(!opt.touchscroll){
-		//	blip.scrollIntoView(true);
-		//}else{
-			//this totally screws up iPad/Touchscroll
-			//touchscroll0.scrollTo(0, blip.offsetTop)
-			scroll_wavepanel(blip.offsetTop)
-		//}
+		scroll_wavepanel(blip.offsetTop)
    return true;
   }
   return false;
 }
 
+function blip_index(id){
+	if([].indexOf){
+		var index = chronological_blips.indexOf(id);
+	}else{
+		//copied from MAH AWESUM VX JS LIBRARY
+		var indexFn = function(v,a,i){for(i=a.length;i--&&a[i]!=v;);return i};
+		var index = indexFn(id, chronological_blips);
+	}
+	return index;
+}
 
+function blip_next(id){
+  try{
+    var index = blip_index(id);
+    while(index && blip_scroll(--index) == false){}
+  }catch(err){
+  }
+}
+
+function blip_prev(id){
+  try{
+    var index = blip_index(id), cbl = chronological_blips.length-1;
+    if(index < 0) return;
+    while(index < cbl && blip_scroll(++index) == false){}
+  }catch(err){
+  }
+}
 
 function animated_scroll(el, pos){
 	var isWin = el==window;
@@ -991,20 +1038,7 @@ function scroll_searchpanel(pos){
 	}
 }
 
-function blip_next(id){
-  try{
-    if([].indexOf){
-      var index = chronological_blips.indexOf(id);
-    }else{
-      //copied from MAH AWESUM VX JS LIBRARY
-      var indexFn = function(v,a,i){for(i=a.length;i--&&a[i]!=v;);return i};
-      var index = indexFn(id, chronological_blips);
-    }
-    while(index && blip_scroll(--index) == false){}
 
-  }catch(err){
-  }
-}
 
 ////blow is the floaty bar
 function hide_float(){
@@ -1243,6 +1277,10 @@ opt.x.gsa = 'Show interface for changing gadget states (must have native gadgets
 opt.x.owner_utils = 'Enable utilities for wave creators';
 opt.x.no_autoscroll = 'Disable smart autoscroll to latest blip';
 
+
+opt.x.keyboard = 'Enable keyboard shortcuts'
+
+
 if(opt.gadgets === undefined && screen_size > 900){
   opt.fn.set('gadgets', true)
 }
@@ -1335,6 +1373,21 @@ if(opt.touchscroll && opt.multipane){
 	window.addEventListener('resize', reset_touchscroll, true)
 }
 
+if(opt.keyboard){
+	document.body.onkeydown = function(e){
+		if(e.target.tagName=='BODY'){
+			if((e.shiftKey && e.keyCode == 32) || (!e.shiftKey && !e.ctrlKey && e.keyCode == 75)){
+				//up
+				blip_prev(lastscrolled);
+				e.preventDefault();
+			}else if(e.keyCode==32 || (!e.shiftKey && !e.ctrlKey && e.keyCode == 74)){
+				//down
+				blip_next(lastscrolled)
+				e.preventDefault();
+			}
+		}
+	}
+}
 
 
 
