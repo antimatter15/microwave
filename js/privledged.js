@@ -52,12 +52,17 @@ if(!oauth_key || !oauth_secret){
   },200);
 }
 
-
+//    import json
+    self.response.out.write(json.dumps(head))
+    
+    
+    
 window.doXHR = function(postdata, callback){
   var xhr = new XMLHttpRequest();
   //TODO: addd signature as header
-  xhr.open('POST', 'https://www-opensocial.googleusercontent.com/api/rpc?'+create_signature(), true);
+  xhr.open('POST', 'https://www-opensocial.googleusercontent.com/api/rpc', true);
   xhr.setRequestHeader('Content-Type','application/json');
+  xhr.setRequestHeader('Authorization',to_header(create_signature()));
   xhr.onreadystatechange = function(){
 	//console.log(xhr.readyState, xhr.status, xhr.responseText);
     if(xhr.readyState == 4){

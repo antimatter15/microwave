@@ -12,8 +12,21 @@ function create_signature(){
   for(var i in param) 
     out.push("oauth_"+i+"="+oauth_escape(param[i]));
   param.signature = b64_hmac_sha1(oauth_escape(consumer_secret) + "&" + oauth_escape(provider_secret),['POST', oauth_escape(path), oauth_escape(out.join('&'))].join("&"));
-  out = [];
+  
+  return params
+}
+
+
+function to_header(params){
+	var out = [];
   for(var i in param)
+    out.push("oauth_"+i+'="'+oauth_escape(param[i])+'"');
+  return 'OAuth '+out.join(", ");
+}
+
+function to_url(params){
+	var out = [];
+	for(var i in param)
     out.push("oauth_"+i+"="+oauth_escape(param[i]));
   return out.join("&");
 }
