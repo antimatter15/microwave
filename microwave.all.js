@@ -90,6 +90,122 @@ opt.fn.init();
 
 
 
+//File: js/offline.js
+
+
+function searchStyle(waveId){
+  if(cacheState[waveId] == 2){
+    return 'fresh_cache';
+  }else if(cacheState[waveId] == 1){
+    return 'old_cache';
+  }
+  return '';
+}
+
+function onLine(){
+	if(navigator.onLine === undefined) return true;
+	var val = navigator.onLine;
+	//var val = false;
+	if(val == false){
+		var last_update = (+new Date - parseInt(localStorage.getItem('cache_last_updated')))/1000;
+		if(!isNaN(last_update)){
+			var status = '';
+			if(last_update < 60) status = 'less than a minute';
+			else if(last_update < 60*60) status = Math.ceil(last_update/60)+' minutes';
+			else if(last_update < 60*60*24) status = Math.ceil(last_update/60/60)+' hours';
+			else status = Math.ceil(last_update/60/60/24)+' days';
+			document.getElementById('offline_status').value = 'Offline (Cache '+status+' old)';
+		}
+	}
+	return val;
+}
+
+
+var cachequeue = [], db = null;
+function open_db(){
+	if(!window.db && window.openDatabase){
+		window.db = openDatabase('waves', '1.0', 'Offline Wave Cache', 5 * 1024 * 1024);
+	}
+}
+
+function offline_cache(){
+  if(onLine() == false) return;
+  open_db();
+  if(!window.db) return;
+  db.transaction(function(tx){
+		tx.executeSql("DROP TABLE inbox");
+  })
+  localStorage.setItem('cache_last_updated', +new Date);
+  callbacks[wave.robot.search('in:inbox',0,42)] = function(msg){
+    var item, digests = msg.data.searchResults.digests;
+    for(var i = 0; i < digests.length; i++){
+      item = digests[i];
+      cachequeue.push(item);
+	  
+	  console.log(item.waveId)
+    }
+		setTimeout(cache_cycle, 1000);
+  }
+  runQueue();
+}
+
+var cacheState = {}; //0 = uncached, 1 = cached but outdated, 2 = cached and new
+try{
+	if(window.localStorage && localStorage.cacheState){
+		var cs = JSON.parse(localStorage.getItem('cacheState'));
+		for(var i = 0; i < cs.length; i++){
+			cacheState[cs[i]] = 1;
+		}
+	}
+}catch(err){}
+
+
+
+function cache_cycle(){
+	if(!window.db) return;
+  var citem = null;
+  if(citem = cachequeue.shift()){
+	console.log("caching wave" + citem.waveId);
+    callbacks[wave.robot.fetchWave(citem.waveId, citem.waveId.replace(/w\+.+/g,'conv+root'))] = function(data){
+	  console.log('acquired data for' + citem.waveId);
+      db.transaction(function (tx) {
+		console.log('fetched wave' + citem.waveId);
+        tx.executeSql('CREATE TABLE IF NOT EXISTS inbox (waveid, result, data, date)');
+        tx.executeSql('DELETE FROM inbox WHERE waveid = ?', [citem.waveId], function(tx, results){
+          tx.executeSql('INSERT INTO inbox (waveid, result, data, date) VALUES (?, ?, ?, ?)', [citem.waveId, JSON.stringify(citem), JSON.stringify(data), new Date - 0], function(){
+		  console.log("done caching wave" + citem.waveId);
+            if(document.getElementById(citem.waveId))
+				document.getElementById(citem.waveId).className = "search fresh_cache";
+            cacheState[citem.waveId] = 2;
+			var cs = [];
+			for(var i in cacheState){
+				cs.push(i);
+			}
+			
+			localStorage.setItem('cacheState', JSON.stringify(cs));
+      setTimeout(cache_cycle, 1000);
+    });
+
+        });
+      });
+	  return true;
+    }
+	runQueue();
+  }
+}
+
+function resultClass(waveId){
+	if(!cacheState[waveId]){
+		return '';
+	}else if(cacheState[waveId] == 1){
+		return 'old_cache'
+	}else if(cacheState[waveId] == 2){
+		return 'fresh_cache';
+	}
+}
+
+
+
 //File: js/globals.js
 
 
@@ -132,6 +248,8 @@ opt.x.no_animate = "Disable animated scrolling effect";
 
 opt.x.no_scrollhistory = "Do not save search scroll position and restore to it"
 opt.x.old_results = "Old results panel style";
+
+opt.x.offline = "Automatically cache inbox when online to support offline mode";
 
 opt.x.largeFont = 'Use a larger font';
 
@@ -176,16 +294,23 @@ if(opt.multipane === undefined && screen_size > 900){
   }
 }
 
+var endQueue = []
+
+function onReady(fn){
+	endQueue.push(fn);
+}
+
+
 if(opt.multipane) {
   document.getElementById('search_parent').insertBefore(document.getElementById('appheader'), document.getElementById('search_parent').firstChild)
   document.body.className += ' multipane';
   document.getElementById('header').innerHTML = '&mu;wave';
   wave_container.innerHTML = "<div style='padding:40px'>No waves loaded yet</div>";
   if(location.hash.indexOf('search:') == -1){
-    setTimeout(function(){
-      autosearch('in:inbox')
-      runQueue();
-    },500);
+    onReady(function(){
+			autosearch('in:inbox')
+			runQueue();
+    });
   }
 }
 
@@ -1348,6 +1473,8 @@ opt.x.no_animate = "Disable animated scrolling effect";
 opt.x.no_scrollhistory = "Do not save search scroll position and restore to it"
 opt.x.old_results = "Old results panel style";
 
+opt.x.offline = "Automatically cache inbox when online to support offline mode";
+
 opt.x.largeFont = 'Use a larger font';
 
 opt.x.prefetch = "Prefetch waves and load them, way faster and also not real time";
@@ -1391,16 +1518,23 @@ if(opt.multipane === undefined && screen_size > 900){
   }
 }
 
+var endQueue = []
+
+function onReady(fn){
+	endQueue.push(fn);
+}
+
+
 if(opt.multipane) {
   document.getElementById('search_parent').insertBefore(document.getElementById('appheader'), document.getElementById('search_parent').firstChild)
   document.body.className += ' multipane';
   document.getElementById('header').innerHTML = '&mu;wave';
   wave_container.innerHTML = "<div style='padding:40px'>No waves loaded yet</div>";
   if(location.hash.indexOf('search:') == -1){
-    setTimeout(function(){
-      autosearch('in:inbox')
-      runQueue();
-    },500);
+    onReady(function(){
+			autosearch('in:inbox')
+			runQueue();
+    });
   }
 }
 
@@ -2059,8 +2193,10 @@ function update_search(startIndex){
   var loadId = loading(current_search);
   if(!opt.multipane) msg = {};
   
+  console.log('updatin surchk');
   extend_search(0, function(){
     loading(loadId);
+  console.log('updatin kawlkbak');
     document.getElementById('suggest').style.display = '';
     search_container.innerHTML = '';
     searchmode(0);
@@ -2092,13 +2228,13 @@ if(!window.resultClass){
 function extend_search(startIndex, callback){
   searchLastIndex = startIndex;
   search_outdated = false;
-  callbacks[wave.robot.search(current_search,startIndex||0,42)] = function(data){
+  var search_callback = function(data){
     if(callback)callback();
-    msg = data; //globalization is good
-    console.log(msg);
+    //msg = data; //globalization is bad
+    console.log(data);
     var shtml = '';
-    var item, digests = msg.data.searchResults.digests;
-    if(opt.prefetch){
+    var item, digests = data.data.searchResults.digests;
+    if(opt.prefetch && onLine() == true){
       var itemIndex = 0;
       setTimeout(function(){
         var item = digests[itemIndex++];
@@ -2137,7 +2273,9 @@ function extend_search(startIndex, callback){
       }
     }
     search_container.innerHTML += shtml;
-    if(digests.length < 42){
+    if(onLine() == false){
+      search_container.innerHTML += '<div class="footer"><b>Sorry!</b> No further waves have been cached.</div>';
+    }else if(digests.length < 42){
       if(digests.length == 0){
         if(current_search.indexOf("is:unread") != -1){
           search_container.innerHTML += "<div class='footer'><b>Yay</b>, no unread items!</div>"
@@ -2151,7 +2289,29 @@ function extend_search(startIndex, callback){
       search_container.innerHTML += '<div class="footer" onclick="auto_extend(this);"><b>Extend</b> Search (Page '+((startIndex/42)+1)+')</div>';
     }
     
-  }
+  };
+  if(onLine() == true){
+		callbacks[wave.robot.search(current_search,startIndex||0,42)] = search_callback;
+	}else{
+		//offline stuff!
+		open_db();
+		if(!window.db) return console.log('no database');
+		db.transaction(function (tx) {
+			tx.executeSql('SELECT * FROM inbox', [], function (tx, results) {
+				var r = [];
+				for(var i = 0; i < results.rows.length; i++){
+					r.push(JSON.parse(results.rows.item(i).result));
+				}
+				search_callback({
+					data: {
+						searchResults: {
+							digests: r
+						}
+					}
+				})
+			});
+		});
+	}
 }
 
 
@@ -2210,7 +2370,7 @@ window.onhashchange = function(){
 var chronological_blips = [];
 function loadWave(waveId, waveletId){  
   var loadId = loading(waveId);
-  if(onLine() == false) return window.offline_loadWave(waveId);
+  //if(onLine() == false) return window.offline_loadWave(waveId);
   var blipNavId = null;
 	var matches, waveidregex = /(\w+\.\w+)\/(w\+\w+)\/\~\/(\w+\+\w+)\/(b\+\w+)/; //matches googlewave.com/w+dsf/~/conv+root/b+dsf
 	if(matches = waveId.match(waveidregex)){
@@ -2355,7 +2515,16 @@ function loadWave(waveId, waveletId){
 			wave_container.appendChild(bigspace)
 		}
   }
-  if(opt.prefetch && prefetched_waves[waveId]){
+  if(onLine() == false){
+		open_db();
+		if(!window.db) return console.log('no database');
+		db.transaction(function(tx){
+			tx.executeSql('SELECT * FROM inbox WHERE waveid = ?', [waveId], function (tx, results) {
+				var waveContent = JSON.parse(results.rows.item(0).data);
+				load_callback(waveContent);
+			})
+		});
+  }else if(opt.prefetch && prefetched_waves[waveId]){
     load_callback(JSON.parse(JSON.stringify(prefetched_waves[waveId])));
   }else{
     callbacks[wave.robot.fetchWave(waveId, waveletId)] = load_callback;
@@ -2855,14 +3024,22 @@ replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
 
 
 function startup(){
-  wave.robot.notifyCapabilitiesHash(); //switch to l83s7 v3rz10n
-  getUsername(); //get the username of the user
-  
+  if(onLine()){
+		wave.robot.notifyCapabilitiesHash(); //switch to l83s7 v3rz10n
+		getUsername(); //get the username of the user
+		//TODO: something to pull username from cache if offline?
+	}
+	if(onLine() == false){
+		document.body.className = document.body.className.replace('online', 'offline');
+	}
   if(location.hash.length < 2){
     hashHandler('#search:in:inbox');
   }else{
     hashHandler(location.hash);
   }
+	for(var i = endQueue.length; i--;){
+		endQueue[i]();
+	}
 }
 
 //yeah, okay, so i'm using the onload thing, sure that's 
@@ -2871,15 +3048,18 @@ function startup(){
 //whatever, it's not x-platofrm though this doesn twork in ie anyway
 
 function auto_start(){
+
   if(!window.NO_STARTUP){
     startup();
   }
-  if(window.offline_cache){
+  if(window.offline_cache && opt.offline && onLine()){
 		setTimeout(offline_cache, 1337)
 	}
+	
 }
 
-setTimeout(auto_start, 0);
+auto_start(); //be a tad more agressive than
+//setTimeout(auto_start,0)
 
 
 
