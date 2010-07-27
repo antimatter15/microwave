@@ -67,9 +67,9 @@ function initGadgetSystem() {
     if(eventType == 'wave_gadget_state'){
       console.log('updating state');
       for(var i in eventObj){
-        gstates[gadgetId].state[i] = eventObj[i];
+        gstates[gadgetId].state[i] = eventObj[i]; //apply the delta
       }
-      wave.blip.update_element(gstates[gadgetId].state, gstates[gadgetId].blipId, current_wave, current_wavelet);
+      wave.blip.update_element(eventObj, gstates[gadgetId].blipId, current_wave, current_wavelet);
       runQueue();
       gadgets.rpc.call(gadgetId, "wave_gadget_state", null, gstates[gadgetId].state);
     }
