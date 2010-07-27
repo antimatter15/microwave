@@ -66,6 +66,7 @@ function blip_render(blipid, parent){ //a wrapper around renderBlip that adds ch
   var doc = renderBlip(blip);
   msg.data.blips[blipid].dom = doc;
   doc.className = "message";
+  doc.blipId = blipid;
 
   var info = document.createElement("div");
   info.className = "info";

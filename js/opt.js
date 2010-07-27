@@ -174,13 +174,16 @@ if(opt.swipe){
 		var xdelta = touchX - startTouchX;
 		var ydelta = touchY - startTouchY;
 		var xydelta = Math.sqrt(xdelta * xdelta + ydelta * ydelta) //good ol pythagoras
-		
-		if(Math.abs(ydelta) < ythresh){
-			if(Math.abs(xdelta) > xthresh){
-				if(xdelta > 0){
-					//left
-				}else{
-					//right  
+		if(startTouchEl.blipId){
+			if(Math.abs(ydelta) < ythresh){
+				if(Math.abs(xdelta) > xthresh){
+					if(xdelta > 0){
+						//left
+						blip_prev(startTouchEl.blipId);
+					}else{
+						//right  
+						blip_next(startTouchEl.blipId);
+					}
 				}
 			}
 		}
