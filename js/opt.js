@@ -151,41 +151,62 @@ if(opt.keyboard){
 
 
 if(opt.swipe){
-	var touchX = 0, touchY = 0, startTouchX = 0, startTouchY = 0, startTouchEl, touchEl, startTouchTime = 0;
-	var ythresh = 10;
-	var xthresh = 30; //stolen from jquery.swipe's defaults
-	document.body.addEventListener('touchstart', function(e){
-		if(e.touches.length == 0){
-			startTouchX = e.touches[0].pageX;
-			startTouchY = e.touches[0].pageY;
-			startTouchEl = el.touches[0].target;
-			startTouchTime = +new Date;
-		}
-	}, true);
-	document.body.addEventListener('touchmove', function(e){
-		if(e.touches.length == 0){
-			touchX = e.touches[0].pageX;
-			touchY = e.touches[0].pageY;
-			touchEl = e.touches[0].target;
-		}
-	}, true);
-	document.body.addEventListener('touchend', function(e){
-		var tdelta = +new Date - startTouchTime;
-		var xdelta = touchX - startTouchX;
-		var ydelta = touchY - startTouchY;
-		var xydelta = Math.sqrt(xdelta * xdelta + ydelta * ydelta) //good ol pythagoras
-		if(startTouchEl.blipId){
-			if(Math.abs(ydelta) < ythresh){
-				if(Math.abs(xdelta) > xthresh){
-					if(xdelta > 0){
-						//left
-						blip_prev(startTouchEl.blipId);
-					}else{
-						//right  
-						blip_next(startTouchEl.blipId);
+	(function(){ //yay closures!
+		var touchX = 0, touchY = 0, startTouchX = 0, startTouchY = 0, startTouchEl, touchEl, startTouchTime = 0;
+		var ythresh = 10;
+		var xthresh = 30; //stolen from jquery.swipe's defaults
+		
+		var tS = function(e){
+			if(e.touches.length == 0){
+				startTouchX = e.touches[0].pageX;
+				startTouchY = e.touches[0].pageY;
+				startTouchEl = el.touches[0].target;
+				startTouchTime = +new Date;
+			}
+		};
+		
+		var tM = function(e){
+			if(e.touches.length == 0){
+				touchX = e.touches[0].pageX;
+				touchY = e.touches[0].pageY;
+				touchEl = e.touches[0].target;
+			}
+		};
+		
+		var tE = function(e){
+			var tdelta = +new Date - startTouchTime;
+			var xdelta = touchX - startTouchX;
+			var ydelta = touchY - startTouchY;
+			var xydelta = Math.sqrt(xdelta * xdelta + ydelta * ydelta) //good ol pythagoras
+			if(startTouchEl.blipId){
+				if(Math.abs(ydelta) < ythresh){
+					if(Math.abs(xdelta) > xthresh){
+						if(xdelta > 0){
+							//left
+							blip_prev(startTouchEl.blipId);
+						}else{
+							//right  
+							blip_next(startTouchEl.blipId);
+						}
 					}
 				}
 			}
+		};
+		if(mobilewebkit){
+			document.body.addEventListener('touchstart', tS, true);
+			document.body.addEventListener('touchmove', tM, true);
+			document.body.addEventListener('touchend', tE, true);
+		}else{
+			document.body.addEventListener('mousedown', function(e){
+				tS({touches:[e]})
+			}, true);
+			document.body.addEventListener('mousemove', function(e){
+				tM({touches:[e]})
+			}, true);
+			document.body.addEventListener('mouseup', function(e){
+				tE({touches:[e]})
+			}, true);
 		}
-	}, true);
+		
+	})()
 }
