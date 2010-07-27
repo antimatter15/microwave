@@ -92,7 +92,6 @@ function loadWave(waveId, waveletId){
     var add = document.createElement('a');
     add.innerHTML = ' Add'
     add.className = 'addparticipant';
-		add.style['float'] = "right";
     add.href="javascript:void(0)";
     add.onclick = function(){
       var participant = prompt('Enter Participant ID to Add');

@@ -363,6 +363,7 @@ body.online .offline {
 .addparticipant {
   text-decoration: none;
 	font-weight: bold;
+	float: right;
   color: lightgreen !important;
 }
 
