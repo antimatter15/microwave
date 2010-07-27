@@ -140,6 +140,7 @@ opt.x.prefetch = "Prefetch waves and load them, way faster and also not real tim
 opt.x.gadgets = 'Enable real wave gadget support (slow on mobile)';
 opt.x.render_state = 'If a gadget can not be internally rendered, display the gadget state';
 
+opt.x.bigspace = "Add a large blank space under waves so the keyboard isn't messed up"
 
 opt.x.recursive_renderer = 'Use old version of tree wave renderer, only works on Wave Protocol 0.21 or below';
 opt.x.no_sig = 'Do not automatically add <i>posted with micro-wave</i> signature';
@@ -161,7 +162,9 @@ if(opt.gadgets === undefined && screen_size > 900){
 }
 
 
-
+if(opt.bigspace === undefined && mobilewebkit){
+	opt.fn.set('bigspace', true);
+}
 
 if(opt.multipane === undefined && screen_size > 900){
   //default multipane on large screened
@@ -465,12 +468,11 @@ function create_reply_box(indented){
     post.onclick = function(){
       reply_text.disabled = "disabled";
       setTimeout(function(){
-        //if(indented){
+        if(indented){
           wave.blip.contentCreateChild(reply_text.value,current_blip.blipId,current_blip.waveId,current_blip.waveletId);
-          //wave.blip.contentContinueThread(reply_text.value,current_blip.blipId,current_blip.waveId,current_blip.waveletId);
-        //}else{
-        //  wave.wavelet.appendBlip(reply_text.value, current_blip.blipId, current_blip.waveId, current_blip.waveletId);
-        //}
+        }else{
+          wave.blip.contentContinueThread(reply_text.value,current_blip.blipId,current_blip.waveId,current_blip.waveletId);
+        }
         loadWave(current_blip.waveId);
         auto_reload = true;
         runQueue()
@@ -534,14 +536,14 @@ function create_contextmenu(blip){
       context_box.style.display = '';
       reply_text.focus();
       closectx();
-    },/*
+    },//*
     "Indented": function(){
       current_blip.dom.parentNode.insertBefore(create_reply_box(true),current_blip.dom.nextSibling);
       context_box.className = blip.childBlipIds.length > 0?"thread":"";
       context_box.style.display = '';
       reply_text.focus();
       closectx();
-    },*/
+    },//*/
     "Delete": function(){
       if(confirm("Are you sure you want to delete the blip?")){
         setTimeout(function(){
@@ -732,9 +734,9 @@ function initGadgetSystem() {
     if(eventType == 'wave_gadget_state'){
       console.log('updating state');
       for(var i in eventObj){
-        gstates[gadgetId].state[i] = eventObj[i];
+        gstates[gadgetId].state[i] = eventObj[i]; //apply the delta
       }
-      wave.blip.update_element(gstates[gadgetId].state, gstates[gadgetId].blipId, current_wave, current_wavelet);
+      wave.blip.update_element(eventObj, gstates[gadgetId].blipId, current_wave, current_wavelet);
       runQueue();
       gadgets.rpc.call(gadgetId, "wave_gadget_state", null, gstates[gadgetId].state);
     }
@@ -943,6 +945,7 @@ function loading(text, nodelay){
 //navigation stuffs
 var lastscrolled = ""
 function blip_scroll(index){
+	if(index < 0) index = chronological_blips.length + index;
   try{
     msg.data.blips[lastscrolled].info.className = 'info';
   }catch(err){};
@@ -1003,9 +1006,9 @@ function animated_scroll(el, pos){
 }
 
 function scroll_wavepanel(pos){
+	var wcp = document.getElementById('wave_container_parent');
+	pos = pos<0?(wcp.scrollHeight+1+pos):pos;
 	if(opt.multipane){
-		var wcp = document.getElementById('wave_container_parent');
-		pos = pos<0?(wcp.scrollHeight+1+pos):pos;
 		if(opt.touchscroll){
 			touchscroll0.scrollTo(0, pos); //todo: animate this
 		}else{
@@ -1026,9 +1029,9 @@ function scroll_wavepanel(pos){
 }
 
 function scroll_searchpanel(pos){
+	var spc = document.getElementById('search_parent_container');
+	pos = pos<0?(spc.scrollHeight+1+pos):pos;
 	if(opt.multipane){
-		var spc = document.getElementById('search_parent_container');
-		pos = pos<0?(spc.scrollHeight+1+pos):pos;
 		if(opt.touchscroll){
 			touchscroll1.scrollTo(0, pos)
 		}else{
@@ -1077,7 +1080,14 @@ function update_scroll(){
   }
   var load = document.getElementById("loading");
   load.style.top = scrollY+'px';
-  document.getElementById('floating_menu').style.top = (scrollY+window.innerHeight-50)+'px';
+  var pos = scrollY+window.innerHeight-60
+  
+  if(mobilewebkit){
+		document.getElementById('floating_menu').style['-webkit-transform'] = 'translateY('+pos+'px)';
+	}else{
+		document.getElementById('floating_menu').style.top = pos+'px';
+	}
+
 }
 
 window.onresize = document.onscroll = window.onscroll = update_scroll;
@@ -1087,11 +1097,11 @@ if(mobilewebkit){
 }
 
 function toggle_float(){
-  if(document.getElementById('floating_menu').className == "expanded"){
-    document.getElementById('floating_menu').className = "";
-  }else{
-    document.getElementById('floating_menu').className = "expanded";
-  }
+	//UI design 101: Provide user a visible indication that any action is actually being done.
+	document.getElementById('floating_menu').className = "minimized";
+	setTimeout(function(){
+	  document.getElementById('floating_menu').className = ""; //however, flickering opacity probably isnt the best idea
+	},500);
 }
 
 
@@ -1276,6 +1286,7 @@ opt.x.prefetch = "Prefetch waves and load them, way faster and also not real tim
 opt.x.gadgets = 'Enable real wave gadget support (slow on mobile)';
 opt.x.render_state = 'If a gadget can not be internally rendered, display the gadget state';
 
+opt.x.bigspace = "Add a large blank space under waves so the keyboard isn't messed up"
 
 opt.x.recursive_renderer = 'Use old version of tree wave renderer, only works on Wave Protocol 0.21 or below';
 opt.x.no_sig = 'Do not automatically add <i>posted with micro-wave</i> signature';
@@ -1297,7 +1308,9 @@ if(opt.gadgets === undefined && screen_size > 900){
 }
 
 
-
+if(opt.bigspace === undefined && mobilewebkit){
+	opt.fn.set('bigspace', true);
+}
 
 if(opt.multipane === undefined && screen_size > 900){
   //default multipane on large screened
@@ -2086,9 +2099,8 @@ function loadWave(waveId, waveletId){
   var load_callback = function(waveContent){
     loading(loadId);
     console.log(waveContent);
-    window.msg = waveContent;
-    if(msg.error){
-      if(msg.error.message.indexOf('not a participant') != -1){
+    if(waveContent.error){
+      if(waveContent.error.message.indexOf('not a participant') != -1){
         alert('You are not a participant of the wave/wavelet. '+
         '\nThis may be due to a bug in the current version of the data api which does not allow acces'+
         's to waves unless you are explicitly a participant. don\'t blame me');
@@ -2103,6 +2115,9 @@ function loadWave(waveId, waveletId){
       return;
     }
 
+
+
+    window.msg = waveContent;
     searchmode(1);
     
     if(!opt.multipane){
@@ -2209,7 +2224,11 @@ function loadWave(waveId, waveletId){
     footer.innerHTML = '<a href="https://wave.google.com/wave/#restored:wave:'+escape(escape(waveId))+'" target="_blank">Open this wave in the official wave client</a>';
     footer.className = 'footer';
     wave_container.appendChild(footer);
-		wave_container.appendChild(document.createElement('br'))
+    if(opt.bigspace){
+			var bigspace = document.createElement('div');
+			bigspace.style.height = '250px';
+			wave_container.appendChild(bigspace)
+		}
   }
   if(opt.prefetch && prefetched_waves[waveId]){
     load_callback(JSON.parse(JSON.stringify(prefetched_waves[waveId])));
