@@ -1,7 +1,7 @@
 var small_screen = true;
 var oauth_key, oauth_secret;
-oauth_key = localStorage.oauth_key;
-oauth_secret = localStorage.oauth_secret;
+oauth_key = localStorage.getItem('oauth_key');
+oauth_secret = localStorage.getItem('oauth_secret');
 			
  function finish_setup(){
    var v = document.getElementById('login_code_box').value.toLowerCase();
@@ -15,9 +15,9 @@ oauth_secret = localStorage.oauth_secret;
          document.getElementById('login_error').style.display = '';
          var parts = xhr.responseText.split(';');
          oauth_key = parts[0];
-				 localStorage.oauth_key = oauth_key;
+				 localStorage.setItem('oauth_key', oauth_key);
          oauth_secret = parts[1];
-				 localStorage.oauth_secret = oauth_secret;
+				 localStorage.setItem('oauth_secret', oauth_secret);
          document.getElementById('appheader').style.display = "";
          document.getElementById('setupoauth').style.display = "none";
          startup()

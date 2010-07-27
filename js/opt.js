@@ -54,16 +54,23 @@ if(opt.multipane === undefined && screen_size > 900){
   }
 }
 
+var endQueue = []
+
+function onReady(fn){
+	endQueue.push(fn);
+}
+
+
 if(opt.multipane) {
   document.getElementById('search_parent').insertBefore(document.getElementById('appheader'), document.getElementById('search_parent').firstChild)
   document.body.className += ' multipane';
   document.getElementById('header').innerHTML = '&mu;wave';
   wave_container.innerHTML = "<div style='padding:40px'>No waves loaded yet</div>";
   if(location.hash.indexOf('search:') == -1){
-    setTimeout(function(){
+    onReady(function(){
 			autosearch('in:inbox')
 			runQueue();
-    },500);
+    });
   }
 }
 

@@ -147,7 +147,8 @@ function loadWave(waveId, waveletId){
 		}
   }
   if(onLine() == false){
-		open_db()
+		open_db();
+		if(!window.db) return console.log('no database');
 		db.transaction(function(tx){
 			tx.executeSql('SELECT * FROM inbox WHERE waveid = ?', [waveId], function (tx, results) {
 				var waveContent = JSON.parse(results.rows.item(0).data);

@@ -8,27 +8,39 @@ function searchStyle(waveId){
 }
 
 function onLine(){
+	if(navigator.onLine === undefined) return true;
 	var val = navigator.onLine;
 	//var val = false;
 	if(val == false){
-		document.getElementById('offline_head').style.display = '';
-		document.getElementById('online_head').style.display = 'none'
+		var last_update = (+new Date - parseInt(localStorage.getItem('cache_last_updated')))/1000;
+		if(!isNaN(last_update)){
+			var status = '';
+			if(last_update < 60) status = 'less than a minute';
+			else if(last_update < 60*60) status = Math.ceil(last_update/60)+' minutes';
+			else if(last_update < 60*60*24) status = Math.ceil(last_update/60/60)+' hours';
+			else status = Math.ceil(last_update/60/60/24)+' days';
+			document.getElementById('offline_status').value = 'Offline (Cache '+status+' old)';
+		}
 	}
 	return val;
 }
 
 
-var cachequeue = [];
+var cachequeue = [], db = null;
 function open_db(){
-if(!window.db)
+	if(!window.db && window.openDatabase){
 		window.db = openDatabase('waves', '1.0', 'Offline Wave Cache', 5 * 1024 * 1024);
+	}
 }
+
 function offline_cache(){
   if(onLine() == false) return;
   open_db();
+  if(!window.db) return;
   db.transaction(function(tx){
 		tx.executeSql("DROP TABLE inbox");
   })
+  localStorage.setItem('cache_last_updated', +new Date);
   callbacks[wave.robot.search('in:inbox',0,42)] = function(msg){
     var item, digests = msg.data.searchResults.digests;
     for(var i = 0; i < digests.length; i++){
@@ -37,7 +49,7 @@ function offline_cache(){
 	  
 	  console.log(item.waveId)
     }
-	setTimeout(cache_cycle, 1000);
+		setTimeout(cache_cycle, 1000);
   }
   runQueue();
 }
@@ -45,17 +57,17 @@ function offline_cache(){
 var cacheState = {}; //0 = uncached, 1 = cached but outdated, 2 = cached and new
 try{
 	if(window.localStorage && localStorage.cacheState){
-		var cs = JSON.parse(localStorage.cacheState);
+		var cs = JSON.parse(localStorage.getItem('cacheState'));
 		for(var i = 0; i < cs.length; i++){
 			cacheState[cs[i]] = 1;
 		}
-		//cacheState = JSON.parse(localStorage.cacheState)
 	}
 }catch(err){}
 
 
 
 function cache_cycle(){
+	if(!window.db) return;
   var citem = null;
   if(citem = cachequeue.shift()){
 	console.log("caching wave" + citem.waveId);
@@ -74,7 +86,8 @@ function cache_cycle(){
 			for(var i in cacheState){
 				cs.push(i);
 			}
-			localStorage.cacheState = JSON.stringify(cs);
+			
+			localStorage.setItem('cacheState', JSON.stringify(cs));
       setTimeout(cache_cycle, 1000);
     });
 

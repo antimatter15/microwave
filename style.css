@@ -342,9 +342,23 @@ a.searchlink:hover * {
   -webkit-user-select: none;
 }
 
-.offline .online {
+body.offline .online {
 	display: none;
 }
+
+body.offline .offline {
+	display: block;
+}
+
+
+body.online .online {
+	display: block;
+}
+
+body.online .offline {
+	display: none;
+}
+
 
 .addparticipant {
   text-decoration: none;

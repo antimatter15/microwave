@@ -70,8 +70,10 @@ function update_search(startIndex){
   var loadId = loading(current_search);
   if(!opt.multipane) msg = {};
   
+  console.log('updatin surchk');
   extend_search(0, function(){
     loading(loadId);
+  console.log('updatin kawlkbak');
     document.getElementById('suggest').style.display = '';
     search_container.innerHTML = '';
     searchmode(0);
@@ -148,7 +150,9 @@ function extend_search(startIndex, callback){
       }
     }
     search_container.innerHTML += shtml;
-    if(digests.length < 42){
+    if(onLine() == false){
+      search_container.innerHTML += '<div class="footer"><b>Sorry!</b> No further waves have been cached.</div>';
+    }else if(digests.length < 42){
       if(digests.length == 0){
         if(current_search.indexOf("is:unread") != -1){
           search_container.innerHTML += "<div class='footer'><b>Yay</b>, no unread items!</div>"
@@ -158,8 +162,6 @@ function extend_search(startIndex, callback){
       }else{
         search_container.innerHTML += "<div class='footer'><b>Hooray!</b> You've reached the end of the universe!</div>"
       }
-    }else if(onLine() == false){
-      search_container.innerHTML += '<div class="footer"><b>Sorry!</b> No further waves have been cached.</div>';
     }else{
       search_container.innerHTML += '<div class="footer" onclick="auto_extend(this);"><b>Extend</b> Search (Page '+((startIndex/42)+1)+')</div>';
     }
@@ -170,6 +172,7 @@ function extend_search(startIndex, callback){
 	}else{
 		//offline stuff!
 		open_db();
+		if(!window.db) return console.log('no database');
 		db.transaction(function (tx) {
 			tx.executeSql('SELECT * FROM inbox', [], function (tx, results) {
 				var r = [];

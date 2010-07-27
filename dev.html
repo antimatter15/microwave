@@ -8,14 +8,14 @@
     <meta charset="utf-8">
     <link rel='stylesheet' href="style.css" type="text/css" media="screen,handheld">
   </head>
-  <body>
+  <body class="online">
     <div id='appheader'>
 		   <div style="float:right">
 		     <input type="checkbox" id="chronos" name="chronos">
 		     <label for="chronos">Classic Forum Order</label>
 		   </div>
 		   <h1 onclick="opt.fn.show()" id='header'>&mu;wave</h1>
-		   <div id="online_head"> 
+		   <div id="online_head" class="online"> 
 				<div style="padding-bottom:3px;">
 				  <form class="searchbox" name="searchbox" onsubmit="autosearchbox();return false">
 				    <div class="button" onclick="autosearchbox();return false">
@@ -33,14 +33,14 @@
 		       </div> 
 		     </div> 
 		   </div>
-		   <div id="offline_head" style="display:none">
+		   <div id="offline_head" class="offline">
 				<div style="padding-bottom:5px;">
 					<form class="searchbox" onsubmit="autosearch('in:inbox');return false" action="#">
 						<div class="button" onclick="autosearch('in:inbox');return false">
 							<div style='margin-left: 6px; margin-top:- 6px'>&#9654;
 							</div>
 						</div>
-						<input type="text" value="Offline Mode" class="query" disabled>
+						<input type="text" id="offline_status" value="Offline" class="query" disabled>
 					</form>
 				</div>
 			</div>

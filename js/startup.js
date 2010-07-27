@@ -5,13 +5,16 @@ function startup(){
 		//TODO: something to pull username from cache if offline?
 	}
 	if(onLine() == false){
-		document.body.className += ' offline '
+		document.body.className = document.body.className.replace('online', 'offline');
 	}
   if(location.hash.length < 2){
     hashHandler('#search:in:inbox');
   }else{
     hashHandler(location.hash);
   }
+	for(var i = endQueue.length; i--;){
+		endQueue[i]();
+	}
 }
 
 //yeah, okay, so i'm using the onload thing, sure that's 
@@ -20,6 +23,7 @@ function startup(){
 //whatever, it's not x-platofrm though this doesn twork in ie anyway
 
 function auto_start(){
+
   if(!window.NO_STARTUP){
     startup();
   }
@@ -29,5 +33,6 @@ function auto_start(){
 	
 }
 
-setTimeout(auto_start, 0);
+auto_start(); //be a tad more agressive than
+//setTimeout(auto_start,0)
 
