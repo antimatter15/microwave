@@ -7,12 +7,31 @@ function create_signature(){
     timestamp = -~(new Date/1000),
     path = 'https://www-opensocial.googleusercontent.com/api/rpc',
     out = [], 
-    param = ({consumer_key:consumer_key,nonce: nonce,signature_method: 'HMAC-SHA1',timestamp: timestamp,token: token});
+    param = {
+			consumer_key: consumer_key,
+			nonce: nonce,
+			signature_method: 'HMAC-SHA1',
+			timestamp: timestamp,
+			token: token
+		};
     
   for(var i in param) 
     out.push("oauth_"+i+"="+oauth_escape(param[i]));
-  param.signature = b64_hmac_sha1(oauth_escape(consumer_secret) + "&" + oauth_escape(provider_secret),['POST', oauth_escape(path), oauth_escape(out.join('&'))].join("&"));
-  
+  /*
+  param.signature = b64_hmac_sha1(
+		oauth_escape(consumer_secret) + "&" + oauth_escape(provider_secret), 
+		['POST', oauth_escape(path), oauth_escape(out.join('&'))].join("&"));
+	*/
+  param.signature = b64_hmac_sha1([
+			oauth_escape(consumer_secret), 
+			oauth_escape(provider_secret), 
+			'POST', 
+			oauth_escape(path), 
+			oauth_escape(out.join('&'))
+		 ].join("&"));
+	
+		//param.signature = [consumer_secret, provider_secret, 'POST', path, out.join('&')].map(oauth_sescape).join('&')
+		
   return params
 }
 
