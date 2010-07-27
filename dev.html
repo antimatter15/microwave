@@ -15,13 +15,13 @@
 		     <label for="chronos">Classic Forum Order</label>
 		   </div>
 		   <h1 onclick="opt.fn.show()" id='header'>&mu;wave</h1>
-		   <div> 
+		   <div id="online_head"> 
 				<div style="padding-bottom:3px;">
 				  <form class="searchbox" name="searchbox" onsubmit="autosearchbox();return false">
 				    <div class="button" onclick="autosearchbox();return false">
 				      <div style='margin-left: 6px; margin-top: -1px' id="search_go">&#9654;</div>
 				    </div>
-				    <input type="text" value="in:inbox " id="query">
+				    <input type="text" value="in:inbox " id="query" class="query">
 				  </form>
 				</div>
 		     <div class="alert links" id="suggest">
@@ -33,7 +33,19 @@
 		       </div> 
 		     </div> 
 		   </div>
+		   <div id="offline_head" style="display:none">
+				<div style="padding-bottom:5px;">
+					<form class="searchbox" onsubmit="autosearch('in:inbox');return false" action="#">
+						<div class="button" onclick="autosearch('in:inbox');return false">
+							<div style='margin-left: 6px; margin-top:- 6px'>&#9654;
+							</div>
+						</div>
+						<input type="text" value="Offline Mode" class="query">
+					</form>
+				</div>
+			</div>
 		</div>
+		
 		<div id="content">
       <div id='search_parent_container'>
         <div id='search_parent'>
@@ -73,6 +85,7 @@
 
 <!--START_JS-->
 <script type="text/javascript" src="js/lib/libopt.js"></script>
+<script type="text/javascript" src="js/offline.js"></script>    
 <script type="text/javascript" src="js/globals.js"></script>
 <script type="text/javascript" src="js/opt.js"></script>
 <script type="text/javascript" src="js/blip.js"></script>

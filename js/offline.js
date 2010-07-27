@@ -7,9 +7,20 @@ function searchStyle(waveId){
   return '';
 }
 
+function onLine(){
+	//var val = navigator.onLine;
+	var val = false;
+	if(val == false){
+		document.getElementById('offline_head').style.display = '';
+		document.getElementById('online_head').style.display = 'none'
+	}
+	return val;
+}
+
+
 var cachequeue = [];
 function open_db(){
-	if(!window.db)
+if(!window.db)
 		window.db = openDatabase('waves', '1.0', 'Offline Wave Cache', 5 * 1024 * 1024);
 }
 function offline_cache(){
@@ -107,15 +118,6 @@ function offline_search(callback){
 }
 
 
-function onLine(){
-	var val = navigator.onLine;
-	//var val = false;
-	if(val == false){
-		document.getElementById('offline_head').style.display = '';
-		document.getElementById('online_head').style.display = 'none'
-	}
-	return val;
-}
 
 function cache_cycle(){
   var citem = null;

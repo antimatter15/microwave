@@ -348,7 +348,7 @@ a.searchlink:hover * {
   color: lightgreen !important;
 }
 
-#query {
+.query {
   border:0 !important;
   width:100%;
   font-size: 115%;
@@ -366,6 +366,10 @@ a.searchlink:hover * {
   border-left-width: 0 !important;
   -webkit-focus-ring-color: #fff !important;
   outline: none;
+}
+
+#offline_head .query {
+ background-color:#98DB91;
 }
 
 .mobilewebkit #query {

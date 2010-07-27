@@ -1,7 +1,9 @@
 function startup(){
-  wave.robot.notifyCapabilitiesHash(); //switch to l83s7 v3rz10n
-  getUsername(); //get the username of the user
-  
+  if(onLine()){
+		wave.robot.notifyCapabilitiesHash(); //switch to l83s7 v3rz10n
+		getUsername(); //get the username of the user
+		//TODO: something to pull username from cache if offline?
+	}
   if(location.hash.length < 2){
     hashHandler('#search:in:inbox');
   }else{
