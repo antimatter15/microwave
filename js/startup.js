@@ -23,7 +23,7 @@ function auto_start(){
   if(!window.NO_STARTUP){
     startup();
   }
-  if(window.offline_cache){
+  if(window.offline_cache && opt.offline && onLine()){
 		setTimeout(offline_cache, 1337)
 	}
 	

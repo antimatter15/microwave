@@ -8,8 +8,8 @@ function searchStyle(waveId){
 }
 
 function onLine(){
-	//var val = navigator.onLine;
-	var val = false;
+	var val = navigator.onLine;
+	//var val = false;
 	if(val == false){
 		document.getElementById('offline_head').style.display = '';
 		document.getElementById('online_head').style.display = 'none'
@@ -27,7 +27,7 @@ function offline_cache(){
   if(onLine() == false) return;
   open_db();
   db.transaction(function(tx){
-	tx.executeSql("DROP TABLE inbox");
+		tx.executeSql("DROP TABLE inbox");
   })
   callbacks[wave.robot.search('in:inbox',0,42)] = function(msg){
     var item, digests = msg.data.searchResults.digests;
@@ -52,24 +52,6 @@ try{
 		//cacheState = JSON.parse(localStorage.cacheState)
 	}
 }catch(err){}
-
-
-function offline_search(callback){
-  open_db();
-  db.transaction(function (tx) {
-    tx.executeSql('SELECT * FROM inbox', [], function (tx, results) {
-		callback();
-		var r = [];
-        var shtml = '';
-		for(var i = 0; i < results.rows.length; i++){
-          var item = JSON.parse(results.rows.item(i).result);
-          shtml += '<a href="#wave:'+item.waveId+'" class="searchlink '+searchStyle(item.waveId)+'" onclick=\'ch(this)\'><div class="search" id="'+item.waveId+'"><b>' + item.title+"</b> <span style='color:gray'>"+ item.snippet +"</div></a>";
-        }
-		
-        searchout.innerHTML = shtml; 
-    });
-  })
-}
 
 
 

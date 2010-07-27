@@ -9,6 +9,8 @@ opt.x.no_animate = "Disable animated scrolling effect";
 opt.x.no_scrollhistory = "Do not save search scroll position and restore to it"
 opt.x.old_results = "Old results panel style";
 
+opt.x.offline = "Automatically cache inbox when online to support offline mode";
+
 opt.x.largeFont = 'Use a larger font';
 
 opt.x.prefetch = "Prefetch waves and load them, way faster and also not real time";
