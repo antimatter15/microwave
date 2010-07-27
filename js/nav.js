@@ -136,7 +136,7 @@ function update_scroll(){
   }
   var load = document.getElementById("loading");
   load.style.top = scrollY+'px';
-  var pos = scrollY+window.innerHeight-60
+  var pos = scrollY+window.innerHeight - 64
   
   if(mobilewebkit){
 		document.getElementById('floating_menu').style['-webkit-transform'] = 'translateY('+pos+'px)';
