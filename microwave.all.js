@@ -153,6 +153,7 @@ opt.x.gsa = 'Show interface for changing gadget states (must have native gadgets
 opt.x.owner_utils = 'Enable utilities for wave creators';
 opt.x.no_autoscroll = 'Disable smart autoscroll to latest blip';
 
+opt.x.swipe = 'Enable swiping gesture to navigate between blips (swipe left = prev, swipe right = next)';
 
 opt.x.keyboard = 'Enable keyboard shortcuts'
 
@@ -273,6 +274,73 @@ if(opt.keyboard){
 }
 
 
+if(opt.swipe){
+	(function(){ //yay closures!
+		var touchX = 0, touchY = 0, startTouchX = 0, startTouchY = 0, startTouchEl, touchEl, startTouchTime = 0;
+		var ythresh = 10;
+		var xthresh = 30; //stolen from jquery.swipe's defaults
+		
+		var tS = function(e){
+			if(e.touches.length == 1){
+				startTouchX = e.touches[0].pageX;
+				startTouchY = e.touches[0].pageY;
+				startTouchEl = e.touches[0].target;
+				startTouchTime = +new Date;
+			}
+		};
+		
+		var tM = function(e){
+			if(e.touches.length == 1){
+				touchX = e.touches[0].pageX;
+				touchY = e.touches[0].pageY;
+				touchEl = e.touches[0].target;
+			}
+		};
+		
+		var tE = function(e){
+			var tdelta = +new Date - startTouchTime;
+			var xdelta = touchX - startTouchX;
+			var ydelta = touchY - startTouchY;
+			var xydelta = Math.sqrt(xdelta * xdelta + ydelta * ydelta) //good ol pythagoras
+			var el = startTouchEl;
+			if(!el) return;
+			while(!el.blipId && el != document.body){
+				el = el.parentNode;
+			}
+			if(el.blipId){
+				if(Math.abs(ydelta) < ythresh){
+					if(Math.abs(xdelta) > xthresh){
+						if(xdelta > 0){
+							//left
+							blip_prev(el.blipId);
+						}else{
+							//right  
+							blip_next(el.blipId);
+						}
+					}
+				}
+			}
+		};
+		if(mobilewebkit){
+			document.body.addEventListener('touchstart', tS, true);
+			document.body.addEventListener('touchmove', tM, true);
+			document.body.addEventListener('touchend', tE, true);
+		}else{
+			document.body.addEventListener('mousedown', function(e){
+				tS({touches:[e]})
+			}, true);
+			document.body.addEventListener('mousemove', function(e){
+				tM({touches:[e]})
+			}, true);
+			document.body.addEventListener('mouseup', function(e){
+				tE({touches:[e]})
+			}, true);
+		}
+		
+	})()
+}
+
+
 
 //File: js/blip.js
 
@@ -345,6 +413,7 @@ function blip_render(blipid, parent){ //a wrapper around renderBlip that adds ch
   var doc = renderBlip(blip);
   msg.data.blips[blipid].dom = doc;
   doc.className = "message";
+  doc.blipId = blipid;
 
   var info = document.createElement("div");
   info.className = "info";
@@ -1080,7 +1149,7 @@ function update_scroll(){
   }
   var load = document.getElementById("loading");
   load.style.top = scrollY+'px';
-  var pos = scrollY+window.innerHeight-60
+  var pos = scrollY+window.innerHeight - 64
   
   if(mobilewebkit){
 		document.getElementById('floating_menu').style['-webkit-transform'] = 'translateY('+pos+'px)';
@@ -1299,6 +1368,7 @@ opt.x.gsa = 'Show interface for changing gadget states (must have native gadgets
 opt.x.owner_utils = 'Enable utilities for wave creators';
 opt.x.no_autoscroll = 'Disable smart autoscroll to latest blip';
 
+opt.x.swipe = 'Enable swiping gesture to navigate between blips (swipe left = prev, swipe right = next)';
 
 opt.x.keyboard = 'Enable keyboard shortcuts'
 
@@ -1419,6 +1489,73 @@ if(opt.keyboard){
 }
 
 
+if(opt.swipe){
+	(function(){ //yay closures!
+		var touchX = 0, touchY = 0, startTouchX = 0, startTouchY = 0, startTouchEl, touchEl, startTouchTime = 0;
+		var ythresh = 10;
+		var xthresh = 30; //stolen from jquery.swipe's defaults
+		
+		var tS = function(e){
+			if(e.touches.length == 1){
+				startTouchX = e.touches[0].pageX;
+				startTouchY = e.touches[0].pageY;
+				startTouchEl = e.touches[0].target;
+				startTouchTime = +new Date;
+			}
+		};
+		
+		var tM = function(e){
+			if(e.touches.length == 1){
+				touchX = e.touches[0].pageX;
+				touchY = e.touches[0].pageY;
+				touchEl = e.touches[0].target;
+			}
+		};
+		
+		var tE = function(e){
+			var tdelta = +new Date - startTouchTime;
+			var xdelta = touchX - startTouchX;
+			var ydelta = touchY - startTouchY;
+			var xydelta = Math.sqrt(xdelta * xdelta + ydelta * ydelta) //good ol pythagoras
+			var el = startTouchEl;
+			if(!el) return;
+			while(!el.blipId && el != document.body){
+				el = el.parentNode;
+			}
+			if(el.blipId){
+				if(Math.abs(ydelta) < ythresh){
+					if(Math.abs(xdelta) > xthresh){
+						if(xdelta > 0){
+							//left
+							blip_prev(el.blipId);
+						}else{
+							//right  
+							blip_next(el.blipId);
+						}
+					}
+				}
+			}
+		};
+		if(mobilewebkit){
+			document.body.addEventListener('touchstart', tS, true);
+			document.body.addEventListener('touchmove', tM, true);
+			document.body.addEventListener('touchend', tE, true);
+		}else{
+			document.body.addEventListener('mousedown', function(e){
+				tS({touches:[e]})
+			}, true);
+			document.body.addEventListener('mousemove', function(e){
+				tM({touches:[e]})
+			}, true);
+			document.body.addEventListener('mouseup', function(e){
+				tE({touches:[e]})
+			}, true);
+		}
+		
+	})()
+}
+
+
 
 //File: js/ordering.js
 
@@ -1528,6 +1665,34 @@ function thread_render(blipid, parent){
 //File: js/render.js
 
 
+function renderImage(src, cont){
+	var img = document.createElement('img');
+	img.style.display = 'none';
+	img.src = src;
+	(function(img){
+		img.onload = function(){
+			var width = screen_size;
+			try{
+				width = parseInt(getComputedStyle(document.documentElement, 
+					cont).width);
+			}catch(e){width = screen_size };
+			if(img.width > width - 21){
+				img.style.width = "100%";
+				img.onclick = function(){
+					if(img.style.width.indexOf('%') == -1){
+						img.style.width = "100%";
+					}else{
+						img.style.width = "";
+					}
+				}
+			}
+			img.style.display = '';
+		}
+	})(img);
+	cont.appendChild(img);
+}
+
+
 function renderBlip(markup){
   var content = markup.content + ' '; //render an extra space at the end for rendering the user cursor annotations
   var annotation_starts = {}, annotation_ends = {};
@@ -1581,27 +1746,7 @@ function renderBlip(markup){
           //cont.innerHTML = '&lt;<b>Wave 1.0 Attachment</b> '+el.properties.attachmentId+' '+el.properties.caption+'&gt;';
           cont.innerHTML = '<b>'+(el.properties.attachmentId||'')+'</b> '+(el.properties.caption||'')+'<br>';
           if(el.properties.url){
-            var img = document.createElement('img');
-            img.src = el.properties.url;
-						(function(img){
-							img.onload = function(){
-								var width = screen_size;
-								try{
-									width = parseInt(getComputedStyle(document.documentElement,document.getElementById('search_parent_container')).width);
-								}catch(e){width = screen_size}
-		           	if(img.width > width){
-		             	img.style.width = "100%";
-		             	img.onclick = function(){
-		               	if(img.style.width.indexOf('%') == -1){
-		                 	img.style.width = "100%";
-		               	}else{
-		                 	img.style.width = "";
-		               	}
-		             	}
-		           	}
-							}
-          	})(img);
-            cont.appendChild(img);
+            renderImage(el.properties.url, cont);
           }
           doc.appendChild(cont);
         }else if(el.type == "INSTALLER"){
@@ -1617,28 +1762,8 @@ function renderBlip(markup){
           cont.style.margin = '10px'
           cont.innerHTML = '<b>'+el.properties.mimeType+'</b> '+el.properties.caption+'<br>';
           if(el.properties.mimeType.indexOf('image/') == 0){
-            var img = document.createElement('img');
-            img.src = el.properties.attachmentUrl;
-						(function(img){
-							img.onload = function(){
-								var width = screen_size;
-								try{
-									width = parseInt(getComputedStyle(document.documentElement,document.getElementById('search_parent_container')).width);
-								}catch(e){width = screen_size}
-		           	if(img.width > width){
-		             	img.style.width = "100%";
-		             	img.onclick = function(){
-		               	if(img.style.width.indexOf('%') == -1){
-		                 	img.style.width = "100%";
-		               	}else{
-		                 	img.style.width = "";
-		               	}
-		             	}
-		           	}
-							}
-          	})(img);
-            //alert(img.style.width)
-            cont.appendChild(img);
+						renderImage(el.properties.attachmentUrl, cont)
+            
           }else{
             cont.innerHTML += "<a href='"+el.properties.attachmentUrl+"'>Download</a>"
           }
@@ -2214,7 +2339,7 @@ function loadWave(waveId, waveletId){
     }
     var tags = document.createElement('div');
     var t = waveContent.data.waveletData.tags.join(', ');
-    if(t.length == 0) t = "(None)";
+    if(t.length == 0) t = "(No Tags)";
     tags.innerHTML = "<b>Tags:</b> "; //todo: fix xss risk
     tags.innerHTML = ' <a href="javascript:add_tag()" style="float:right">Add</a>';
     tags.appendChild(document.createTextNode(t))
