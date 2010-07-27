@@ -140,7 +140,11 @@ function loadWave(waveId, waveletId){
     footer.innerHTML = '<a href="https://wave.google.com/wave/#restored:wave:'+escape(escape(waveId))+'" target="_blank">Open this wave in the official wave client</a>';
     footer.className = 'footer';
     wave_container.appendChild(footer);
-		wave_container.appendChild(document.createElement('br'))
+    if(opt.bigspace){
+			var bigspace = document.createElement('div');
+			bigspace.style.height = '250px';
+			wave_container.appendChild(bigspace)
+		}
   }
   if(opt.prefetch && prefetched_waves[waveId]){
     load_callback(JSON.parse(JSON.stringify(prefetched_waves[waveId])));

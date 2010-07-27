@@ -16,6 +16,7 @@ opt.x.prefetch = "Prefetch waves and load them, way faster and also not real tim
 opt.x.gadgets = 'Enable real wave gadget support (slow on mobile)';
 opt.x.render_state = 'If a gadget can not be internally rendered, display the gadget state';
 
+opt.x.bigspace = "Add a large blank space under waves so the keyboard isn't messed up"
 
 opt.x.recursive_renderer = 'Use old version of tree wave renderer, only works on Wave Protocol 0.21 or below';
 opt.x.no_sig = 'Do not automatically add <i>posted with micro-wave</i> signature';
@@ -37,7 +38,9 @@ if(opt.gadgets === undefined && screen_size > 900){
 }
 
 
-
+if(opt.bigspace === undefined && mobilewebkit){
+	opt.fn.set('bigspace', true);
+}
 
 if(opt.multipane === undefined && screen_size > 900){
   //default multipane on large screened

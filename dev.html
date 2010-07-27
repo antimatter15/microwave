@@ -46,14 +46,25 @@
         </div>
       </div>
       <div id="floating_menu" style="display:none">
-        <span style="padding-left: 4px;width:20px;float:left;" onclick="toggle_float()">&lt;</span>
-        <div id="menu_contents">
-          <a href="#read" onclick='markWaveRead();return false'>Read</a> /
-          <a href="#archive" onclick='archiveWave();return false'>Archive</a> /
-          <a href="#newest" onclick='blip_scroll(0);hide_float();return false'>Newest</a> /
-          <a href="#bottom" onclick='scroll_wavepanel(-1);hide_float();return false'>Bottom</a> /
-					<a href="#top" onclick='scroll_wavepanel(0);hide_float();return false'>Top</a>
-        </div>
+				<!--
+				<a href="#read" onclick='markWaveRead();return false'>Read</a> /
+				<a href="#archive" onclick='archiveWave();return false'>Archive</a> /
+				<a href="#newest" onclick='blip_scroll(0);hide_float();return false'>Newest</a> /
+				<a href="#bottom" onclick='scroll_wavepanel(-1);hide_float();return false'>Bottom</a> /
+				<a href="#top" onclick='scroll_wavepanel(0);hide_float();return false'>Top</a>
+				-->
+				<table>
+					<tr>
+						<td><a href="#read" onclick='markWaveRead();toggle_float();return false'>Read</a></td>
+						<td><a href="#newest" onclick='blip_scroll(0);toggle_float();return false'>Newest</a></td>
+						<td><a href="#top" onclick='scroll_wavepanel(0);toggle_float();return false'>Top</a></td>
+					</tr>
+					<tr>
+						<td><a href="#archive" onclick='archiveWave();toggle_float();return false'>Archive</a></td>
+						<td><a href="#newest" onclick='blip_scroll(-1);toggle_float();return false'>Oldest</a></td>
+						<td><a href="#bottom" onclick='scroll_wavepanel(-1);toggle_float();return false'>Bottom</a></td>
+					</tr>
+				</table>
       </div>
     </div>
 		<div class="wavelet loading" id="loading">

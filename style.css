@@ -432,10 +432,9 @@ a.searchlink:hover * {
   -webkit-transition-property: width;
   -webkit-transition-duration: .5s;
   position:absolute;
-  width:30px;
   overflow: hidden;
   right:0;
-  height: 35px;
+  top: 0;
   border: 1px solid #93ADED;
   border-radius: 5px;
   -webkit-border-radius: 5px;
@@ -445,12 +444,25 @@ a.searchlink:hover * {
   -webkit-border-top-right-radius: 0;
   -webkit-border-bottom-right-radius: 0;
   background-color:#C9E2FC;
+  padding-left: 5px;
+  padding-right: 10px;
+  padding-top: 2px;
+  padding-bottom: 2px;
   z-index: 99999;
+  opacity: 1;
+  -webkit-transition-property: -webkit-transform, opacity;
+  -webkit-transition-duration: .2s, .5s;
+  -webkit-transition-timing-function: ease-out, linear;
 }
 
-.mobilewebkit #floating_menu {
-  -webkit-transition-property: top, width;
-  -webkit-transition-duration: .1s, .5s;
+
+
+#floating_menu a {
+	text-decoration: none;
+}
+
+#floating_menu.minimized{
+  opacity: 0;
 }
 
 
@@ -460,10 +472,6 @@ a.searchlink:hover * {
 	cursor: pointer;
   font-size: xx-large;
   color: #345699;
-}
-
-#floating_menu.expanded {
-  width: 270px;
 }
 
 #menu_contents {

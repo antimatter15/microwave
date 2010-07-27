@@ -1,6 +1,7 @@
 //navigation stuffs
 var lastscrolled = ""
 function blip_scroll(index){
+	if(index < 0) index = chronological_blips.length + index;
   try{
     msg.data.blips[lastscrolled].info.className = 'info';
   }catch(err){};
@@ -61,9 +62,9 @@ function animated_scroll(el, pos){
 }
 
 function scroll_wavepanel(pos){
+	var wcp = document.getElementById('wave_container_parent');
+	pos = pos<0?(wcp.scrollHeight+1+pos):pos;
 	if(opt.multipane){
-		var wcp = document.getElementById('wave_container_parent');
-		pos = pos<0?(wcp.scrollHeight+1+pos):pos;
 		if(opt.touchscroll){
 			touchscroll0.scrollTo(0, pos); //todo: animate this
 		}else{
@@ -84,9 +85,9 @@ function scroll_wavepanel(pos){
 }
 
 function scroll_searchpanel(pos){
+	var spc = document.getElementById('search_parent_container');
+	pos = pos<0?(spc.scrollHeight+1+pos):pos;
 	if(opt.multipane){
-		var spc = document.getElementById('search_parent_container');
-		pos = pos<0?(spc.scrollHeight+1+pos):pos;
 		if(opt.touchscroll){
 			touchscroll1.scrollTo(0, pos)
 		}else{
@@ -135,7 +136,14 @@ function update_scroll(){
   }
   var load = document.getElementById("loading");
   load.style.top = scrollY+'px';
-  document.getElementById('floating_menu').style.top = (scrollY+window.innerHeight-50)+'px';
+  var pos = scrollY+window.innerHeight-60
+  
+  if(mobilewebkit){
+		document.getElementById('floating_menu').style['-webkit-transform'] = 'translateY('+pos+'px)';
+	}else{
+		document.getElementById('floating_menu').style.top = pos+'px';
+	}
+
 }
 
 window.onresize = document.onscroll = window.onscroll = update_scroll;
@@ -145,10 +153,10 @@ if(mobilewebkit){
 }
 
 function toggle_float(){
-  if(document.getElementById('floating_menu').className == "expanded"){
-    document.getElementById('floating_menu').className = "";
-  }else{
-    document.getElementById('floating_menu').className = "expanded";
-  }
+	//UI design 101: Provide user a visible indication that any action is actually being done.
+	document.getElementById('floating_menu').className = "minimized";
+	setTimeout(function(){
+	  document.getElementById('floating_menu').className = ""; //however, flickering opacity probably isnt the best idea
+	},500);
 }
 
