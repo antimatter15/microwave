@@ -55,14 +55,14 @@
 				-->
 				<table>
 					<tr>
-						<td><a href="#read" onclick='markWaveRead();toggle_float();return false'>Read</a></td>
-						<td><a href="#newest" onclick='blip_scroll(0);toggle_float();return false'>Newest</a></td>
-						<td><a href="#top" onclick='scroll_wavepanel(0);toggle_float();return false'>Top</a></td>
+						<td><a href="#read" onclick='toggle_float();markWaveRead();return false'>Read</a></td>
+						<td><a href="#newest" onclick='toggle_float();blip_scroll(0);return false'>Newest</a></td>
+						<td><a href="#top" onclick='toggle_float();scroll_wavepanel(0);return false'>Top</a></td>
 					</tr>
 					<tr>
-						<td><a href="#archive" onclick='archiveWave();toggle_float();return false'>Archive</a></td>
-						<td><a href="#newest" onclick='blip_scroll(-1);toggle_float();return false'>Oldest</a></td>
-						<td><a href="#bottom" onclick='scroll_wavepanel(-1);toggle_float();return false'>Bottom</a></td>
+						<td><a href="#archive" onclick='toggle_float();archiveWave();return false'>Archive</a></td>
+						<td><a href="#newest" onclick='toggle_float();blip_scroll(-1);return false'>Oldest</a></td>
+						<td><a href="#bottom" onclick='toggle_float();scroll_wavepanel(-1);return false'>Bottom</a></td>
 					</tr>
 				</table>
       </div>

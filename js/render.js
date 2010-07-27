@@ -1,3 +1,31 @@
+function renderImage(src, cont){
+	var img = document.createElement('img');
+	img.style.display = 'none';
+	img.src = src;
+	(function(img){
+		img.onload = function(){
+			var width = screen_size;
+			try{
+				width = parseInt(getComputedStyle(document.documentElement, 
+					cont).width);
+			}catch(e){width = screen_size };
+			if(img.width > width - 21){
+				img.style.width = "100%";
+				img.onclick = function(){
+					if(img.style.width.indexOf('%') == -1){
+						img.style.width = "100%";
+					}else{
+						img.style.width = "";
+					}
+				}
+			}
+			img.style.display = '';
+		}
+	})(img);
+	cont.appendChild(img);
+}
+
+
 function renderBlip(markup){
   var content = markup.content + ' '; //render an extra space at the end for rendering the user cursor annotations
   var annotation_starts = {}, annotation_ends = {};
@@ -51,27 +79,7 @@ function renderBlip(markup){
           //cont.innerHTML = '&lt;<b>Wave 1.0 Attachment</b> '+el.properties.attachmentId+' '+el.properties.caption+'&gt;';
           cont.innerHTML = '<b>'+(el.properties.attachmentId||'')+'</b> '+(el.properties.caption||'')+'<br>';
           if(el.properties.url){
-            var img = document.createElement('img');
-            img.src = el.properties.url;
-						(function(img){
-							img.onload = function(){
-								var width = screen_size;
-								try{
-									width = parseInt(getComputedStyle(document.documentElement,document.getElementById('search_parent_container')).width);
-								}catch(e){width = screen_size}
-		           	if(img.width > width){
-		             	img.style.width = "100%";
-		             	img.onclick = function(){
-		               	if(img.style.width.indexOf('%') == -1){
-		                 	img.style.width = "100%";
-		               	}else{
-		                 	img.style.width = "";
-		               	}
-		             	}
-		           	}
-							}
-          	})(img);
-            cont.appendChild(img);
+            renderImage(el.properties.url, cont);
           }
           doc.appendChild(cont);
         }else if(el.type == "INSTALLER"){
@@ -87,28 +95,8 @@ function renderBlip(markup){
           cont.style.margin = '10px'
           cont.innerHTML = '<b>'+el.properties.mimeType+'</b> '+el.properties.caption+'<br>';
           if(el.properties.mimeType.indexOf('image/') == 0){
-            var img = document.createElement('img');
-            img.src = el.properties.attachmentUrl;
-						(function(img){
-							img.onload = function(){
-								var width = screen_size;
-								try{
-									width = parseInt(getComputedStyle(document.documentElement,document.getElementById('search_parent_container')).width);
-								}catch(e){width = screen_size}
-		           	if(img.width > width){
-		             	img.style.width = "100%";
-		             	img.onclick = function(){
-		               	if(img.style.width.indexOf('%') == -1){
-		                 	img.style.width = "100%";
-		               	}else{
-		                 	img.style.width = "";
-		               	}
-		             	}
-		           	}
-							}
-          	})(img);
-            //alert(img.style.width)
-            cont.appendChild(img);
+						renderImage(el.properties.attachmentUrl, cont)
+            
           }else{
             cont.innerHTML += "<a href='"+el.properties.attachmentUrl+"'>Download</a>"
           }
