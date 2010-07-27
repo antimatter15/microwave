@@ -1,62 +1,14 @@
-	  <div id="setupoauth" style='display:none'>
-	    <div style='float:right'>Setup account</div>
-	    <h1 style="font-size:18px">&mu;wave</h1>
-	    <p>
-	      The <b>first step</b> is to acquire the login token. Go <a href='http://micro-wave.appspot.com/app/'>here</a>, log in and copy the code given to you on the final step. Once you're done with that, return to this application.
-	    </p>
-	    <p>
-	      <b>Step two</b> is to enter the code into this application, once you have it, enter it below. (not case sensitive)
-	      <input type='text' id='login_code_box'>
-	      <button style='display:none' onclick="finish_setup()" id='login_button'>Get me to my inbox.</button>
-	      <div style='display:none;padding:5px;background-color: orange' id='login_error'>Oops! The key is invalid. Check that you've typed it correctly, and if that doesn't worky, try getting a new token</div>
+<div id="setupoauth" style='display:none'>
+	<div style='float:right'>Setup account</div>
+	<h1 style="font-size:18px">&mu;wave</h1>
+	<p>
+		The <b>first step</b> is to acquire the login token. Go <a href='http://micro-wave.appspot.com/app/'>here</a>, log in and copy the code given to you on the final step. Once you're done with that, return to this application.
+	</p>
+	<p>
+		<b>Step two</b> is to enter the code into this application, once you have it, enter it below. (not case sensitive)
+		<input type='text' id='login_code_box'>
+		<button style='display:none' onclick="finish_setup()" id='login_button'>Get me to my inbox.</button>
+		<div style='display:none;padding:5px;background-color: orange' id='login_error'>Oops! The key is invalid. Check that you've typed it correctly, and if that doesn't worky, try getting a new token</div>
 
-	    </p>
-	  </div>
-    <div id='appheader'>
-      <div style="float:right">
-        <input type="checkbox" id="chronos">Classic Forum Order
-      </div>
-      <h1 style="font-size:18px">&mu;wave</h1>
-      <div id="online_head">
-	  <div> 
-        <div class="alert" id="suggest">
-          <b>Search</b>
-          <div style="float:right" class="links"> 
-            <!-- ch(this) is short for clickhandler which fixes some problems with opera mini and speeds up iphone -->
-            <a href="#search:with:public%20" onclick='ch(this)'>Public</a> /
-            <a href="#search:in:inbox%20" onclick='ch(this)'>Inbox</a> / 
-            <a href="#search:in:inbox%20is:unread%20" onclick='ch(this)'>Unread</a> / 
-            <a href="#new:wave%20" onclick='ch(this)' style='color: green'>New Wave</a> 
-          </div> 
-        </div> 
-      </div>
-      <div style="padding-bottom:5px;">
-        <form class="searchbox" name="searchbox" onsubmit="autosearchbox();return false" action="#">
-          <div class="button" onclick="autosearchbox();return false">
-            <div style='margin-left: 6px; margin-top: -6px' id="search_go">&#9654;</div>
-            <div style='margin-left: 3px; margin-top: -3px;display:none' id="search_back">&#10226;</div>
-          </div>
-          <input type="text" value="in:inbox " class="query" id="query">
-        </form>
-      </div>
-
-	  </div>
-
-<div id="offline_head" style="display:none">
-  <div style="padding-bottom:5px;">
-    <form class="searchbox" onsubmit="autosearch('in:inbox');return false" action="#">
-      <div class="button" onclick="autosearch('in:inbox');return false">
-        <div style='margin-left: 6px; margin-top:- 6px'>&#9654;
-        </div>
-      </div>
-      <input type="text" value="Offline Mode" class="query" style='background-color:#98DB91 !important' disabled="disabled">
-    </form>
-  </div>
+	</p>
 </div>
-
-	  <div style="position: relative; margin: 0; padding: 0; border: 0;display:none" id="loading">
-        <div style="position: absolute; z-index: 42; width: 100%; padding:0;margin:0" class="loading">
-			<div style=' z-index: 99;padding:7px' id="loadingtext">Loading</div>
-        </div>
-      </div>
-    </div>
