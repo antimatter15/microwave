@@ -157,16 +157,16 @@ if(opt.swipe){
 		var xthresh = 30; //stolen from jquery.swipe's defaults
 		
 		var tS = function(e){
-			if(e.touches.length == 0){
+			if(e.touches.length == 1){
 				startTouchX = e.touches[0].pageX;
 				startTouchY = e.touches[0].pageY;
-				startTouchEl = el.touches[0].target;
+				startTouchEl = e.touches[0].target;
 				startTouchTime = +new Date;
 			}
 		};
 		
 		var tM = function(e){
-			if(e.touches.length == 0){
+			if(e.touches.length == 1){
 				touchX = e.touches[0].pageX;
 				touchY = e.touches[0].pageY;
 				touchEl = e.touches[0].target;
@@ -178,15 +178,20 @@ if(opt.swipe){
 			var xdelta = touchX - startTouchX;
 			var ydelta = touchY - startTouchY;
 			var xydelta = Math.sqrt(xdelta * xdelta + ydelta * ydelta) //good ol pythagoras
-			if(startTouchEl.blipId){
+			var el = startTouchEl;
+			if(!el) return;
+			while(!el.blipId && el != document.body){
+				el = el.parentNode;
+			}
+			if(el.blipId){
 				if(Math.abs(ydelta) < ythresh){
 					if(Math.abs(xdelta) > xthresh){
 						if(xdelta > 0){
 							//left
-							blip_prev(startTouchEl.blipId);
+							blip_prev(el.blipId);
 						}else{
 							//right  
-							blip_next(startTouchEl.blipId);
+							blip_next(el.blipId);
 						}
 					}
 				}
