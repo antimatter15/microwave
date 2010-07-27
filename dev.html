@@ -40,7 +40,7 @@
 							<div style='margin-left: 6px; margin-top:- 6px'>&#9654;
 							</div>
 						</div>
-						<input type="text" value="Offline Mode" class="query">
+						<input type="text" value="Offline Mode" class="query" disabled>
 					</form>
 				</div>
 			</div>
@@ -67,12 +67,12 @@
 				-->
 				<table>
 					<tr>
-						<td><a href="#read" onclick='toggle_float();markWaveRead();return false'>Read</a></td>
+						<td class="online"><a href="#read" onclick='toggle_float();markWaveRead();return false'>Read</a></td>
 						<td><a href="#newest" onclick='toggle_float();blip_scroll(0);return false'>Newest</a></td>
 						<td><a href="#top" onclick='toggle_float();scroll_wavepanel(0);return false'>Top</a></td>
 					</tr>
 					<tr>
-						<td><a href="#archive" onclick='toggle_float();archiveWave();return false'>Archive</a></td>
+						<td class="online"><a href="#archive" onclick='toggle_float();archiveWave();return false'>Archive</a></td>
 						<td><a href="#oldest" onclick='toggle_float();blip_scroll(-1);return false'>Oldest</a></td>
 						<td><a href="#bottom" onclick='toggle_float();scroll_wavepanel(-1);return false'>Bottom</a></td>
 					</tr>

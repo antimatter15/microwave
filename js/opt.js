@@ -59,10 +59,8 @@ if(opt.multipane) {
   wave_container.innerHTML = "<div style='padding:40px'>No waves loaded yet</div>";
   if(location.hash.indexOf('search:') == -1){
     setTimeout(function(){
-			if(onLine()){
-				autosearch('in:inbox')
-				runQueue();
-			}
+			autosearch('in:inbox')
+			runQueue();
     },500);
   }
 }

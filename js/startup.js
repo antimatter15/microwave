@@ -4,6 +4,9 @@ function startup(){
 		getUsername(); //get the username of the user
 		//TODO: something to pull username from cache if offline?
 	}
+	if(onLine() == false){
+		document.body.className += ' offline '
+	}
   if(location.hash.length < 2){
     hashHandler('#search:in:inbox');
   }else{
@@ -23,6 +26,7 @@ function auto_start(){
   if(window.offline_cache){
 		setTimeout(offline_cache, 1337)
 	}
+	
 }
 
 setTimeout(auto_start, 0);

@@ -1,7 +1,7 @@
 var chronological_blips = [];
 function loadWave(waveId, waveletId){  
   var loadId = loading(waveId);
-  if(onLine() == false) return window.offline_loadWave(waveId);
+  //if(onLine() == false) return window.offline_loadWave(waveId);
   var blipNavId = null;
 	var matches, waveidregex = /(\w+\.\w+)\/(w\+\w+)\/\~\/(\w+\+\w+)\/(b\+\w+)/; //matches googlewave.com/w+dsf/~/conv+root/b+dsf
 	if(matches = waveId.match(waveidregex)){
@@ -146,7 +146,15 @@ function loadWave(waveId, waveletId){
 			wave_container.appendChild(bigspace)
 		}
   }
-  if(opt.prefetch && prefetched_waves[waveId]){
+  if(onLine() == false){
+		open_db()
+		db.transaction(function(tx){
+			tx.executeSql('SELECT * FROM inbox WHERE waveid = ?', [waveId], function (tx, results) {
+				var waveContent = JSON.parse(results.rows.item(0).data);
+				load_callback(waveContent);
+			})
+		});
+  }else if(opt.prefetch && prefetched_waves[waveId]){
     load_callback(JSON.parse(JSON.stringify(prefetched_waves[waveId])));
   }else{
     callbacks[wave.robot.fetchWave(waveId, waveletId)] = load_callback;

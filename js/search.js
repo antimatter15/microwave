@@ -103,13 +103,13 @@ if(!window.resultClass){
 function extend_search(startIndex, callback){
   searchLastIndex = startIndex;
   search_outdated = false;
-  callbacks[wave.robot.search(current_search,startIndex||0,42)] = function(data){
+  var search_callback = function(data){
     if(callback)callback();
-    msg = data; //globalization is good
-    console.log(msg);
+    //msg = data; //globalization is bad
+    console.log(data);
     var shtml = '';
-    var item, digests = msg.data.searchResults.digests;
-    if(opt.prefetch){
+    var item, digests = data.data.searchResults.digests;
+    if(opt.prefetch && onLine() == true){
       var itemIndex = 0;
       setTimeout(function(){
         var item = digests[itemIndex++];
@@ -158,9 +158,32 @@ function extend_search(startIndex, callback){
       }else{
         search_container.innerHTML += "<div class='footer'><b>Hooray!</b> You've reached the end of the universe!</div>"
       }
+    }else if(onLine() == false){
+      search_container.innerHTML += '<div class="footer"><b>Sorry!</b> No further waves have been cached.</div>';
     }else{
       search_container.innerHTML += '<div class="footer" onclick="auto_extend(this);"><b>Extend</b> Search (Page '+((startIndex/42)+1)+')</div>';
     }
     
-  }
+  };
+  if(onLine() == true){
+		callbacks[wave.robot.search(current_search,startIndex||0,42)] = search_callback;
+	}else{
+		//offline stuff!
+		open_db();
+		db.transaction(function (tx) {
+			tx.executeSql('SELECT * FROM inbox', [], function (tx, results) {
+				var r = [];
+				for(var i = 0; i < results.rows.length; i++){
+					r.push(JSON.parse(results.rows.item(i).result));
+				}
+				search_callback({
+					data: {
+						searchResults: {
+							digests: r
+						}
+					}
+				})
+			});
+		});
+	}
 }

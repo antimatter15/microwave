@@ -53,53 +53,7 @@ try{
 	}
 }catch(err){}
 
-function offline_loadWave(waveId){
-open_db()
-db.transaction(function(tx){
-  tx.executeSql('SELECT * FROM inbox WHERE waveid = ?', [waveId], function (tx, results) {
-    var waveContent = JSON.parse(results.rows.item(0).data)
-    console.log(waveContent);
-    window.msg = waveContent;
-    if(msg.error){
-      if(msg.error.message.indexOf('not a participant') != -1){
-        alert('You are not a participant of the wave/wavelet. \nThis may be due to a bug in the current version of the data api which does not allow access to waves unless you are explicitly a participant. don\'t blame me')
-        return true;
-      }else{
-        return false;
-      }
-    }
-    searchmode(1);
-    searchout.style.display = 'none';
-    wave_box.style.display = '';
-    current_page = 1;
 
-    document.getElementById('suggest').style.display = 'none';
-    wave_box.innerHTML = ''//'<div class="wavelet" onclick="wave.robot.folderAction(\'markAsRead\', current_wave)">Mark wave as <b>Read</b> </div>';
-    var header = document.createElement('div');
-    header.className = 'wavelet';
-    header.innerHTML = "<b>By </b> ";
-    header.appendChild(userList(waveContent.data.waveletData.participants));
-    
-    wave_box.appendChild(header);
-
-    current_wave = waveId = waveId.replace(/\s/,'');
-    
-    if(document.getElementById("chronos").checked){
-      chronological_blip_render(wave_box)
-    }else{
-      recursive_blip_render(msg.data.waveletData.rootBlipId, wave_box);
-    }
-    var tags = document.createElement('div');
-    var t = waveContent.data.waveletData.tags.join(', ');
-    if(t.length == 0) t = "(None)";
-    tags.innerHTML = "<b>Tags:</b> "+t; //todo: fix xss risk
-    tags.className = 'tags';
-    wave_box.appendChild(tags);
-    
-  });
-})
-      
-}
 function offline_search(callback){
   open_db();
   db.transaction(function (tx) {

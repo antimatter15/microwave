@@ -342,6 +342,10 @@ a.searchlink:hover * {
   -webkit-user-select: none;
 }
 
+.offline .online {
+	display: none;
+}
+
 .addparticipant {
   text-decoration: none;
 	font-weight: bold;
@@ -368,8 +372,8 @@ a.searchlink:hover * {
   outline: none;
 }
 
-#offline_head .query {
- background-color:#98DB91;
+#offline_head .searchbox {
+ background-color:#ACF5A4;
 }
 
 .mobilewebkit #query {
