@@ -42,12 +42,11 @@ function create_reply_box(indented){
     post.onclick = function(){
       reply_text.disabled = "disabled";
       setTimeout(function(){
-        //if(indented){
+        if(indented){
           wave.blip.contentCreateChild(reply_text.value,current_blip.blipId,current_blip.waveId,current_blip.waveletId);
-          //wave.blip.contentContinueThread(reply_text.value,current_blip.blipId,current_blip.waveId,current_blip.waveletId);
-        //}else{
-        //  wave.wavelet.appendBlip(reply_text.value, current_blip.blipId, current_blip.waveId, current_blip.waveletId);
-        //}
+        }else{
+          wave.blip.contentContinueThread(reply_text.value,current_blip.blipId,current_blip.waveId,current_blip.waveletId);
+        }
         loadWave(current_blip.waveId);
         auto_reload = true;
         runQueue()
@@ -111,14 +110,14 @@ function create_contextmenu(blip){
       context_box.style.display = '';
       reply_text.focus();
       closectx();
-    },/*
+    },//*
     "Indented": function(){
       current_blip.dom.parentNode.insertBefore(create_reply_box(true),current_blip.dom.nextSibling);
       context_box.className = blip.childBlipIds.length > 0?"thread":"";
       context_box.style.display = '';
       reply_text.focus();
       closectx();
-    },*/
+    },//*/
     "Delete": function(){
       if(confirm("Are you sure you want to delete the blip?")){
         setTimeout(function(){
