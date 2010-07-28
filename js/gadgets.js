@@ -1,3 +1,5 @@
+//the majority of this is from the google splash project
+
 var gstates = {};
 var REMOTE_RPC_RELAY_URL =
     "http://www.gmodules.com/gadgets/files/container/rpc_relay.html";
@@ -45,9 +47,6 @@ function extractGadgetState(gadgetId) {
 
 }
 
-/**
- * Initializes the gadget system, call this once at startup.
- */
 function initGadgetSystem() {
   // Once a gadget has called us back, we can inject the state/participants.
   registerRpc("wave_enable", function(service, gadgetId, args) {
@@ -79,7 +78,6 @@ function initGadgetSystem() {
 
 
 function create_gadget_frame(id, gadget_url, container){
-    //thanks to douwe.osinga@googlewave.com for this code!
     var frameDiv = document.createElement('div');
     frameDiv.innerHTML = '<iframe name="' + id + '" >';
     var frame = frameDiv.firstChild;
@@ -104,36 +102,36 @@ function create_gadget_frame(id, gadget_url, container){
 
 
 function load_native_gadget(state, el, blip, container){
+	
   var frame_id = 'gadget_frame'+Math.random().toString(36).substr(4);
-console.log(el);
-var participants = {
-  myId: username,
-  authorId: el.properties.author,
-  participants: {}
-}
+	console.log(el);
+	var participants = {
+		myId: username,
+		authorId: el.properties.author,
+		participants: {}
+	}
 
-for(var np = [], p = msg.data.waveletData.participants, l = p.length;l--;){
-  participants.participants[p[l]] = {
-    id:p[l], 
-    displayName: p[l].replace(/@.*$/,''), 
-    thumbnailUrl: 'https://wave.google.com/a/google.com/static/images/unknown.jpg'
-  }
-}
-        
-
-
-gstates[frame_id] = {state:state, participants:participants, blipId: blip.blipId}; //todo: clean up gstates
-if(opt.gsa){ //gadget state attack 2
-  var url = 'http://anti15.chemicalservers.com/debugwave.xml';
-}else if(opt.gsa1){
-  var url = 'http://anti15.chemicalservers.com/state.xml';
-}else{
-  var url = el.properties.url;
-}
+	for(var np = [], p = msg.data.waveletData.participants, l = p.length;l--;){
+		participants.participants[p[l]] = {
+			id:p[l], 
+			displayName: p[l].replace(/@.*$/,''), 
+			thumbnailUrl: 'https://wave.google.com/a/google.com/static/images/unknown.jpg'
+		}
+	}
+					
 
 
-var gadget_url = 'http://www.gmodules.com/gadgets/ifr?container=wave&view=default&debug=0&lang=en&country=ALL&nocache=0&wave=1&mid='+encodeURIComponent(frame_id)+'&parent='+encodeURIComponent(location.protocol+'//'+location.host+location.pathname)+'&url='+encodeURIComponent(url);
+	gstates[frame_id] = {state:state, participants:participants, blipId: blip.blipId}; //todo: clean up gstates
+	if(opt.gsa){ //gadget state attack 2
+		var url = 'http://anti15.chemicalservers.com/debugwave.xml';
+	}else if(opt.gsa1){
+		var url = 'http://anti15.chemicalservers.com/state.xml';
+	}else{
+		var url = el.properties.url;
+	}
 
+
+	var gadget_url = 'http://www.gmodules.com/gadgets/ifr?container=wave&view=default&debug=0&lang=en&country=ALL&nocache=0&wave=1&mid='+encodeURIComponent(frame_id)+'&parent='+encodeURIComponent(location.protocol+'//'+location.host+location.pathname)+'&url='+encodeURIComponent(url);
 
   init_gadget_handler(function(){
     create_gadget_frame(frame_id, gadget_url, container);

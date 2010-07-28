@@ -68,15 +68,15 @@ function cache_cycle(){
 	if(!window.db) return;
   var citem = null;
   if(citem = cachequeue.shift()){
-	console.log("caching wave" + citem.waveId);
+	//console.log("caching wave" + citem.waveId);
     callbacks[wave.robot.fetchWave(citem.waveId, citem.waveId.replace(/w\+.+/g,'conv+root'))] = function(data){
-	  console.log('acquired data for' + citem.waveId);
+	  //console.log('acquired data for' + citem.waveId);
       db.transaction(function (tx) {
-		console.log('fetched wave' + citem.waveId);
+		//console.log('fetched wave' + citem.waveId);
         tx.executeSql('CREATE TABLE IF NOT EXISTS inbox (waveid, result, data, date)');
         tx.executeSql('DELETE FROM inbox WHERE waveid = ?', [citem.waveId], function(tx, results){
           tx.executeSql('INSERT INTO inbox (waveid, result, data, date) VALUES (?, ?, ?, ?)', [citem.waveId, JSON.stringify(citem), JSON.stringify(data), new Date - 0], function(){
-		  console.log("done caching wave" + citem.waveId);
+		  //console.log("done caching wave" + citem.waveId);
             if(document.getElementById(citem.waveId))
 				document.getElementById(citem.waveId).className = "search fresh_cache";
             cacheState[citem.waveId] = 2;
