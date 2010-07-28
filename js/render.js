@@ -37,7 +37,7 @@ function renderBlip(markup){
     if(note.name.indexOf('user/d/') == 0){
       var user_session = note.value.split(',');
       var userid = note.name.substr(7);
-      if(new Date - parseInt(user_session[1]) < 1000 * 60 * 60){ //expire after one haor
+      if(new Date - parseInt(user_session[1]) < 1000 * 60){ //expire after one minute
         user_colors[userid] = 'rgb(' +
                 Math.floor(205-Math.random()*100).toString()+',' +
                 Math.floor(205-Math.random()*100).toString()+',' +
