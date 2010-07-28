@@ -58,6 +58,27 @@ function inline_blip_render(blipid){
   return doc;
 }
 
+document.body.onclick = function(e){
+	e = e || window.event;
+	var src = (e.target||e.srcElement);
+	while(src && !src.info && !src.blipId && src.tagName != 'HEAD'){
+		src = src.parentNode;
+	}
+	
+	if(!src){
+		//meh
+	}else if(src.info){
+		e.cancelBubble = true;
+    if(e.stopPropagation) e.stopPropagation();
+    blip_next(src.blipId)
+	}else if(src.blipId){
+		e.cancelBubble = true;
+    if(e.stopPropagation) e.stopPropagation();
+    var info = msg.data.blips[src.blipId].info;
+    info.parentNode.insertBefore(create_contextmenu(msg.data.blips[src.blipId]), info.nextSibling);
+	}
+}
+
 function blip_render(blipid, parent){ //a wrapper around renderBlip that adds chrome related things
   var blip = msg.data.blips[blipid];
   if(!blip || blip.dom) return; //already rendered, go on
@@ -70,7 +91,9 @@ function blip_render(blipid, parent){ //a wrapper around renderBlip that adds ch
 
   var info = document.createElement("div");
   info.className = "info";
-
+	info.info = true;
+	info.blipId = blipid;
+	
   blip.info = info;
 
   var nextblip = '';
@@ -88,6 +111,8 @@ function blip_render(blipid, parent){ //a wrapper around renderBlip that adds ch
   
   info.innerHTML = "<div style='float:right;color:#555'>"+format_time(blip.lastModifiedTime).toString()+nextblip;//<b>By</b> ";
   info.appendChild(userList(blip.contributors));
+  
+  /*
   info.onclick = function(e){
     e = e || window.event;
     e.cancelBubble = true;
@@ -107,6 +132,7 @@ function blip_render(blipid, parent){ //a wrapper around renderBlip that adds ch
       info.parentNode.insertBefore(create_contextmenu(blip), info.nextSibling);
     }
   }
+  */
   doc.insertBefore(info, doc.firstChild);
   parent.appendChild(doc);
   

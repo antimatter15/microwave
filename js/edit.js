@@ -43,12 +43,15 @@ function create_magic_box(name, submit_callback){
     },100);
   }
   
+
+  
   parent.style.marginTop = '10px';
   parent.appendChild(textbox);
   parent.appendChild(submitbtn);
   parent.appendChild(cancelbtn);
   parent.textbox = textbox; //i sure hope this isn't leaky
   
+
   return parent;
 }
 
@@ -151,14 +154,15 @@ function create_contextmenu(blip){
       try{
 				var thread = blip.threadId?msg.data.threads[blip.threadId].blipIds:msg.data.waveletData.rootThread.blipIds, 
 						tpos = thread.indexOf(blip.blipId);
+						
 				if(thread.length -1 == tpos){
 					//last one: no indent
 					var box = create_reply_box()
-					context_box.className = ""; //this used to suffice, but not so much anymore
+					box.className = ""; //this used to suffice, but not so much anymore
 				}else{
 					//not last one: indent
 					var box = create_reply_box(true)
-					context_box.className = "thread"; //this used to suffice, but not so much anymore
+					box.className = "thread"; //this used to suffice, but not so much anymore
 				}
 			}catch(err){}
       
@@ -203,7 +207,13 @@ function create_contextmenu(blip){
       box.textbox.value = current_blip.content.substr(rep_start + 1); //first char is a newline
       box.textbox.focus();
       closectx();
-    }
+    }/*,
+    "Attach File": function(){
+			wave.blip.upload_attachment(btoa('hello world'), 'helloworld.txt', current_blip.blipId, current_blip.waveId, current_blip.waveletId);
+			loadWave(current_blip.waveId);
+			runQueue();
+			closectx();
+		}*/
   };
   if(blip.blipId == msg.data.waveletData.rootBlipId){
     actions['Change Title'] = function(){

@@ -123,7 +123,7 @@ wave = {
       })
     },
     
-    "upload_attachment": function(contents, caption, blipId, waveId, waveletid){
+    "upload_attachment": function(contents, caption, blipId, waveId, waveletId){
 			return queueOp('wave.document.modify', {
 				"blipId": blipId, 
 				"waveletId": waveletId, 
