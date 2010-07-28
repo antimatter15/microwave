@@ -46,8 +46,6 @@ function offline_cache(){
     for(var i = 0; i < digests.length; i++){
       item = digests[i];
       cachequeue.push(item);
-	  
-	  console.log(item.waveId)
     }
 		setTimeout(cache_cycle, 1000);
   }
