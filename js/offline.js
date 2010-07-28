@@ -8,9 +8,14 @@ function searchStyle(waveId){
 }
 
 function onLine(){
-	if(navigator.onLine === undefined) return true;
-	var val = navigator.onLine;
-	//var val = false;
+	var val;
+	if(opt.force_offline){
+		val = true;
+	}else if(navigator.onLine === undefined){
+		val = true;
+	}else{
+		val = navigator.onLine;
+	}
 	if(val == false){
 		var last_update = (+new Date - parseInt(localStorage.getItem('cache_last_updated')))/1000;
 		if(!isNaN(last_update)){
