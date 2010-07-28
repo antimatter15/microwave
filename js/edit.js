@@ -91,8 +91,8 @@ ctx_menu = null;
 
 function create_contextmenu(blip){
   if(!onLine()) return document.createElement('div'); 
-//offline doesnt support queuing operations to be done when online, 
-//so just dont show prompts
+	//offline doesnt support queuing operations to be done when online, 
+	//so just dont show prompts
 
   function closectx(){
     div.style.display = 'none';
@@ -115,7 +115,7 @@ function create_contextmenu(blip){
     },//*
     "Indented": function(){
       current_blip.dom.parentNode.insertBefore(create_reply_box(true),current_blip.dom.nextSibling);
-      context_box.className = blip.childBlipIds.length > 0?"thread":"";
+      context_box.className = "thread";
       context_box.style.display = '';
       reply_text.focus();
       closectx();
