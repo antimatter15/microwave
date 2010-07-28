@@ -43,6 +43,7 @@ function create_reply_box(indented){
     }
     post.onclick = function(){
       reply_text.disabled = "disabled";
+      post.disabled = 'disabled';
       setTimeout(function(){
         if(indented){
           wave.blip.contentCreateChild(reply_text.value,current_blip.blipId,current_blip.waveId,current_blip.waveletId);
@@ -98,17 +99,34 @@ function create_contextmenu(blip){
     div.style.display = 'none';
     div.parentNode.removeChild(div);
   }
-  try{
-    ctx_menu.style.display = 'none'
-    ctx_menu.parentNode.removeChild(ctx_menu);
-  }catch(err){}
+  if(ctx_menu){
+		try{
+			ctx_menu.style.display = 'none'
+			ctx_menu.parentNode.removeChild(ctx_menu);
+		}catch(err){}
+	}
   var div = document.createElement("div");
   current_blip = blip;
   div.style.zIndex = 32;
   var actions = {
     "Reply": function(){
-      current_blip.dom.parentNode.insertBefore(create_reply_box(),current_blip.dom.nextSibling);
-      context_box.className = blip.childBlipIds.length > 0?"thread":"";
+      
+      
+      //context_box.className = blip.childBlipIds.length > 0?"thread":""; //this used to suffice, but not so much anymore
+      
+      try{
+				var thread = msg.data.threads[blip.threadId].blipIds, tpos = thread.indexOf(blip.blipId);
+				if(thread.length -1 == tpos){
+					//last one: no indent
+					current_blip.dom.parentNode.insertBefore(create_reply_box(),current_blip.dom.nextSibling);
+					context_box.className = ""; //this used to suffice, but not so much anymore
+				}else{
+					//not last one: indent
+					current_blip.dom.parentNode.insertBefore(create_reply_box(true),current_blip.dom.nextSibling);
+					context_box.className = "thread"; //this used to suffice, but not so much anymore
+				}
+			}catch(err){}
+      
       context_box.style.display = '';
       reply_text.focus();
       closectx();

@@ -536,6 +536,7 @@ body.online .offline {
   border-radius: 7px;
   -webkit-border-radius: 7px;
   -moz-border-radius: 7px;
+  -o-border-radius: 7px;
   padding-right: 4px;
   padding-left: 4px;
 }
@@ -545,6 +546,7 @@ body.online .offline {
   border-radius: 7px;
   -webkit-border-radius: 7px;
   -moz-border-radius: 7px;
+  -o-border-radius: 7px;
   padding-right: 4px;
   padding-left: 4px;
 }
@@ -554,6 +556,7 @@ body.online .offline {
   border-radius: 7px;
   -webkit-border-radius: 7px;
   -moz-border-radius: 7px;
+  -o-border-radius: 7px;
   padding-right: 4px;
   padding-left: 4px;
 }
