@@ -152,11 +152,14 @@ if(mobilewebkit){
   setInterval(document.onscroll, 1000);
 }
 
-function toggle_float(){
+
+function flicker(el){
 	//UI design 101: Provide user a visible indication that any action is actually being done.
-	document.getElementById('floating_menu').className = "minimized";
+	el.style.color = 'green';
+	el.style.fontWeight = 'bold';
 	setTimeout(function(){
-	  document.getElementById('floating_menu').className = ""; //however, flickering opacity probably isnt the best idea
-	},500);
+		el.style.color = '';
+		el.style.fontWeight = '';
+	},500)
 }
 
