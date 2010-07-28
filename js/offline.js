@@ -29,7 +29,7 @@ function onLine(){
 var cachequeue = [], db = null;
 function open_db(){
 	if(!window.db && window.openDatabase){
-		window.db = openDatabase('waves', '1.0', 'Offline Wave Cache', 5 * 1024 * 1024);
+		window.db = openDatabase('waves', '1.0', 'Offline Wave Cache', 1024 * 1024);
 	}
 }
 
