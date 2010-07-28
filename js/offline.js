@@ -10,7 +10,7 @@ function searchStyle(waveId){
 function onLine(){
 	var val;
 	if(opt.force_offline){
-		val = true;
+		val = false;
 	}else if(navigator.onLine === undefined){
 		val = true;
 	}else{
