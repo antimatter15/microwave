@@ -17,3 +17,9 @@ using reverse engineered JSON client/server code descended from the
 Wave Reader project.
 
 
+Features
+--------
+
+Microwave is pretty complete. Or at least it's as complete as the data API
+really allows, with the exception of rich text (which is arguably a really big
+thing).
