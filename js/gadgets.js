@@ -1,10 +1,6 @@
 //the majority of this is from the google splash project
 
 var gstates = {};
-var REMOTE_RPC_RELAY_URL =
-    "http://www.gmodules.com/gadgets/files/container/rpc_relay.html";
-
-var DEFAULT_GADGET_MODE = {'${playback}': '0', '${edit}': '1'};
 
 function registerRpc(service, handler) {
   gadgets.rpc.register(service, function() {
@@ -32,8 +28,9 @@ function init_gadget_handler(callback){
   }
 }
 
-function extractGadgetState(gadgetId) {
-  // TODO: Use global objects or pool?
+function extractGadgetState(gadgetId) {	
+	var DEFAULT_GADGET_MODE = {'${playback}': '0', '${edit}': '1'};
+
   console.log(gadgetId)
   var participants = gstates[gadgetId].participants;
   var state = gstates[gadgetId].state;
@@ -49,6 +46,10 @@ function extractGadgetState(gadgetId) {
 
 function initGadgetSystem() {
   // Once a gadget has called us back, we can inject the state/participants.
+  var REMOTE_RPC_RELAY_URL =
+    "http://www.gmodules.com/gadgets/files/container/rpc_relay.html";
+
+  
   registerRpc("wave_enable", function(service, gadgetId, args) {
     gadgets.rpc.setRelayUrl(gadgetId, REMOTE_RPC_RELAY_URL);
     extractGadgetState(gadgetId);

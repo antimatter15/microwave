@@ -58,15 +58,16 @@ function offline_cache(){
 }
 
 var cacheState = {}; //0 = uncached, 1 = cached but outdated, 2 = cached and new
-try{
-	if(window.localStorage && localStorage.cacheState){
-		var cs = JSON.parse(localStorage.getItem('cacheState'));
-		for(var i = 0; i < cs.length; i++){
-			cacheState[cs[i]] = 1;
+(function(){
+	try{
+		if(window.localStorage && localStorage.cacheState){
+			var cs = JSON.parse(localStorage.getItem('cacheState'));
+			for(var i = 0; i < cs.length; i++){
+				cacheState[cs[i]] = 1;
+			}
 		}
-	}
-}catch(err){}
-
+	}catch(err){}
+})();
 
 
 function cache_cycle(){
