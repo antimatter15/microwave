@@ -533,6 +533,27 @@ function inline_blip_render(blipid){
   return doc;
 }
 
+document.body.onclick = function(e){
+	e = e || window.event;
+	var src = (e.target||e.srcElement);
+	while(src && !src.info && !src.blipId && src.tagName != 'HEAD'){
+		src = src.parentNode;
+	}
+	
+	if(!src){
+		//meh
+	}else if(src.info){
+		e.cancelBubble = true;
+    if(e.stopPropagation) e.stopPropagation();
+    blip_next(src.blipId)
+	}else if(src.blipId){
+		e.cancelBubble = true;
+    if(e.stopPropagation) e.stopPropagation();
+    var info = msg.data.blips[src.blipId].info;
+    info.parentNode.insertBefore(create_contextmenu(msg.data.blips[src.blipId]), info.nextSibling);
+	}
+}
+
 function blip_render(blipid, parent){ //a wrapper around renderBlip that adds chrome related things
   var blip = msg.data.blips[blipid];
   if(!blip || blip.dom) return; //already rendered, go on
@@ -545,7 +566,9 @@ function blip_render(blipid, parent){ //a wrapper around renderBlip that adds ch
 
   var info = document.createElement("div");
   info.className = "info";
-
+	info.info = true;
+	info.blipId = blipid;
+	
   blip.info = info;
 
   var nextblip = '';
@@ -563,6 +586,8 @@ function blip_render(blipid, parent){ //a wrapper around renderBlip that adds ch
   
   info.innerHTML = "<div style='float:right;color:#555'>"+format_time(blip.lastModifiedTime).toString()+nextblip;//<b>By</b> ";
   info.appendChild(userList(blip.contributors));
+  
+  /*
   info.onclick = function(e){
     e = e || window.event;
     e.cancelBubble = true;
@@ -582,6 +607,7 @@ function blip_render(blipid, parent){ //a wrapper around renderBlip that adds ch
       info.parentNode.insertBefore(create_contextmenu(blip), info.nextSibling);
     }
   }
+  */
   doc.insertBefore(info, doc.firstChild);
   parent.appendChild(doc);
   
@@ -600,6 +626,7 @@ function blip_render(blipid, parent){ //a wrapper around renderBlip that adds ch
 
 
 function create_wave(){
+	window._gaq && _gaq.push(['_trackEvent', 'Wave', 'Create wave']);
   var loadID = loading("Creating wave...")
   setTimeout(function(){
     var xcf = {};
@@ -637,56 +664,92 @@ function diff(a, b){
 }
 
 
-var current_blip = null, context_box, reply_box, reply_text, cancel, post;
+var current_blip = null;
+var ctx_menu = null;
+
+
+function create_magic_box(name, submit_callback){
+  var parent = document.createElement('div');
+  parent.style.marginRight = "6px";
+  parent.innerHTML = "<div class='alert'>"+name+"</div>"
+  var textbox = document.createElement('textarea');
+  var cancelbtn = document.createElement('button');
+  var submitbtn = document.createElement('button');
+  cancelbtn.innerHTML = 'Cancel';
+  submitbtn.innerHTML = 'Submit';
+  cancelbtn.onclick = function(){
+    parent.style.display = 'none';
+    current_blip = null;
+    if(textbox.value.split(' ').length < 42 || confirm("Are you sure you want to cancel?")){
+			parent.style.display = 'none';
+			current_blip = null;
+		}
+  }
+  submitbtn.onclick = function(){
+    textbox.disabled = "disabled";
+    submitbtn.disabled = 'disabled';
+    setTimeout(function(){
+      submit_callback(textbox.value);
+    },100);
+  }
+  
+
+  
+  parent.style.marginTop = '10px';
+  parent.appendChild(textbox);
+  parent.appendChild(submitbtn);
+  parent.appendChild(cancelbtn);
+  parent.textbox = textbox; //i sure hope this isn't leaky
+  
+
+  return parent;
+}
+
+
+
+function create_edit_box(){
+	var box = create_magic_box('<b>Edit blip</b> (Beta)', function(value){
+		var rep_start = 0;
+		try{
+			for(var l = current_blip.annotations.length, i = 0;
+				i < l && current_blip.annotations[i].name != 'conv/title'; i++){};
+			if(i < l) rep_start = current_blip.annotations[i].range.end;
+		}catch(err){}
+		
+		var change = diff(current_blip.content.substr(rep_start), '\n'+value);
+		console.log(change);
+		console.log(current_blip.content, '\n'+edit_text.value)
+		
+		wave.blip.replace_range(change[2], 
+														rep_start + change[0], 
+														rep_start + change[1], 
+														current_blip.blipId, current_blip.waveId, current_blip.waveletId)
+		loadWave(current_blip.waveId);
+		auto_reload = true;
+		runQueue()
+	})
+	
+	var edit_text = box.textbox;
+	var boxheight = Math.max(current_blip.dom.offsetHeight,100)
+  edit_text.style.height = boxheight+'px';
+  edit_text.className = 'edit_box'
+  
+  return box;
+}
 
 
 function create_reply_box(indented){
-  if(window.content_box){
-    try{
-    content_box.innerHTML = '';
-    content_box.parentNode.removeChild(content_box)
-    }catch(err){};
-  }
-  //if(!context_box || context_box.innerHTML == ''){ //ie does suck doesnt it
-    context_box = document.createElement('div');
-    reply_box = document.createElement('div');
-    reply_box.innerHTML = "<div class='alert'><b>Write a Reply</b></div>"
-    reply_text = document.createElement('textarea');
-    cancel = document.createElement('button');
-    post = document.createElement('button');
-    //post.style['float'] = 'right';
-    //cancel.style['float'] = 'right';
-    cancel.innerHTML = 'Cancel';
-    post.innerHTML = 'Post';
-    cancel.onclick = function(){
-      if(reply_text.value.split(' ').length < 42 || confirm("Are you sure you want to cancel?")){
-        context_box.style.display = 'none';
-        current_blip = null;
-      }
-    }
-    post.onclick = function(){
-      reply_text.disabled = "disabled";
-      post.disabled = 'disabled';
-      setTimeout(function(){
-        if(indented){
-          wave.blip.contentCreateChild(reply_text.value,current_blip.blipId,current_blip.waveId,current_blip.waveletId);
-        }else{
-          wave.blip.contentContinueThread(reply_text.value,current_blip.blipId,current_blip.waveId,current_blip.waveletId);
-        }
-        loadWave(current_blip.waveId);
-        auto_reload = true;
-        runQueue()
-      },100);
-    }
-    context_box.style.marginTop = '10px';
-    reply_box.appendChild(reply_text);
-    reply_box.appendChild(post);
-    reply_box.appendChild(cancel);
-    context_box.appendChild(reply_box);
-  //}
-  context_box.style.display = 'none';
-  reply_text.disabled = "";
-  
+	var box = create_magic_box('<b>Write a Reply</b>', function(value){
+		if(indented){
+			wave.blip.contentCreateChild(value,current_blip.blipId,current_blip.waveId,current_blip.waveletId);
+		}else{
+			wave.blip.contentContinueThread(value,current_blip.blipId,current_blip.waveId,current_blip.waveletId);
+		}
+		loadWave(current_blip.waveId);
+		auto_reload = true;
+		runQueue()
+	})
+
   var addonsig = '';
   if(navigator.userAgent.indexOf("Opera Mini") != -1){
     addonsig = " on Opera Mini"
@@ -702,15 +765,15 @@ function create_reply_box(indented){
     }
   }
   
-  reply_text.value = '';
+  if(!opt.no_sig) box.textbox.value = '\n\nPosted with micro-wave.appspot.com'+addonsig;
   
-  if(!opt.no_sig) reply_text.value = '\n\nPosted with micro-wave.appspot.com'+addonsig;
-  reply_text.className = 'reply_box';
-  return context_box;
+  box.textbox.className = 'reply_box';
+  
+  return box
 }
 
 
-var ctx_menu = null;
+
 
 
 function create_contextmenu(blip){
@@ -735,36 +798,39 @@ function create_contextmenu(blip){
   var actions = {
     "Reply": function(){
       
-      
+      window._gaq && _gaq.push(['_trackEvent', 'Modify', 'Create Reply']);
       //context_box.className = blip.childBlipIds.length > 0?"thread":""; //this used to suffice, but not so much anymore
       
       try{
 				var thread = blip.threadId?msg.data.threads[blip.threadId].blipIds:msg.data.waveletData.rootThread.blipIds, 
 						tpos = thread.indexOf(blip.blipId);
+						
 				if(thread.length -1 == tpos){
 					//last one: no indent
-					current_blip.dom.parentNode.insertBefore(create_reply_box(),current_blip.dom.nextSibling);
-					context_box.className = ""; //this used to suffice, but not so much anymore
+					var box = create_reply_box()
+					box.className = ""; //this used to suffice, but not so much anymore
 				}else{
 					//not last one: indent
-					current_blip.dom.parentNode.insertBefore(create_reply_box(true),current_blip.dom.nextSibling);
-					context_box.className = "thread"; //this used to suffice, but not so much anymore
+					var box = create_reply_box(true)
+					box.className = "thread"; //this used to suffice, but not so much anymore
 				}
 			}catch(err){}
       
-      context_box.style.display = '';
-      reply_text.focus();
+			current_blip.dom.parentNode.insertBefore(box,current_blip.dom.nextSibling);
+      box.textbox.focus();
       closectx();
     },//*
     "Indented": function(){
-      current_blip.dom.parentNode.insertBefore(create_reply_box(true),current_blip.dom.nextSibling);
-      context_box.className = "thread";
-      context_box.style.display = '';
-      reply_text.focus();
+			window._gaq && _gaq.push(['_trackEvent', 'Modify', 'Create Indented Reply']);
+			var box = create_reply_box(true);
+      current_blip.dom.parentNode.insertBefore(box,current_blip.dom.nextSibling);
+      box.className = "thread";
+      box.textbox.focus();
       closectx();
     },//*/
     "Delete": function(){
-      if(confirm("Are you sure you want to delete the blip?")){
+			if(confirm("Are you sure you want to delete the blip?")){
+				window._gaq && _gaq.push(['_trackEvent', 'Modify', 'Delete existing blip']);
         setTimeout(function(){
           wave.blip['delete'](current_blip.blipId,current_blip.waveId,current_blip.waveletId);
           loadWave(current_blip.waveId);
@@ -776,7 +842,10 @@ function create_contextmenu(blip){
       closectx();
     },
     "Edit": function(){
-      current_blip.dom.parentNode.insertBefore(create_edit_box(),current_blip.dom.nextSibling);
+			window._gaq && _gaq.push(['_trackEvent', 'Modify', 'Edit existing blip']);
+			var box = create_edit_box();
+      current_blip.dom.parentNode.insertBefore(box,current_blip.dom.nextSibling);
+      
       //TODO: MAKE THIS PURTIER
       var rep_start = 0;
       try{
@@ -785,14 +854,21 @@ function create_contextmenu(blip){
         if(i < l) rep_start = current_blip.annotations[i].range.end;
       }catch(err){}
       
-      edit_text.value = current_blip.content.substr(rep_start + 1); //first char is a newline
-      edit_text.focus();
+      box.textbox.value = current_blip.content.substr(rep_start + 1); //first char is a newline
+      box.textbox.focus();
       closectx();
-    }
+    }/*,
+    "Attach File": function(){
+			wave.blip.upload_attachment(btoa('hello world'), 'helloworld.txt', current_blip.blipId, current_blip.waveId, current_blip.waveletId);
+			loadWave(current_blip.waveId);
+			runQueue();
+			closectx();
+		}*/
   };
   if(blip.blipId == msg.data.waveletData.rootBlipId){
     actions['Change Title'] = function(){
       var title = prompt("Enter new wavelet title", msg.data.waveletData.title);
+      window._gaq && _gaq.push(['_trackEvent', 'Modify', 'Change Wavelet Title']);
       if(title){
         wave.wavelet.setTitle(title, blip.waveId, blip.waveletId);
         loadWave(blip.waveId, blip.waveletId);
@@ -800,12 +876,6 @@ function create_contextmenu(blip){
         runQueue();
       }
     }
-    /*actions['Mark Wave Read'] = function(){
-      wave.robot.folderAction('markAsRead', blip.waveId, blip.waveletId)
-      closectx();
-      runQueue();
-    }*/
-    
   }
   
   for(var a in actions){
@@ -829,55 +899,6 @@ function create_contextmenu(blip){
   return div
 }
 
-
-function create_edit_box(){
-  edit_box = document.createElement('div');
-  edit_box.style.marginRight = "6px";
-  edit_box.innerHTML = "<div class='alert'><b>Edit Blip (Beta)</b></div>"
-  edit_text = document.createElement('textarea');
-  cancel_edit = document.createElement('button');
-  submit_edit = document.createElement('button');
-  cancel_edit.innerHTML = 'Cancel';
-  submit_edit.innerHTML = 'Submit';
-  cancel_edit.onclick = function(){
-    edit_box.style.display = 'none';
-    current_blip = null;
-  }
-  submit_edit.onclick = function(){
-    edit_text.disabled = "disabled";
-    setTimeout(function(){
-      var rep_start = 0;
-      try{
-        for(var l = current_blip.annotations.length, i = 0;
-          i < l && current_blip.annotations[i].name != 'conv/title'; i++){};
-        if(i < l) rep_start = current_blip.annotations[i].range.end;
-      }catch(err){}
-      
-      
-      var change = diff(current_blip.content.substr(rep_start), '\n'+edit_text.value);
-      console.log(change);
-      console.log(current_blip.content, '\n'+edit_text.value)
-      
-      wave.blip.replace_range(change[2], 
-                              rep_start + change[0], 
-                              rep_start + change[1], 
-                              current_blip.blipId, current_blip.waveId, current_blip.waveletId)
-      loadWave(current_blip.waveId);
-      auto_reload = true;
-      runQueue()
-    },100);
-  }
-  edit_box.style.marginTop = '10px';
-  edit_box.appendChild(edit_text);
-  edit_box.appendChild(submit_edit);
-  edit_box.appendChild(cancel_edit);
-  
-  var boxheight = Math.max(current_blip.dom.offsetHeight,100)
-  edit_text.style.height = boxheight+'px';
-  edit_text.className = 'edit_box'
-
-  return edit_box;
-}
 
 
 
@@ -1277,6 +1298,7 @@ function hide_float(){
 
 function markWaveRead(){
 	var l = loading('mark as read');
+	window._gaq && _gaq.push(['_trackEvent', 'Mark', 'Mark wave read']);
   callbacks[wave.robot.folderAction('markAsRead', current_wave, current_wavelet)] = function(){
 		loading(l)
 	};
@@ -1288,6 +1310,7 @@ function markWaveRead(){
 
 function archiveWave(){
 	var l = loading('archive wave');
+	window._gaq && _gaq.push(['_trackEvent', 'Mark', 'Mark wave archived']);
   callbacks[wave.robot.folderAction('archive', current_wave, current_wavelet)] = function(){
 		loading(l);
 	};
@@ -1354,7 +1377,6 @@ function getUsername(){
 function clean_text(text){
 	return text.replace(/[\0-\x09\x0b-\x1f\x7f\x80-\x9f\u2028\u2029\ufff9\ufffa\ufffb\u200e\u200f\u202a-\u202e]/g,'');
 }
-
 
 wave = {
   robot:{
@@ -1464,6 +1486,24 @@ wave = {
       })
     },
     
+    "upload_attachment": function(contents, caption, blipId, waveId, waveletId){
+			return queueOp('wave.document.modify', {
+				"blipId": blipId, 
+				"waveletId": waveletId, 
+				"waveId": waveId, 
+				"modifyAction": 
+					{
+						"modifyHow": "INSERT_AFTER", 
+						"elements": [{
+							"type": "ATTACHMENT", 
+							"properties":  {
+								"caption": caption, 
+								"data": contents + "\n"
+							}
+						}]
+					}
+				})
+		},
     "insert": function(content, blipId, waveId, waveletId){
 			content = clean_text(content);
       return wave.document.modify({modifyHow: "INSERT", values: ['\n'+content]}, blipId, waveId, waveletId)
@@ -2510,6 +2550,7 @@ function loadWave(waveId, waveletId){
     add.href="javascript:void(0)";
     add.onclick = function(){
       var participant = prompt('Enter Participant ID to Add');
+      window._gaq && _gaq.push(['_trackEvent', 'Modify', 'Add participant']);
       if(participant){
         if(participant.indexOf("@") == -1){
           participant += "@googlewave.com";
