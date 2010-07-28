@@ -115,7 +115,10 @@ function hide_float(){
 }
 
 function markWaveRead(){
-  wave.robot.folderAction('markAsRead', current_wave, current_wavelet);
+	var l = loading('mark as read');
+  callbacks[wave.robot.folderAction('markAsRead', current_wave, current_wavelet)] = function(){
+		loading(l)
+	};
   hide_float(); //provide user a visual indication that something happened
   search_outdated = true;
   runQueue();
@@ -123,7 +126,10 @@ function markWaveRead(){
 
 
 function archiveWave(){
-  wave.robot.folderAction('archive', current_wave, current_wavelet);
+	var l = loading('archive wave');
+  callbacks[wave.robot.folderAction('archive', current_wave, current_wavelet)] = function(){
+		loading(l);
+	};
   hide_float();
   runQueue();
 }
@@ -153,11 +159,13 @@ if(mobilewebkit){
 }
 
 
-function flicker(el){
+function flicker(el,status){
 	//UI design 101: Provide user a visible indication that any action is actually being done.
 	el.style.color = 'green';
 	el.style.fontWeight = 'bold';
+	var l = loading(status);
 	setTimeout(function(){
+		loading(l);
 		el.style.color = '';
 		el.style.fontWeight = '';
 	},1500)
