@@ -87,7 +87,7 @@ function create_reply_box(indented){
 }
 
 
-ctx_menu = null;
+var ctx_menu = null;
 
 
 function create_contextmenu(blip){
@@ -99,12 +99,13 @@ function create_contextmenu(blip){
     div.style.display = 'none';
     div.parentNode.removeChild(div);
   }
+  
   if(ctx_menu){
-		try{
-			ctx_menu.style.display = 'none'
-			ctx_menu.parentNode.removeChild(ctx_menu);
-		}catch(err){}
+		ctx_menu.style.display = 'none'
+		if(ctx_menu.parentNode) ctx_menu.parentNode.removeChild(ctx_menu);
+		delete ctx_menu;
 	}
+	
   var div = document.createElement("div");
   current_blip = blip;
   div.style.zIndex = 32;
@@ -115,7 +116,8 @@ function create_contextmenu(blip){
       //context_box.className = blip.childBlipIds.length > 0?"thread":""; //this used to suffice, but not so much anymore
       
       try{
-				var thread = msg.data.threads[blip.threadId].blipIds, tpos = thread.indexOf(blip.blipId);
+				var thread = blip.threadId?msg.data.threads[blip.threadId].blipIds:msg.data.waveletData.rootThread.blipIds, 
+						tpos = thread.indexOf(blip.blipId);
 				if(thread.length -1 == tpos){
 					//last one: no indent
 					current_blip.dom.parentNode.insertBefore(create_reply_box(),current_blip.dom.nextSibling);
