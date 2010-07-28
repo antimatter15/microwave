@@ -94,13 +94,16 @@ opt.fn.init();
 
 
 if(!window.console) console = {log: function(){}};
+
+function getEl(id){return document.getElementById(id)}
+
 var screen_size = (document.documentElement.clientWidth||innerWidth), small_screen = (screen_size<500);
 var loadIds = {};
 var current_search = '';
 var searchLastIndex = 0;
 var edit_box, edit_text;
-var search_container = document.getElementById('search_container');
-var wave_container = document.getElementById('wave_container');
+var search_container = getEl('search_container');
+var wave_container = getEl('wave_container');
 var mobilewebkit = navigator.userAgent.indexOf("WebKit") != -1 && navigator.userAgent.indexOf("Mobile")!=-1;
 var current_wave = "";
 var current_wavelet = "";
@@ -149,7 +152,7 @@ function onLine(){
 			else if(last_update < 60*60) status = Math.ceil(last_update/60)+' minutes';
 			else if(last_update < 60*60*24) status = Math.ceil(last_update/60/60)+' hours';
 			else status = Math.ceil(last_update/60/60/24)+' days';
-			document.getElementById('offline_status').value = 'Offline (Cache '+status+' old)';
+			getEl('offline_status').value = 'Offline (Cache '+status+' old)';
 		}
 	}
 	return val;
@@ -210,8 +213,8 @@ function cache_cycle(){
         tx.executeSql('DELETE FROM inbox WHERE waveid = ?', [citem.waveId], function(tx, results){
           tx.executeSql('INSERT INTO inbox (waveid, result, data, date) VALUES (?, ?, ?, ?)', [citem.waveId, JSON.stringify(citem), JSON.stringify(data), new Date - 0], function(){
 		  //console.log("done caching wave" + citem.waveId);
-            if(document.getElementById(citem.waveId))
-				document.getElementById(citem.waveId).className = "search fresh_cache";
+            if(getEl(citem.waveId))
+				getEl(citem.waveId).className = "search fresh_cache";
             cacheState[citem.waveId] = 2;
 			var cs = [];
 			for(var i in cacheState){
@@ -309,9 +312,9 @@ function onReady(fn){
 
 
 if(opt.multipane) {
-  document.getElementById('search_parent').insertBefore(document.getElementById('appheader'), document.getElementById('search_parent').firstChild)
+  getEl('search_parent').insertBefore(getEl('appheader'), getEl('search_parent').firstChild)
   document.body.className += ' multipane';
-  document.getElementById('header').innerHTML = '&mu;wave';
+  getEl('header').innerHTML = '&mu;wave';
   wave_container.innerHTML = "<div style='padding:40px'>No waves loaded yet</div>";
   if(location.hash.indexOf('search:') == -1){
     onReady(function(){
@@ -357,7 +360,7 @@ function addTouchScroll(){
             for(var i = 0; i < elements.length; i++){
                 var el = elements[i];
                 console.log(el);
-                if(typeof(el) == "string") el = document.getElementById(el);
+                if(typeof(el) == "string") el = getEl(el);
                 window['touchscroll'+i] = new TouchScroll(el, {elastic: true});
             }
         },100)
@@ -367,18 +370,18 @@ function addTouchScroll(){
 
 function reset_touchscroll(){
 	var search_width = 250;
-  document.getElementById('wave_container_parent').style.width = (innerWidth-search_width)+'px';
-  document.getElementById('wave_container').style.width = (innerWidth-search_width)+'px';
-  document.getElementById('search_parent').style.width = search_width+'px';
-  document.getElementById('search_parent_container').style.width = search_width+'px';
+  getEl('wave_container_parent').style.width = (innerWidth-search_width)+'px';
+  getEl('wave_container').style.width = (innerWidth-search_width)+'px';
+  getEl('search_parent').style.width = search_width+'px';
+  getEl('search_parent_container').style.width = search_width+'px';
 }
 
 if(opt.touchscroll && opt.multipane){
   addTouchScroll('wave_container_parent', 'search_parent_container')
-	document.getElementById('wave_container_parent').style.overflow = 'hidden'
-  document.getElementById('search_parent').style.overflow = 'hidden';
-  document.getElementById('search_parent_container').style.overflow = 'hidden';
-  document.getElementById('wave_container').style.overflow = 'hidden';
+	getEl('wave_container_parent').style.overflow = 'hidden'
+  getEl('search_parent').style.overflow = 'hidden';
+  getEl('search_parent_container').style.overflow = 'hidden';
+  getEl('wave_container').style.overflow = 'hidden';
 	reset_touchscroll()
 	window.onorientationchange = reset_touchscroll;
 	window.addEventListener('resize', reset_touchscroll, true)
@@ -953,7 +956,7 @@ function initGadgetSystem() {
   });
 
   registerRpc("resize_iframe", function(service, gadgetId, args) {
-    document.getElementById(gadgetId).height = args[0]
+    getEl(gadgetId).height = args[0]
   });
 
   gadgets.rpc.registerDefault(function() {
@@ -1136,7 +1139,7 @@ function renderGadget(el, blip){
 
 function loading(text, nodelay){ 
   //we need to adjust for the possibility that the load is cancelled before it's actually loaded
-	var load = document.getElementById("loading");
+	var load = getEl("loading");
 	var has_opacity = typeof document.createElement('div').style.opacity != 'undefined';
 	load.style.top = scrollY+'px';
 	if(typeof text == "number"){
@@ -1158,7 +1161,7 @@ function loading(text, nodelay){
         if(has_opacity)
 					load.style.opacity = "1";
 
-        document.getElementById("loadingtext").innerHTML = "<b>Loading</b> "+text;
+        getEl("loadingtext").innerHTML = "<b>Loading</b> "+text;
       }
 
     }, nodelay?0:0); //it's unnerving when things flash, so only show after a wait
@@ -1238,7 +1241,7 @@ function animated_scroll(el, pos){
 }
 
 function scroll_wavepanel(pos){
-	var wcp = document.getElementById('wave_container_parent');
+	var wcp = getEl('wave_container_parent');
 	pos = pos<0?(wcp.scrollHeight+1+pos):pos;
 	if(opt.multipane){
 		if(opt.touchscroll){
@@ -1261,7 +1264,7 @@ function scroll_wavepanel(pos){
 }
 
 function scroll_searchpanel(pos){
-	var spc = document.getElementById('search_parent_container');
+	var spc = getEl('search_parent_container');
 	pos = pos<0?(spc.scrollHeight+1+pos):pos;
 	if(opt.multipane){
 		if(opt.touchscroll){
@@ -1287,7 +1290,7 @@ function scroll_searchpanel(pos){
 
 ////blow is the floaty bar
 function hide_float(){
-  document.getElementById('floating_menu').className = ""
+  getEl('floating_menu').className = ""
 }
 
 function markWaveRead(){
@@ -1318,14 +1321,14 @@ function update_scroll(){
   if(current_page == 0){
     searchscroll = scrollY;
   }
-  var load = document.getElementById("loading");
+  var load = getEl("loading");
   load.style.top = scrollY+'px';
   var pos = scrollY+window.innerHeight - 64
   
   if(mobilewebkit){
-		document.getElementById('floating_menu').style['-webkit-transform'] = 'translateY('+pos+'px)';
+		getEl('floating_menu').style['-webkit-transform'] = 'translateY('+pos+'px)';
 	}else{
-		document.getElementById('floating_menu').style.top = pos+'px';
+		getEl('floating_menu').style.top = pos+'px';
 	}
 
 }
@@ -1339,13 +1342,13 @@ if(mobilewebkit){
 
 function flicker(el,status){
 	//UI design 101: Provide user a visible indication that any action is actually being done.
-	document.getElementById('floating_menu').style.backgroundColor = '#D1FCC9'
+	getEl('floating_menu').style.backgroundColor = '#D1FCC9'
 	el.style.color = 'green';
 	el.style.fontWeight = 'bold';
 	setTimeout(function(){
 		el.style.color = '';
 		el.style.fontWeight = '';
-		document.getElementById('floating_menu').style.backgroundColor = '';
+		getEl('floating_menu').style.backgroundColor = '';
 	},500)
 }
 
@@ -1602,9 +1605,9 @@ function onReady(fn){
 
 
 if(opt.multipane) {
-  document.getElementById('search_parent').insertBefore(document.getElementById('appheader'), document.getElementById('search_parent').firstChild)
+  getEl('search_parent').insertBefore(getEl('appheader'), getEl('search_parent').firstChild)
   document.body.className += ' multipane';
-  document.getElementById('header').innerHTML = '&mu;wave';
+  getEl('header').innerHTML = '&mu;wave';
   wave_container.innerHTML = "<div style='padding:40px'>No waves loaded yet</div>";
   if(location.hash.indexOf('search:') == -1){
     onReady(function(){
@@ -1650,7 +1653,7 @@ function addTouchScroll(){
             for(var i = 0; i < elements.length; i++){
                 var el = elements[i];
                 console.log(el);
-                if(typeof(el) == "string") el = document.getElementById(el);
+                if(typeof(el) == "string") el = getEl(el);
                 window['touchscroll'+i] = new TouchScroll(el, {elastic: true});
             }
         },100)
@@ -1660,18 +1663,18 @@ function addTouchScroll(){
 
 function reset_touchscroll(){
 	var search_width = 250;
-  document.getElementById('wave_container_parent').style.width = (innerWidth-search_width)+'px';
-  document.getElementById('wave_container').style.width = (innerWidth-search_width)+'px';
-  document.getElementById('search_parent').style.width = search_width+'px';
-  document.getElementById('search_parent_container').style.width = search_width+'px';
+  getEl('wave_container_parent').style.width = (innerWidth-search_width)+'px';
+  getEl('wave_container').style.width = (innerWidth-search_width)+'px';
+  getEl('search_parent').style.width = search_width+'px';
+  getEl('search_parent_container').style.width = search_width+'px';
 }
 
 if(opt.touchscroll && opt.multipane){
   addTouchScroll('wave_container_parent', 'search_parent_container')
-	document.getElementById('wave_container_parent').style.overflow = 'hidden'
-  document.getElementById('search_parent').style.overflow = 'hidden';
-  document.getElementById('search_parent_container').style.overflow = 'hidden';
-  document.getElementById('wave_container').style.overflow = 'hidden';
+	getEl('wave_container_parent').style.overflow = 'hidden'
+  getEl('search_parent').style.overflow = 'hidden';
+  getEl('search_parent_container').style.overflow = 'hidden';
+  getEl('wave_container').style.overflow = 'hidden';
 	reset_touchscroll()
 	window.onorientationchange = reset_touchscroll;
 	window.addEventListener('resize', reset_touchscroll, true)
@@ -2091,6 +2094,20 @@ var queue = [];
 var callbacks = {};
 var id_count = 0;
 
+
+function logoff(){
+	if(confirm("Are you sure you want to log off?")){
+		var xhr = new(window.ActiveXObject||XMLHttpRequest)('Microsoft.XMLHTTP');
+		xhr.open('GET', '/logoff', true);
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState == 4){
+				getEl('login').style.display = 'none';
+			}
+		}
+		xhr.send(null);
+	}
+}
+
 function queueOp(method, params, callback){
   var id = (id_count++).toString();
   if(callback) callbacks[id] = callback;
@@ -2210,7 +2227,7 @@ function autosearchbox(){
 
 function autosearch(query){
   if(query == current_search && current_page == 1 && search_outdated == false && !opt.multipane){
-    document.getElementById('suggest').style.display = '';
+    getEl('suggest').style.display = '';
     searchmode(0);
     current_page = 0;
     search_container.style.display = '';
@@ -2226,7 +2243,7 @@ function autosearch(query){
     current_search = document.forms.searchbox.query.value = query;
     update_search();
   }
-  if(!opt.multipane) document.getElementById('floating_menu').style.display = 'none';
+  if(!opt.multipane) getEl('floating_menu').style.display = 'none';
 }
 
 function searchmode(mode){
@@ -2234,8 +2251,8 @@ function searchmode(mode){
   //change the little back button icon in ways which iPhone cant do
   
   //if(mobilewebkit) return;
-  //document.getElementById("search_go").style.display = mode?"none":"";
-  //document.getElementById("search_back").style.display = mode?"":"none";
+  //getEl("search_go").style.display = mode?"none":"";
+  //getEl("search_back").style.display = mode?"":"none";
 }
 
 
@@ -2272,7 +2289,7 @@ function update_search(startIndex){
   
   extend_search(0, function(){
     loading(loadId);
-    document.getElementById('suggest').style.display = '';
+    getEl('suggest').style.display = '';
     search_container.innerHTML = '';
     searchmode(0);
     search_container.style.display = '';
@@ -2494,7 +2511,7 @@ function loadWave(waveId, waveletId){
 
     wave_container.style.display = '';
     update_scroll();
-    document.getElementById('floating_menu').style.display = '';
+    getEl('floating_menu').style.display = '';
     if(!opt.no_autoscroll){ //ignore if zero or undefined
       //Okay, so now what? Uh.
       if(Object.keys){
@@ -2528,7 +2545,7 @@ function loadWave(waveId, waveletId){
     }
     
     auto_reload = false;
-    if(!opt.multipane) document.getElementById('suggest').style.display = 'none';
+    if(!opt.multipane) getEl('suggest').style.display = 'none';
     wave_container.innerHTML = ''
     
     //'<div class="wavelet" onclick="wave.robot.folderAction(\'markAsRead\', current_wave)">Mark wave as <b>Read</b> </div>';
@@ -2569,7 +2586,7 @@ function loadWave(waveId, waveletId){
     wave_container.appendChild(wavedata);
     
     
-    if(document.getElementById("chronos").checked){
+    if(getEl("chronos").checked){
       chronological_blip_render(wavedata)
     }else{
       if(opt.recursive_renderer || !msg.data.waveletData.rootThread){

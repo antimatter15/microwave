@@ -30,8 +30,9 @@
   <body class="online">
     <div id='appheader'>
 		   <div style="float:right">
-		     <input type="checkbox" id="chronos" name="chronos">
-		     <label for="chronos">Classic Forum Order</label>
+		     <input type="checkbox" id="chronos" name="chronos" onchange="current_wave && (loadWave(current_wave),runQueue())">
+		     <label for="chronos">Chronological</label> /
+		     <a href='javascript:logoff()' style='text-decoration: none'>Logoff</a>
 		   </div>
 		   <h1 onclick="opt.fn.show()" id='header'>&mu;wave</h1>
 		   <div id="online_head" class="online"> 
@@ -95,6 +96,9 @@
     </div>
 		<div class="wavelet loading" id="loading">
 			<div id="loadingtext"><b>Loading</b> code</div>
+		</div>
+		<div id="login" style="display:none">
+			You are not logged in.
 		</div>
 
 
