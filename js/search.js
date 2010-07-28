@@ -70,10 +70,8 @@ function update_search(startIndex){
   var loadId = loading(current_search);
   if(!opt.multipane) msg = {};
   
-  console.log('updatin surchk');
   extend_search(0, function(){
     loading(loadId);
-  console.log('updatin kawlkbak');
     document.getElementById('suggest').style.display = '';
     search_container.innerHTML = '';
     searchmode(0);
