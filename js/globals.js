@@ -1,8 +1,8 @@
 if(!window.console) console = {log: function(){}};
 var screen_size = (document.documentElement.clientWidth||innerWidth), small_screen = (screen_size<500);
 var loadIds = {};
-searchLastIndex = 0;
-current_search = '';
+var current_search = '';
+var searchLastIndex = 0;
 var edit_box, edit_text;
 var search_container = document.getElementById('search_container');
 var wave_container = document.getElementById('wave_container');
