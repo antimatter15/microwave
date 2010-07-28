@@ -96,6 +96,7 @@ function loadWave(waveId, waveletId){
     add.href="javascript:void(0)";
     add.onclick = function(){
       var participant = prompt('Enter Participant ID to Add');
+      window._gaq && _gaq.push(['_trackEvent', 'Modify', 'Add participant']);
       if(participant){
         if(participant.indexOf("@") == -1){
           participant += "@googlewave.com";

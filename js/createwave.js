@@ -1,4 +1,5 @@
 function create_wave(){
+	window._gaq && _gaq.push(['_trackEvent', 'Wave', 'Create wave']);
   var loadID = loading("Creating wave...")
   setTimeout(function(){
     var xcf = {};

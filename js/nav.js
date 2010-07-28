@@ -116,6 +116,7 @@ function hide_float(){
 
 function markWaveRead(){
 	var l = loading('mark as read');
+	window._gaq && _gaq.push(['_trackEvent', 'Mark', 'Mark wave read']);
   callbacks[wave.robot.folderAction('markAsRead', current_wave, current_wavelet)] = function(){
 		loading(l)
 	};
@@ -127,6 +128,7 @@ function markWaveRead(){
 
 function archiveWave(){
 	var l = loading('archive wave');
+	window._gaq && _gaq.push(['_trackEvent', 'Mark', 'Mark wave archived']);
   callbacks[wave.robot.folderAction('archive', current_wave, current_wavelet)] = function(){
 		loading(l);
 	};

@@ -112,7 +112,7 @@ function create_contextmenu(blip){
   var actions = {
     "Reply": function(){
       
-      
+      window._gaq && _gaq.push(['_trackEvent', 'Modify', 'Create Reply']);
       //context_box.className = blip.childBlipIds.length > 0?"thread":""; //this used to suffice, but not so much anymore
       
       try{
@@ -134,6 +134,7 @@ function create_contextmenu(blip){
       closectx();
     },//*
     "Indented": function(){
+			window._gaq && _gaq.push(['_trackEvent', 'Modify', 'Create Indented Reply']);
       current_blip.dom.parentNode.insertBefore(create_reply_box(true),current_blip.dom.nextSibling);
       context_box.className = "thread";
       context_box.style.display = '';
@@ -141,7 +142,8 @@ function create_contextmenu(blip){
       closectx();
     },//*/
     "Delete": function(){
-      if(confirm("Are you sure you want to delete the blip?")){
+			if(confirm("Are you sure you want to delete the blip?")){
+				window._gaq && _gaq.push(['_trackEvent', 'Modify', 'Delete existing blip']);
         setTimeout(function(){
           wave.blip['delete'](current_blip.blipId,current_blip.waveId,current_blip.waveletId);
           loadWave(current_blip.waveId);
@@ -153,6 +155,8 @@ function create_contextmenu(blip){
       closectx();
     },
     "Edit": function(){
+			window._gaq && _gaq.push(['_trackEvent', 'Modify', 'Edit existing blip']);
+			
       current_blip.dom.parentNode.insertBefore(create_edit_box(),current_blip.dom.nextSibling);
       //TODO: MAKE THIS PURTIER
       var rep_start = 0;
@@ -170,6 +174,7 @@ function create_contextmenu(blip){
   if(blip.blipId == msg.data.waveletData.rootBlipId){
     actions['Change Title'] = function(){
       var title = prompt("Enter new wavelet title", msg.data.waveletData.title);
+      window._gaq && _gaq.push(['_trackEvent', 'Modify', 'Change Wavelet Title']);
       if(title){
         wave.wavelet.setTitle(title, blip.waveId, blip.waveletId);
         loadWave(blip.waveId, blip.waveletId);
@@ -177,12 +182,6 @@ function create_contextmenu(blip){
         runQueue();
       }
     }
-    /*actions['Mark Wave Read'] = function(){
-      wave.robot.folderAction('markAsRead', blip.waveId, blip.waveletId)
-      closectx();
-      runQueue();
-    }*/
-    
   }
   
   for(var a in actions){
