@@ -19,7 +19,9 @@
 				<div style="padding-bottom:3px;">
 				  <form class="searchbox" name="searchbox" onsubmit="autosearchbox();return false">
 				    <div class="button" onclick="autosearchbox();return false">
-				      <div style='margin-left: 6px; margin-top: -1px' id="search_go">&#9654;</div>
+				      <!--<div style='margin-left: 6px; margin-top: -1px' id="search_go">&#9654;</div>-->
+				      <div class="css_search_go" id="search_go"></div>
+				      
 				    </div>
 				    <input type="text" value="in:inbox " id="query" class="query">
 				  </form>
@@ -37,8 +39,8 @@
 				<div style="padding-bottom:5px;">
 					<form class="searchbox" onsubmit="autosearch('in:inbox');return false" action="#">
 						<div class="button" onclick="autosearch('in:inbox');return false">
-							<div style='margin-left: 6px; margin-top:- 6px'>&#9654;
-							</div>
+							<!--<div style='margin-left: 6px; margin-top: -1px' id="search_go">&#9654;</div>-->
+				      <div class="css_search_go" id="search_go"></div>
 						</div>
 						<input type="text" id="offline_status" value="Offline" class="query" disabled>
 					</form>
@@ -58,23 +60,16 @@
         </div>
       </div>
       <div id="floating_menu" style="display:none">
-				<!--
-				<a href="#read" onclick='markWaveRead();return false'>Read</a> /
-				<a href="#archive" onclick='archiveWave();return false'>Archive</a> /
-				<a href="#newest" onclick='blip_scroll(0);hide_float();return false'>Newest</a> /
-				<a href="#bottom" onclick='scroll_wavepanel(-1);hide_float();return false'>Bottom</a> /
-				<a href="#top" onclick='scroll_wavepanel(0);hide_float();return false'>Top</a>
-				-->
 				<table>
 					<tr>
-						<td class="online"><a href="#read" onclick='toggle_float();markWaveRead();return false'>Read</a></td>
-						<td><a href="#newest" onclick='toggle_float();blip_scroll(0);return false'>Newest</a></td>
-						<td><a href="#top" onclick='toggle_float();scroll_wavepanel(0);return false'>Top</a></td>
+						<td class="online"><a href="#read" onclick='flicker(this);markWaveRead();return false'>Read</a></td>
+						<td><a href="#newest" onclick='flicker(this);blip_scroll(0);return false'>Newest</a></td>
+						<td><a href="#top" onclick='flicker(this);scroll_wavepanel(0);return false'>Top</a></td>
 					</tr>
 					<tr>
-						<td class="online"><a href="#archive" onclick='toggle_float();archiveWave();return false'>Archive</a></td>
-						<td><a href="#oldest" onclick='toggle_float();blip_scroll(-1);return false'>Oldest</a></td>
-						<td><a href="#bottom" onclick='toggle_float();scroll_wavepanel(-1);return false'>Bottom</a></td>
+						<td class="online"><a href="#archive" onclick='flicker(this);archiveWave();return false'>Archive</a></td>
+						<td><a href="#oldest" onclick='flicker(this);blip_scroll(-1);return false'>Oldest</a></td>
+						<td><a href="#bottom" onclick='flicker(this);scroll_wavepanel(-1);return false'>Bottom</a></td>
 					</tr>
 				</table>
       </div>

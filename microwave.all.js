@@ -67,7 +67,7 @@ opt.fn = {
     
     e.style.backgroundColor = '#fff';
     e.style.padding = '0';
-    e.style.zIndex = 999999999999;
+    e.style.zIndex = 99999999;
     e.onclick = function(e){
       e = e || window.event;
       var tag = (e.target||e.srcElement).tagName.toLowerCase();
@@ -103,14 +103,19 @@ function searchStyle(waveId){
 }
 
 function onLine(){
-	if(navigator.onLine === undefined) return true;
-	var val = navigator.onLine;
-	//var val = false;
+	var val;
+	if(opt.force_offline){
+		val = false;
+	}else if(navigator.onLine === undefined){
+		val = true;
+	}else{
+		val = navigator.onLine;
+	}
 	if(val == false){
 		var last_update = (+new Date - parseInt(localStorage.getItem('cache_last_updated')))/1000;
 		if(!isNaN(last_update)){
 			var status = '';
-			if(last_update < 60) status = 'less than a minute';
+			if(last_update < 90) status = 'a minute';
 			else if(last_update < 60*60) status = Math.ceil(last_update/60)+' minutes';
 			else if(last_update < 60*60*24) status = Math.ceil(last_update/60/60)+' hours';
 			else status = Math.ceil(last_update/60/60/24)+' days';
@@ -163,15 +168,15 @@ function cache_cycle(){
 	if(!window.db) return;
   var citem = null;
   if(citem = cachequeue.shift()){
-	console.log("caching wave" + citem.waveId);
+	//console.log("caching wave" + citem.waveId);
     callbacks[wave.robot.fetchWave(citem.waveId, citem.waveId.replace(/w\+.+/g,'conv+root'))] = function(data){
-	  console.log('acquired data for' + citem.waveId);
+	  //console.log('acquired data for' + citem.waveId);
       db.transaction(function (tx) {
-		console.log('fetched wave' + citem.waveId);
+		//console.log('fetched wave' + citem.waveId);
         tx.executeSql('CREATE TABLE IF NOT EXISTS inbox (waveid, result, data, date)');
         tx.executeSql('DELETE FROM inbox WHERE waveid = ?', [citem.waveId], function(tx, results){
           tx.executeSql('INSERT INTO inbox (waveid, result, data, date) VALUES (?, ?, ?, ?)', [citem.waveId, JSON.stringify(citem), JSON.stringify(data), new Date - 0], function(){
-		  console.log("done caching wave" + citem.waveId);
+		  //console.log("done caching wave" + citem.waveId);
             if(document.getElementById(citem.waveId))
 				document.getElementById(citem.waveId).className = "search fresh_cache";
             cacheState[citem.waveId] = 2;
@@ -247,7 +252,7 @@ opt.x.no_animate = "Disable animated scrolling effect";
 opt.x.no_scrollhistory = "Do not save search scroll position and restore to it"
 opt.x.old_results = "Old results panel style";
 
-opt.x.offline = "Automatically cache inbox when online to support offline mode";
+//opt.x.offline = "Automatically cache inbox when online to support offline mode";
 
 opt.x.largeFont = 'Use a larger font';
 
@@ -709,8 +714,8 @@ ctx_menu = null;
 
 function create_contextmenu(blip){
   if(!onLine()) return document.createElement('div'); 
-//offline doesnt support queuing operations to be done when online, 
-//so just dont show prompts
+	//offline doesnt support queuing operations to be done when online, 
+	//so just dont show prompts
 
   function closectx(){
     div.style.display = 'none';
@@ -733,7 +738,7 @@ function create_contextmenu(blip){
     },//*
     "Indented": function(){
       current_blip.dom.parentNode.insertBefore(create_reply_box(true),current_blip.dom.nextSibling);
-      context_box.className = blip.childBlipIds.length > 0?"thread":"";
+      context_box.className = "thread";
       context_box.style.display = '';
       reply_text.focus();
       closectx();
@@ -859,6 +864,8 @@ function create_edit_box(){
 //File: js/gadgets.js
 
 
+//the majority of this is from the google splash project
+
 var gstates = {};
 var REMOTE_RPC_RELAY_URL =
     "http://www.gmodules.com/gadgets/files/container/rpc_relay.html";
@@ -906,9 +913,6 @@ function extractGadgetState(gadgetId) {
 
 }
 
-/**
- * Initializes the gadget system, call this once at startup.
- */
 function initGadgetSystem() {
   // Once a gadget has called us back, we can inject the state/participants.
   registerRpc("wave_enable", function(service, gadgetId, args) {
@@ -940,7 +944,6 @@ function initGadgetSystem() {
 
 
 function create_gadget_frame(id, gadget_url, container){
-    //thanks to douwe.osinga@googlewave.com for this code!
     var frameDiv = document.createElement('div');
     frameDiv.innerHTML = '<iframe name="' + id + '" >';
     var frame = frameDiv.firstChild;
@@ -965,36 +968,36 @@ function create_gadget_frame(id, gadget_url, container){
 
 
 function load_native_gadget(state, el, blip, container){
+	
   var frame_id = 'gadget_frame'+Math.random().toString(36).substr(4);
-console.log(el);
-var participants = {
-  myId: username,
-  authorId: el.properties.author,
-  participants: {}
-}
+	console.log(el);
+	var participants = {
+		myId: username,
+		authorId: el.properties.author,
+		participants: {}
+	}
 
-for(var np = [], p = msg.data.waveletData.participants, l = p.length;l--;){
-  participants.participants[p[l]] = {
-    id:p[l], 
-    displayName: p[l].replace(/@.*$/,''), 
-    thumbnailUrl: 'https://wave.google.com/a/google.com/static/images/unknown.jpg'
-  }
-}
-        
-
-
-gstates[frame_id] = {state:state, participants:participants, blipId: blip.blipId}; //todo: clean up gstates
-if(opt.gsa){ //gadget state attack 2
-  var url = 'http://anti15.chemicalservers.com/debugwave.xml';
-}else if(opt.gsa1){
-  var url = 'http://anti15.chemicalservers.com/state.xml';
-}else{
-  var url = el.properties.url;
-}
+	for(var np = [], p = msg.data.waveletData.participants, l = p.length;l--;){
+		participants.participants[p[l]] = {
+			id:p[l], 
+			displayName: p[l].replace(/@.*$/,''), 
+			thumbnailUrl: 'https://wave.google.com/a/google.com/static/images/unknown.jpg'
+		}
+	}
+					
 
 
-var gadget_url = 'http://www.gmodules.com/gadgets/ifr?container=wave&view=default&debug=0&lang=en&country=ALL&nocache=0&wave=1&mid='+encodeURIComponent(frame_id)+'&parent='+encodeURIComponent(location.protocol+'//'+location.host+location.pathname)+'&url='+encodeURIComponent(url);
+	gstates[frame_id] = {state:state, participants:participants, blipId: blip.blipId}; //todo: clean up gstates
+	if(opt.gsa){ //gadget state attack 2
+		var url = 'http://anti15.chemicalservers.com/debugwave.xml';
+	}else if(opt.gsa1){
+		var url = 'http://anti15.chemicalservers.com/state.xml';
+	}else{
+		var url = el.properties.url;
+	}
 
+
+	var gadget_url = 'http://www.gmodules.com/gadgets/ifr?container=wave&view=default&debug=0&lang=en&country=ALL&nocache=0&wave=1&mid='+encodeURIComponent(frame_id)+'&parent='+encodeURIComponent(location.protocol+'//'+location.host+location.pathname)+'&url='+encodeURIComponent(url);
 
   init_gadget_handler(function(){
     create_gadget_frame(frame_id, gadget_url, container);
@@ -1253,7 +1256,10 @@ function hide_float(){
 }
 
 function markWaveRead(){
-  wave.robot.folderAction('markAsRead', current_wave, current_wavelet);
+	var l = loading('mark as read');
+  callbacks[wave.robot.folderAction('markAsRead', current_wave, current_wavelet)] = function(){
+		loading(l)
+	};
   hide_float(); //provide user a visual indication that something happened
   search_outdated = true;
   runQueue();
@@ -1261,7 +1267,10 @@ function markWaveRead(){
 
 
 function archiveWave(){
-  wave.robot.folderAction('archive', current_wave, current_wavelet);
+	var l = loading('archive wave');
+  callbacks[wave.robot.folderAction('archive', current_wave, current_wavelet)] = function(){
+		loading(l);
+	};
   hide_float();
   runQueue();
 }
@@ -1290,12 +1299,17 @@ if(mobilewebkit){
   setInterval(document.onscroll, 1000);
 }
 
-function toggle_float(){
+
+function flicker(el,status){
 	//UI design 101: Provide user a visible indication that any action is actually being done.
-	document.getElementById('floating_menu').className = "minimized";
+	document.getElementById('floating_menu').style.backgroundColor = '#D1FCC9'
+	el.style.color = 'green';
+	el.style.fontWeight = 'bold';
 	setTimeout(function(){
-	  document.getElementById('floating_menu').className = ""; //however, flickering opacity probably isnt the best idea
-	},500);
+		el.style.color = '';
+		el.style.fontWeight = '';
+		document.getElementById('floating_menu').style.backgroundColor = '';
+	},500)
 }
 
 
@@ -1481,7 +1495,7 @@ opt.x.no_animate = "Disable animated scrolling effect";
 opt.x.no_scrollhistory = "Do not save search scroll position and restore to it"
 opt.x.old_results = "Old results panel style";
 
-opt.x.offline = "Automatically cache inbox when online to support offline mode";
+//opt.x.offline = "Automatically cache inbox when online to support offline mode";
 
 opt.x.largeFont = 'Use a larger font';
 
@@ -1846,7 +1860,7 @@ function renderBlip(markup){
     if(note.name.indexOf('user/d/') == 0){
       var user_session = note.value.split(',');
       var userid = note.name.substr(7);
-      if(new Date - parseInt(user_session[1]) < 1000 * 60 * 60){ //expire after one haor
+      if(new Date - parseInt(user_session[1]) < 1000 * 60){ //expire after one minute
         user_colors[userid] = 'rgb(' +
                 Math.floor(205-Math.random()*100).toString()+',' +
                 Math.floor(205-Math.random()*100).toString()+',' +
@@ -2201,10 +2215,8 @@ function update_search(startIndex){
   var loadId = loading(current_search);
   if(!opt.multipane) msg = {};
   
-  console.log('updatin surchk');
   extend_search(0, function(){
     loading(loadId);
-  console.log('updatin kawlkbak');
     document.getElementById('suggest').style.display = '';
     search_container.innerHTML = '';
     searchmode(0);
