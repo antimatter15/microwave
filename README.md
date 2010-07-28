@@ -9,7 +9,7 @@
 
 
 What is microwave?
-__________________
+------------------
 
 Microwave (often shortened as μwave) is a lightweight Google Wave
 client built using the Google Wave Data API. Originally it was made
