@@ -3,6 +3,20 @@ var queue = [];
 var callbacks = {};
 var id_count = 0;
 
+
+function logoff(){
+	if(confirm("Are you sure you want to log off?")){
+		var xhr = new(window.ActiveXObject||XMLHttpRequest)('Microsoft.XMLHTTP');
+		xhr.open('GET', '/logoff', true);
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState == 4){
+				getEl('login').style.display = 'none';
+			}
+		}
+		xhr.send(null);
+	}
+}
+
 function queueOp(method, params, callback){
   var id = (id_count++).toString();
   if(callback) callbacks[id] = callback;

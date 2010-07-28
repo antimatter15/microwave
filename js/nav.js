@@ -65,7 +65,7 @@ function animated_scroll(el, pos){
 }
 
 function scroll_wavepanel(pos){
-	var wcp = document.getElementById('wave_container_parent');
+	var wcp = getEl('wave_container_parent');
 	pos = pos<0?(wcp.scrollHeight+1+pos):pos;
 	if(opt.multipane){
 		if(opt.touchscroll){
@@ -88,7 +88,7 @@ function scroll_wavepanel(pos){
 }
 
 function scroll_searchpanel(pos){
-	var spc = document.getElementById('search_parent_container');
+	var spc = getEl('search_parent_container');
 	pos = pos<0?(spc.scrollHeight+1+pos):pos;
 	if(opt.multipane){
 		if(opt.touchscroll){
@@ -114,7 +114,7 @@ function scroll_searchpanel(pos){
 
 ////blow is the floaty bar
 function hide_float(){
-  document.getElementById('floating_menu').className = ""
+  getEl('floating_menu').className = ""
 }
 
 function markWaveRead(){
@@ -145,14 +145,14 @@ function update_scroll(){
   if(current_page == 0){
     searchscroll = scrollY;
   }
-  var load = document.getElementById("loading");
+  var load = getEl("loading");
   load.style.top = scrollY+'px';
   var pos = scrollY+window.innerHeight - 64
   
   if(mobilewebkit){
-		document.getElementById('floating_menu').style['-webkit-transform'] = 'translateY('+pos+'px)';
+		getEl('floating_menu').style['-webkit-transform'] = 'translateY('+pos+'px)';
 	}else{
-		document.getElementById('floating_menu').style.top = pos+'px';
+		getEl('floating_menu').style.top = pos+'px';
 	}
 
 }
@@ -166,13 +166,13 @@ if(mobilewebkit){
 
 function flicker(el,status){
 	//UI design 101: Provide user a visible indication that any action is actually being done.
-	document.getElementById('floating_menu').style.backgroundColor = '#D1FCC9'
+	getEl('floating_menu').style.backgroundColor = '#D1FCC9'
 	el.style.color = 'green';
 	el.style.fontWeight = 'bold';
 	setTimeout(function(){
 		el.style.color = '';
 		el.style.fontWeight = '';
-		document.getElementById('floating_menu').style.backgroundColor = '';
+		getEl('floating_menu').style.backgroundColor = '';
 	},500)
 }
 

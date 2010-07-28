@@ -4,25 +4,25 @@ oauth_key = localStorage.getItem('oauth_key');
 oauth_secret = localStorage.getItem('oauth_secret');
 			
  function finish_setup(){
-   var v = document.getElementById('login_code_box').value.toLowerCase();
+   var v = getEl('login_code_box').value.toLowerCase();
    var xhr = new XMLHttpRequest();
    xhr.open('GET', "http://micro-wave.appspot.com/app/get_token?code="+v, true);
    xhr.onreadystatechange = function(){
      
      if(xhr.status == 200 && xhr.readyState == 4){
         if(xhr.responseText.indexOf(';') != -1){
-         document.getElementById('login_error').innerHTML = xhr.responseText + ';' +xhr.status + ';' + xhr.readyState;
-         document.getElementById('login_error').style.display = '';
+         getEl('login_error').innerHTML = xhr.responseText + ';' +xhr.status + ';' + xhr.readyState;
+         getEl('login_error').style.display = '';
          var parts = xhr.responseText.split(';');
          oauth_key = parts[0];
 				 localStorage.setItem('oauth_key', oauth_key);
          oauth_secret = parts[1];
 				 localStorage.setItem('oauth_secret', oauth_secret);
-         document.getElementById('appheader').style.display = "";
-         document.getElementById('setupoauth').style.display = "none";
+         getEl('appheader').style.display = "";
+         getEl('setupoauth').style.display = "none";
          startup()
        }else{
-         document.getElementById('login_error').style.display = ''
+         getEl('login_error').style.display = ''
        }
      }
    }
@@ -32,13 +32,13 @@ oauth_secret = localStorage.getItem('oauth_secret');
 var last_text = '';
 setTimeout(function(){
   if(oauth_key && oauth_secret) return;
-  var v = document.getElementById('login_code_box').value.toLowerCase();
-  if(last_text != v) document.getElementById('login_error').style.display = 'none';
+  var v = getEl('login_code_box').value.toLowerCase();
+  if(last_text != v) getEl('login_error').style.display = 'none';
   last_text = v;
   if(/^[a-z]{3}\d\d[a-z]{3}$/.test(v)){
-    document.getElementById('login_button').style.display = '';
+    getEl('login_button').style.display = '';
   }else{
-    document.getElementById('login_button').style.display = 'none';
+    getEl('login_button').style.display = 'none';
   }
   setTimeout(arguments.callee, 100);
 })
@@ -47,8 +47,8 @@ setTimeout(function(){
 if(!oauth_key || !oauth_secret){
   window.NO_STARTUP = true;
   setTimeout(function(){
-      document.getElementById('appheader').style.display = "none";
-      document.getElementById('setupoauth').style.display = "";
+      getEl('appheader').style.display = "none";
+      getEl('setupoauth').style.display = "";
   },200);
 }
 

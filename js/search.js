@@ -10,7 +10,7 @@ function autosearchbox(){
 
 function autosearch(query){
   if(query == current_search && current_page == 1 && search_outdated == false && !opt.multipane){
-    document.getElementById('suggest').style.display = '';
+    getEl('suggest').style.display = '';
     searchmode(0);
     current_page = 0;
     search_container.style.display = '';
@@ -26,7 +26,7 @@ function autosearch(query){
     current_search = document.forms.searchbox.query.value = query;
     update_search();
   }
-  if(!opt.multipane) document.getElementById('floating_menu').style.display = 'none';
+  if(!opt.multipane) getEl('floating_menu').style.display = 'none';
 }
 
 function searchmode(mode){
@@ -34,8 +34,8 @@ function searchmode(mode){
   //change the little back button icon in ways which iPhone cant do
   
   //if(mobilewebkit) return;
-  //document.getElementById("search_go").style.display = mode?"none":"";
-  //document.getElementById("search_back").style.display = mode?"":"none";
+  //getEl("search_go").style.display = mode?"none":"";
+  //getEl("search_back").style.display = mode?"":"none";
 }
 
 
@@ -72,7 +72,7 @@ function update_search(startIndex){
   
   extend_search(0, function(){
     loading(loadId);
-    document.getElementById('suggest').style.display = '';
+    getEl('suggest').style.display = '';
     search_container.innerHTML = '';
     searchmode(0);
     search_container.style.display = '';

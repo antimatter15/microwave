@@ -1,6 +1,6 @@
 function loading(text, nodelay){ 
   //we need to adjust for the possibility that the load is cancelled before it's actually loaded
-	var load = document.getElementById("loading");
+	var load = getEl("loading");
 	var has_opacity = typeof document.createElement('div').style.opacity != 'undefined';
 	load.style.top = scrollY+'px';
 	if(typeof text == "number"){
@@ -22,7 +22,7 @@ function loading(text, nodelay){
         if(has_opacity)
 					load.style.opacity = "1";
 
-        document.getElementById("loadingtext").innerHTML = "<b>Loading</b> "+text;
+        getEl("loadingtext").innerHTML = "<b>Loading</b> "+text;
       }
 
     }, nodelay?0:0); //it's unnerving when things flash, so only show after a wait

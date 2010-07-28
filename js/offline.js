@@ -24,7 +24,7 @@ function onLine(){
 			else if(last_update < 60*60) status = Math.ceil(last_update/60)+' minutes';
 			else if(last_update < 60*60*24) status = Math.ceil(last_update/60/60)+' hours';
 			else status = Math.ceil(last_update/60/60/24)+' days';
-			document.getElementById('offline_status').value = 'Offline (Cache '+status+' old)';
+			getEl('offline_status').value = 'Offline (Cache '+status+' old)';
 		}
 	}
 	return val;
@@ -85,8 +85,8 @@ function cache_cycle(){
         tx.executeSql('DELETE FROM inbox WHERE waveid = ?', [citem.waveId], function(tx, results){
           tx.executeSql('INSERT INTO inbox (waveid, result, data, date) VALUES (?, ?, ?, ?)', [citem.waveId, JSON.stringify(citem), JSON.stringify(data), new Date - 0], function(){
 		  //console.log("done caching wave" + citem.waveId);
-            if(document.getElementById(citem.waveId))
-				document.getElementById(citem.waveId).className = "search fresh_cache";
+            if(getEl(citem.waveId))
+				getEl(citem.waveId).className = "search fresh_cache";
             cacheState[citem.waveId] = 2;
 			var cs = [];
 			for(var i in cacheState){

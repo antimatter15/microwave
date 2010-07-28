@@ -45,7 +45,7 @@ function loadWave(waveId, waveletId){
 
     wave_container.style.display = '';
     update_scroll();
-    document.getElementById('floating_menu').style.display = '';
+    getEl('floating_menu').style.display = '';
     if(!opt.no_autoscroll){ //ignore if zero or undefined
       //Okay, so now what? Uh.
       if(Object.keys){
@@ -79,7 +79,7 @@ function loadWave(waveId, waveletId){
     }
     
     auto_reload = false;
-    if(!opt.multipane) document.getElementById('suggest').style.display = 'none';
+    if(!opt.multipane) getEl('suggest').style.display = 'none';
     wave_container.innerHTML = ''
     
     //'<div class="wavelet" onclick="wave.robot.folderAction(\'markAsRead\', current_wave)">Mark wave as <b>Read</b> </div>';
@@ -120,7 +120,7 @@ function loadWave(waveId, waveletId){
     wave_container.appendChild(wavedata);
     
     
-    if(document.getElementById("chronos").checked){
+    if(getEl("chronos").checked){
       chronological_blip_render(wavedata)
     }else{
       if(opt.recursive_renderer || !msg.data.waveletData.rootThread){

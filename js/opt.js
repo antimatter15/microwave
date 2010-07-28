@@ -62,9 +62,9 @@ function onReady(fn){
 
 
 if(opt.multipane) {
-  document.getElementById('search_parent').insertBefore(document.getElementById('appheader'), document.getElementById('search_parent').firstChild)
+  getEl('search_parent').insertBefore(getEl('appheader'), getEl('search_parent').firstChild)
   document.body.className += ' multipane';
-  document.getElementById('header').innerHTML = '&mu;wave';
+  getEl('header').innerHTML = '&mu;wave';
   wave_container.innerHTML = "<div style='padding:40px'>No waves loaded yet</div>";
   if(location.hash.indexOf('search:') == -1){
     onReady(function(){
@@ -110,7 +110,7 @@ function addTouchScroll(){
             for(var i = 0; i < elements.length; i++){
                 var el = elements[i];
                 console.log(el);
-                if(typeof(el) == "string") el = document.getElementById(el);
+                if(typeof(el) == "string") el = getEl(el);
                 window['touchscroll'+i] = new TouchScroll(el, {elastic: true});
             }
         },100)
@@ -120,18 +120,18 @@ function addTouchScroll(){
 
 function reset_touchscroll(){
 	var search_width = 250;
-  document.getElementById('wave_container_parent').style.width = (innerWidth-search_width)+'px';
-  document.getElementById('wave_container').style.width = (innerWidth-search_width)+'px';
-  document.getElementById('search_parent').style.width = search_width+'px';
-  document.getElementById('search_parent_container').style.width = search_width+'px';
+  getEl('wave_container_parent').style.width = (innerWidth-search_width)+'px';
+  getEl('wave_container').style.width = (innerWidth-search_width)+'px';
+  getEl('search_parent').style.width = search_width+'px';
+  getEl('search_parent_container').style.width = search_width+'px';
 }
 
 if(opt.touchscroll && opt.multipane){
   addTouchScroll('wave_container_parent', 'search_parent_container')
-	document.getElementById('wave_container_parent').style.overflow = 'hidden'
-  document.getElementById('search_parent').style.overflow = 'hidden';
-  document.getElementById('search_parent_container').style.overflow = 'hidden';
-  document.getElementById('wave_container').style.overflow = 'hidden';
+	getEl('wave_container_parent').style.overflow = 'hidden'
+  getEl('search_parent').style.overflow = 'hidden';
+  getEl('search_parent_container').style.overflow = 'hidden';
+  getEl('wave_container').style.overflow = 'hidden';
 	reset_touchscroll()
 	window.onorientationchange = reset_touchscroll;
 	window.addEventListener('resize', reset_touchscroll, true)

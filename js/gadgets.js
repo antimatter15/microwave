@@ -55,7 +55,7 @@ function initGadgetSystem() {
   });
 
   registerRpc("resize_iframe", function(service, gadgetId, args) {
-    document.getElementById(gadgetId).height = args[0]
+    getEl(gadgetId).height = args[0]
   });
 
   gadgets.rpc.registerDefault(function() {
