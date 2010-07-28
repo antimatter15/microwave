@@ -556,3 +556,11 @@ body.online .offline {
 #menu_contents a{
   text-decoration: none;
 }
+
+.css_search_go {
+	border-color: transparent transparent transparent #345699;
+	border-style:solid;
+	border-width: 10px 20px 10px 20px;
+	margin-top: 3px;
+	margin-left:8px
+}
