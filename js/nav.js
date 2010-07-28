@@ -1,5 +1,8 @@
 //navigation stuffs
 var lastscrolled = ""
+var gstates = {};
+
+
 function blip_scroll(index){
 	if(index < 0) index = chronological_blips.length + index;
   try{

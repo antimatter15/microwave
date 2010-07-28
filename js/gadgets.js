@@ -1,6 +1,5 @@
 //the majority of this is from the google splash project
 
-var gstates = {};
 
 function registerRpc(service, handler) {
   gadgets.rpc.register(service, function() {

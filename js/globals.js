@@ -16,6 +16,7 @@ var search_outdated = false;
 var searchscroll = 0;
 var scrollto_position = -1;
 
+
 if(mobilewebkit) document.body.className += ' mobilewebkit'; //yeah i know browser detection is bad, but how do i get around it here? 
 
 if(!window.onLine) window.onLine = function(){return true};
