@@ -160,6 +160,6 @@ function flicker(el){
 	setTimeout(function(){
 		el.style.color = '';
 		el.style.fontWeight = '';
-	},500)
+	},1500)
 }
 

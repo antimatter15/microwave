@@ -82,6 +82,8 @@ blockquote {
 .wavelet {
   -webkit-box-shadow: 3px 3px 4px #C4C2C3; 
   -moz-box-shadow: 3px 3px 4px #C4C2C3; 
+	-o-box-shadow: 3px 3px 4px #C4C2C3; 
+  box-shadow: 3px 3px 4px #C4C2C3; 
 }
 
 .wavelet, .footer {
