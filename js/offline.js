@@ -20,7 +20,7 @@ function onLine(){
 		var last_update = (+new Date - parseInt(localStorage.getItem('cache_last_updated')))/1000;
 		if(!isNaN(last_update)){
 			var status = '';
-			if(last_update < 60) status = 'less than a minute';
+			if(last_update < 90) status = 'a minute';
 			else if(last_update < 60*60) status = Math.ceil(last_update/60)+' minutes';
 			else if(last_update < 60*60*24) status = Math.ceil(last_update/60/60)+' hours';
 			else status = Math.ceil(last_update/60/60/24)+' days';
