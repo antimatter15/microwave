@@ -60,7 +60,9 @@ function inline_blip_render(blipid){
 
 document.body.onclick = function(e){
 	e = e || window.event;
-	var src = (e.target||e.srcElement);
+	var osrc = (e.target||e.srcElement), src = osrc;
+	if(osrc.tagName == 'A') return;
+	
 	while(src && !src.info && !src.blipId && src.tagName != 'HEAD'){
 		src = src.parentNode;
 	}
@@ -111,28 +113,7 @@ function blip_render(blipid, parent){ //a wrapper around renderBlip that adds ch
   
   info.innerHTML = "<div style='float:right;color:#555'>"+format_time(blip.lastModifiedTime).toString()+nextblip;//<b>By</b> ";
   info.appendChild(userList(blip.contributors));
-  
-  /*
-  info.onclick = function(e){
-    e = e || window.event;
-    e.cancelBubble = true;
-    if(e.stopPropagation) e.stopPropagation();
-    var tag = (e.target||e.srcElement).tagName.toLowerCase();
-    if(tag != "a"){
-     blip_next(blip.blipId)
-    }
-  }
-  doc.onclick = function(e){
-    e = e || window.event;
-    e.cancelBubble = true;
-    if(e.stopPropagation) e.stopPropagation();
-    var tag = (e.target||e.srcElement).tagName.toLowerCase();
-    if(tag != "a"){
-      console.log(blip);
-      info.parentNode.insertBefore(create_contextmenu(blip), info.nextSibling);
-    }
-  }
-  */
+
   doc.insertBefore(info, doc.firstChild);
   parent.appendChild(doc);
   
