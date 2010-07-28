@@ -90,6 +90,36 @@ opt.fn.init();
 
 
 
+//File: js/globals.js
+
+
+if(!window.console) console = {log: function(){}};
+var screen_size = (document.documentElement.clientWidth||innerWidth), small_screen = (screen_size<500);
+var loadIds = {};
+var current_search = '';
+var searchLastIndex = 0;
+var edit_box, edit_text;
+var search_container = document.getElementById('search_container');
+var wave_container = document.getElementById('wave_container');
+var mobilewebkit = navigator.userAgent.indexOf("WebKit") != -1 && navigator.userAgent.indexOf("Mobile")!=-1;
+var current_wave = "";
+var current_wavelet = "";
+var auto_reload = false;
+var lasthash = 'chunkybacon';
+var current_page = 0; //0 = search, 1 = wave
+var search_outdated = false;
+var searchscroll = 0;
+var scrollto_position = -1;
+
+
+if(mobilewebkit) document.body.className += ' mobilewebkit'; //yeah i know browser detection is bad, but how do i get around it here? 
+
+if(!window.onLine) window.onLine = function(){return true};
+
+
+
+
+
 //File: js/offline.js
 
 
@@ -127,6 +157,8 @@ function onLine(){
 
 
 var cachequeue = [], db = null;
+
+
 function open_db(){
 	if(!window.db && window.openDatabase){
 		window.db = openDatabase('waves', '1.0', 'Offline Wave Cache', 1024 * 1024);
@@ -153,15 +185,16 @@ function offline_cache(){
 }
 
 var cacheState = {}; //0 = uncached, 1 = cached but outdated, 2 = cached and new
-try{
-	if(window.localStorage && localStorage.cacheState){
-		var cs = JSON.parse(localStorage.getItem('cacheState'));
-		for(var i = 0; i < cs.length; i++){
-			cacheState[cs[i]] = 1;
+(function(){
+	try{
+		if(window.localStorage && localStorage.cacheState){
+			var cs = JSON.parse(localStorage.getItem('cacheState'));
+			for(var i = 0; i < cs.length; i++){
+				cacheState[cs[i]] = 1;
+			}
 		}
-	}
-}catch(err){}
-
+	}catch(err){}
+})();
 
 
 function cache_cycle(){
@@ -206,35 +239,6 @@ function resultClass(waveId){
 		return 'fresh_cache';
 	}
 }
-
-
-
-//File: js/globals.js
-
-
-if(!window.console) console = {log: function(){}};
-var screen_size = (document.documentElement.clientWidth||innerWidth), small_screen = (screen_size<500);
-var loadIds = {};
-searchLastIndex = 0;
-current_search = '';
-var edit_box, edit_text;
-var search_container = document.getElementById('search_container');
-var wave_container = document.getElementById('wave_container');
-var mobilewebkit = navigator.userAgent.indexOf("WebKit") != -1 && navigator.userAgent.indexOf("Mobile")!=-1;
-var current_wave = "";
-var current_wavelet = "";
-var auto_reload = false;
-var lasthash = 'chunkybacon';
-var current_page = 0; //0 = search, 1 = wave
-var search_outdated = false;
-var searchscroll = 0;
-var scrollto_position = -1;
-
-if(mobilewebkit) document.body.className += ' mobilewebkit'; //yeah i know browser detection is bad, but how do i get around it here? 
-
-if(!window.onLine) window.onLine = function(){return true};
-
-
 
 
 
@@ -535,7 +539,9 @@ function inline_blip_render(blipid){
 
 document.body.onclick = function(e){
 	e = e || window.event;
-	var src = (e.target||e.srcElement);
+	var osrc = (e.target||e.srcElement), src = osrc;
+	if(osrc.tagName == 'A') return;
+	
 	while(src && !src.info && !src.blipId && src.tagName != 'HEAD'){
 		src = src.parentNode;
 	}
@@ -586,28 +592,7 @@ function blip_render(blipid, parent){ //a wrapper around renderBlip that adds ch
   
   info.innerHTML = "<div style='float:right;color:#555'>"+format_time(blip.lastModifiedTime).toString()+nextblip;//<b>By</b> ";
   info.appendChild(userList(blip.contributors));
-  
-  /*
-  info.onclick = function(e){
-    e = e || window.event;
-    e.cancelBubble = true;
-    if(e.stopPropagation) e.stopPropagation();
-    var tag = (e.target||e.srcElement).tagName.toLowerCase();
-    if(tag != "a"){
-     blip_next(blip.blipId)
-    }
-  }
-  doc.onclick = function(e){
-    e = e || window.event;
-    e.cancelBubble = true;
-    if(e.stopPropagation) e.stopPropagation();
-    var tag = (e.target||e.srcElement).tagName.toLowerCase();
-    if(tag != "a"){
-      console.log(blip);
-      info.parentNode.insertBefore(create_contextmenu(blip), info.nextSibling);
-    }
-  }
-  */
+
   doc.insertBefore(info, doc.firstChild);
   parent.appendChild(doc);
   
@@ -738,8 +723,13 @@ function create_edit_box(){
 }
 
 
-function create_reply_box(indented){
-	var box = create_magic_box('<b>Write a Reply</b>', function(value){
+function create_reply_box(indented){ //REMEMBER TO REMOVE INFO ONCE GOOGLE FIXES THE BUG
+	var info = '';
+	if(!indented){
+		info = ' Note the current version of the wave data API does not support creating continuations of a thread, thus all responses will be indented. Hopefully, this will be fixed shortly.'
+		indented = true;
+	}
+	var box = create_magic_box('<b>Write a Reply</b>'+info, function(value){
 		if(indented){
 			wave.blip.contentCreateChild(value,current_blip.blipId,current_blip.waveId,current_blip.waveletId);
 		}else{
@@ -807,6 +797,7 @@ function create_contextmenu(blip){
 						
 				if(thread.length -1 == tpos){
 					//last one: no indent
+					
 					var box = create_reply_box()
 					box.className = ""; //this used to suffice, but not so much anymore
 				}else{
@@ -907,11 +898,6 @@ function create_contextmenu(blip){
 
 //the majority of this is from the google splash project
 
-var gstates = {};
-var REMOTE_RPC_RELAY_URL =
-    "http://www.gmodules.com/gadgets/files/container/rpc_relay.html";
-
-var DEFAULT_GADGET_MODE = {'${playback}': '0', '${edit}': '1'};
 
 function registerRpc(service, handler) {
   gadgets.rpc.register(service, function() {
@@ -939,8 +925,9 @@ function init_gadget_handler(callback){
   }
 }
 
-function extractGadgetState(gadgetId) {
-  // TODO: Use global objects or pool?
+function extractGadgetState(gadgetId) {	
+	var DEFAULT_GADGET_MODE = {'${playback}': '0', '${edit}': '1'};
+
   console.log(gadgetId)
   var participants = gstates[gadgetId].participants;
   var state = gstates[gadgetId].state;
@@ -956,6 +943,10 @@ function extractGadgetState(gadgetId) {
 
 function initGadgetSystem() {
   // Once a gadget has called us back, we can inject the state/participants.
+  var REMOTE_RPC_RELAY_URL =
+    "http://www.gmodules.com/gadgets/files/container/rpc_relay.html";
+
+  
   registerRpc("wave_enable", function(service, gadgetId, args) {
     gadgets.rpc.setRelayUrl(gadgetId, REMOTE_RPC_RELAY_URL);
     extractGadgetState(gadgetId);
@@ -1182,6 +1173,9 @@ function loading(text, nodelay){
 
 //navigation stuffs
 var lastscrolled = ""
+var gstates = {};
+
+
 function blip_scroll(index){
 	if(index < 0) index = chronological_blips.length + index;
   try{
@@ -1865,7 +1859,7 @@ function thread_render(blipid, parent){
     threadel.className = "thread"; //the little dropshadow
     parent.appendChild(threadel);
     
-    for(t = 0; t < tlen; t++){
+    for(var t = 0; t < tlen; t++){
       var threadid = threads[t];
       var thread = msg.data.threads[threadid]; //get a reference to the specific thread
       for(var children = thread.blipIds, clen = children.length, c = 0; c < clen; c++){
@@ -1876,6 +1870,7 @@ function thread_render(blipid, parent){
   }
   return doc;
 }
+
 
 
 //File: js/render.js
