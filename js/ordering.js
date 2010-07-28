@@ -87,7 +87,7 @@ function thread_render(blipid, parent){
     threadel.className = "thread"; //the little dropshadow
     parent.appendChild(threadel);
     
-    for(t = 0; t < tlen; t++){
+    for(var t = 0; t < tlen; t++){
       var threadid = threads[t];
       var thread = msg.data.threads[threadid]; //get a reference to the specific thread
       for(var children = thread.blipIds, clen = children.length, c = 0; c < clen; c++){
