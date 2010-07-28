@@ -103,6 +103,7 @@ if(!window.resultClass){
 function extend_search(startIndex, callback){
   searchLastIndex = startIndex;
   search_outdated = false;
+  window._gaq && _gaq.push(['_trackEvent', 'Search', 'Load Search Page', current_search]);
   var search_callback = function(data){
     if(callback)callback();
     //msg = data; //globalization is bad

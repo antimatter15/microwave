@@ -666,6 +666,7 @@ function create_reply_box(indented){
     }
     post.onclick = function(){
       reply_text.disabled = "disabled";
+      post.disabled = 'disabled';
       setTimeout(function(){
         if(indented){
           wave.blip.contentCreateChild(reply_text.value,current_blip.blipId,current_blip.waveId,current_blip.waveletId);
@@ -709,7 +710,7 @@ function create_reply_box(indented){
 }
 
 
-ctx_menu = null;
+var ctx_menu = null;
 
 
 function create_contextmenu(blip){
@@ -721,17 +722,36 @@ function create_contextmenu(blip){
     div.style.display = 'none';
     div.parentNode.removeChild(div);
   }
-  try{
-    ctx_menu.style.display = 'none'
-    ctx_menu.parentNode.removeChild(ctx_menu);
-  }catch(err){}
+  
+  if(ctx_menu){
+		ctx_menu.style.display = 'none'
+		if(ctx_menu.parentNode) ctx_menu.parentNode.removeChild(ctx_menu);
+		delete ctx_menu;
+	}
+	
   var div = document.createElement("div");
   current_blip = blip;
   div.style.zIndex = 32;
   var actions = {
     "Reply": function(){
-      current_blip.dom.parentNode.insertBefore(create_reply_box(),current_blip.dom.nextSibling);
-      context_box.className = blip.childBlipIds.length > 0?"thread":"";
+      
+      
+      //context_box.className = blip.childBlipIds.length > 0?"thread":""; //this used to suffice, but not so much anymore
+      
+      try{
+				var thread = blip.threadId?msg.data.threads[blip.threadId].blipIds:msg.data.waveletData.rootThread.blipIds, 
+						tpos = thread.indexOf(blip.blipId);
+				if(thread.length -1 == tpos){
+					//last one: no indent
+					current_blip.dom.parentNode.insertBefore(create_reply_box(),current_blip.dom.nextSibling);
+					context_box.className = ""; //this used to suffice, but not so much anymore
+				}else{
+					//not last one: indent
+					current_blip.dom.parentNode.insertBefore(create_reply_box(true),current_blip.dom.nextSibling);
+					context_box.className = "thread"; //this used to suffice, but not so much anymore
+				}
+			}catch(err){}
+      
       context_box.style.display = '';
       reply_text.focus();
       closectx();
@@ -2248,6 +2268,7 @@ if(!window.resultClass){
 function extend_search(startIndex, callback){
   searchLastIndex = startIndex;
   search_outdated = false;
+  window._gaq && _gaq.push(['_trackEvent', 'Search', 'Load Search Page', current_search]);
   var search_callback = function(data){
     if(callback)callback();
     //msg = data; //globalization is bad
@@ -2406,6 +2427,7 @@ function loadWave(waveId, waveletId){
   	waveletId = waveletId || waveId.replace(/[\/!].+/,'!conv+root');
 	}
   var load_callback = function(waveContent){
+		window._gaq && _gaq.push(['_trackEvent', 'Wave', 'Load Wave', waveContent.data.waveletData.title]);
     loading(loadId);
     console.log(waveContent);
     if(waveContent.error){
