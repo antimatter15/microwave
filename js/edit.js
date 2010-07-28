@@ -15,6 +15,8 @@ function diff(a, b){
 
 
 var current_blip = null, context_box, reply_box, reply_text, cancel, post;
+
+
 function create_reply_box(indented){
   if(window.content_box){
     try{
