@@ -161,13 +161,13 @@ if(mobilewebkit){
 
 function flicker(el,status){
 	//UI design 101: Provide user a visible indication that any action is actually being done.
+	document.getElementById('floating_menu').style.backgroundColor = '#D1FCC9'
 	el.style.color = 'green';
 	el.style.fontWeight = 'bold';
-	var l = loading(status);
 	setTimeout(function(){
-		loading(l);
 		el.style.color = '';
 		el.style.fontWeight = '';
-	},1500)
+		document.getElementById('floating_menu').style.backgroundColor = '';
+	},500)
 }
 

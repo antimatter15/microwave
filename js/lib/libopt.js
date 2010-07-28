@@ -64,7 +64,7 @@ opt.fn = {
     
     e.style.backgroundColor = '#fff';
     e.style.padding = '0';
-    e.style.zIndex = 999999999999;
+    e.style.zIndex = 99999999;
     e.onclick = function(e){
       e = e || window.event;
       var tag = (e.target||e.srcElement).tagName.toLowerCase();
