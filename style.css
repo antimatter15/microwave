@@ -202,6 +202,7 @@ iframe {
   color: gray;
 }
 
+
 #orphans {
   border-left: 20px solid #FFD885;
   padding-left: 5px;
@@ -221,7 +222,7 @@ iframe {
   padding-bottom: 2px;
   border-bottom: 1px solid lightgray;
   margin-left: 2px;
-  min-height: 25px;
+  min-height: 40px;
   word-wrap: break-word;
   font-size: 100%;
 }
@@ -489,14 +490,16 @@ body.online .offline {
   -o-transition-duration: .2s, .5s;
   -o-transition-timing-function: ease-out, linear;
 }
-
-
-.fresh_cache .title_read, .fresh_cache .title_unread {
-  color: #074500;
+.cachestate {
+  color: gray;
 }
 
-.old_cache .title_read, .old_cache .title_unread {
-	color: #453000;
+.fresh_cache .cachestate {
+  color: #11AB00;
+}
+
+.old_cache .cachestate {
+	color: #956700;
 }
 
 

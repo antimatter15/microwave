@@ -139,8 +139,12 @@ function extend_search(startIndex, callback){
       }else{
         var msg = item.unreadCount>0?("<span class='unread_msg'><span class='bubble'>"+item.unreadCount+"</span> of "+item.blipCount+"</span>")
         :("<span class='read_msg'>"+item.blipCount+" msgs</span>");
+        
         var time = format_time(item.lastModified);
-        var content = '<div class="search '+resultClass(item.waveId)+'"><div class="date">'+time+'<br>'+msg+'</div><span class="title_'+(item.unreadCount > 0 ? "unread": "read")+'">' + item.title+"</span> <span class='snippet'>"+ item.snippet +"</span></div>";
+				var cache = opt.offline?'<br><span class="cachestate">cache</span>':'';
+        var content = '<div id="'+item.waveId+'" class="search '+resultClass(item.waveId)+'">'+
+						'<div class="date">'+time+'<br>'+msg+cache+'</div><span class="title_'+(item.unreadCount > 0 ? "unread": "read")+
+						'">' + item.title+"</span> <span class='snippet'>"+ item.snippet +"</span> </div>";
         
         if(item.waveId.indexOf('treq') != -1){
           shtml += '<a class="searchlink">'+content+'</a>'
