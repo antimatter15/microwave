@@ -14,108 +14,89 @@ function diff(a, b){
 }
 
 
-var current_blip = null, context_box, reply_box, reply_text, cancel, post;
+var current_blip = null;
+var ctx_menu = null;
 
 
-
-function create_edit_box(){
-  edit_box = document.createElement('div');
-  edit_box.style.marginRight = "6px";
-  edit_box.innerHTML = "<div class='alert'><b>Edit Blip</b> (Beta)</div>"
-  edit_text = document.createElement('textarea');
-  cancel_edit = document.createElement('button');
-  submit_edit = document.createElement('button');
-  cancel_edit.innerHTML = 'Cancel';
-  submit_edit.innerHTML = 'Submit';
-  cancel_edit.onclick = function(){
-    edit_box.style.display = 'none';
+function create_magic_box(name, submit_callback){
+  var parent = document.createElement('div');
+  parent.style.marginRight = "6px";
+  parent.innerHTML = "<div class='alert'>"+name+"</div>"
+  var textbox = document.createElement('textarea');
+  var cancelbtn = document.createElement('button');
+  var submitbtn = document.createElement('button');
+  cancelbtn.innerHTML = 'Cancel';
+  submitbtn.innerHTML = 'Submit';
+  cancelbtn.onclick = function(){
+    parent.style.display = 'none';
     current_blip = null;
+    if(textbox.value.split(' ').length < 42 || confirm("Are you sure you want to cancel?")){
+			parent.style.display = 'none';
+			current_blip = null;
+		}
   }
-  submit_edit.onclick = function(){
-    edit_text.disabled = "disabled";
+  submitbtn.onclick = function(){
+    textbox.disabled = "disabled";
+    submitbtn.disabled = 'disabled';
     setTimeout(function(){
-      var rep_start = 0;
-      try{
-        for(var l = current_blip.annotations.length, i = 0;
-          i < l && current_blip.annotations[i].name != 'conv/title'; i++){};
-        if(i < l) rep_start = current_blip.annotations[i].range.end;
-      }catch(err){}
-      
-      
-      var change = diff(current_blip.content.substr(rep_start), '\n'+edit_text.value);
-      console.log(change);
-      console.log(current_blip.content, '\n'+edit_text.value)
-      
-      wave.blip.replace_range(change[2], 
-                              rep_start + change[0], 
-                              rep_start + change[1], 
-                              current_blip.blipId, current_blip.waveId, current_blip.waveletId)
-      loadWave(current_blip.waveId);
-      auto_reload = true;
-      runQueue()
+      submit_callback(textbox.value);
     },100);
   }
-  edit_box.style.marginTop = '10px';
-  edit_box.appendChild(edit_text);
-  edit_box.appendChild(submit_edit);
-  edit_box.appendChild(cancel_edit);
   
-  var boxheight = Math.max(current_blip.dom.offsetHeight,100)
-  edit_text.style.height = boxheight+'px';
-  edit_text.className = 'edit_box'
-
-  return edit_box;
+  parent.style.marginTop = '10px';
+  parent.appendChild(textbox);
+  parent.appendChild(submitbtn);
+  parent.appendChild(cancelbtn);
+  parent.textbox = textbox; //i sure hope this isn't leaky
+  
+  return parent;
 }
 
 
 
-function create_reply_box(indented){
-  if(window.content_box){
-    try{
-    content_box.innerHTML = '';
-    content_box.parentNode.removeChild(content_box)
-    }catch(err){};
-  }
-  //if(!context_box || context_box.innerHTML == ''){ //ie does suck doesnt it
-    context_box = document.createElement('div');
-    reply_box = document.createElement('div');
-    reply_box.innerHTML = "<div class='alert'><b>Write a Reply</b></div>"
-    reply_text = document.createElement('textarea');
-    cancel = document.createElement('button');
-    post = document.createElement('button');
-    //post.style['float'] = 'right';
-    //cancel.style['float'] = 'right';
-    cancel.innerHTML = 'Cancel';
-    post.innerHTML = 'Post';
-    cancel.onclick = function(){
-      if(reply_text.value.split(' ').length < 42 || confirm("Are you sure you want to cancel?")){
-        context_box.style.display = 'none';
-        current_blip = null;
-      }
-    }
-    post.onclick = function(){
-      reply_text.disabled = "disabled";
-      post.disabled = 'disabled';
-      setTimeout(function(){
-        if(indented){
-          wave.blip.contentCreateChild(reply_text.value,current_blip.blipId,current_blip.waveId,current_blip.waveletId);
-        }else{
-          wave.blip.contentContinueThread(reply_text.value,current_blip.blipId,current_blip.waveId,current_blip.waveletId);
-        }
-        loadWave(current_blip.waveId);
-        auto_reload = true;
-        runQueue()
-      },100);
-    }
-    context_box.style.marginTop = '10px';
-    reply_box.appendChild(reply_text);
-    reply_box.appendChild(post);
-    reply_box.appendChild(cancel);
-    context_box.appendChild(reply_box);
-  //}
-  context_box.style.display = 'none';
-  reply_text.disabled = "";
+function create_edit_box(){
+	var box = create_magic_box('<b>Edit blip</b> (Beta)', function(value){
+		var rep_start = 0;
+		try{
+			for(var l = current_blip.annotations.length, i = 0;
+				i < l && current_blip.annotations[i].name != 'conv/title'; i++){};
+			if(i < l) rep_start = current_blip.annotations[i].range.end;
+		}catch(err){}
+		
+		var change = diff(current_blip.content.substr(rep_start), '\n'+value);
+		console.log(change);
+		console.log(current_blip.content, '\n'+edit_text.value)
+		
+		wave.blip.replace_range(change[2], 
+														rep_start + change[0], 
+														rep_start + change[1], 
+														current_blip.blipId, current_blip.waveId, current_blip.waveletId)
+		loadWave(current_blip.waveId);
+		auto_reload = true;
+		runQueue()
+	})
+	
+	var edit_text = box.textbox;
+	var boxheight = Math.max(current_blip.dom.offsetHeight,100)
+  edit_text.style.height = boxheight+'px';
+  edit_text.className = 'edit_box'
   
+  return box;
+}
+
+
+function create_reply_box(indented){
+	var box = create_magic_box('<b>Write a Reply</b>', function(value){
+		if(indented){
+			wave.blip.contentCreateChild(value,current_blip.blipId,current_blip.waveId,current_blip.waveletId);
+		}else{
+			wave.blip.contentContinueThread(value,current_blip.blipId,current_blip.waveId,current_blip.waveletId);
+		}
+		loadWave(current_blip.waveId);
+		auto_reload = true;
+		runQueue()
+	})
+
   var addonsig = '';
   if(navigator.userAgent.indexOf("Opera Mini") != -1){
     addonsig = " on Opera Mini"
@@ -131,15 +112,15 @@ function create_reply_box(indented){
     }
   }
   
-  reply_text.value = '';
+  if(!opt.no_sig) box.textbox.value = '\n\nPosted with micro-wave.appspot.com'+addonsig;
   
-  if(!opt.no_sig) reply_text.value = '\n\nPosted with micro-wave.appspot.com'+addonsig;
-  reply_text.className = 'reply_box';
-  return context_box;
+  box.textbox.className = 'reply_box';
+  
+  return box
 }
 
 
-var ctx_menu = null;
+
 
 
 function create_contextmenu(blip){
@@ -172,25 +153,25 @@ function create_contextmenu(blip){
 						tpos = thread.indexOf(blip.blipId);
 				if(thread.length -1 == tpos){
 					//last one: no indent
-					current_blip.dom.parentNode.insertBefore(create_reply_box(),current_blip.dom.nextSibling);
+					var box = create_reply_box()
 					context_box.className = ""; //this used to suffice, but not so much anymore
 				}else{
 					//not last one: indent
-					current_blip.dom.parentNode.insertBefore(create_reply_box(true),current_blip.dom.nextSibling);
+					var box = create_reply_box(true)
 					context_box.className = "thread"; //this used to suffice, but not so much anymore
 				}
 			}catch(err){}
       
-      context_box.style.display = '';
-      reply_text.focus();
+			current_blip.dom.parentNode.insertBefore(box,current_blip.dom.nextSibling);
+      box.textbox.focus();
       closectx();
     },//*
     "Indented": function(){
 			window._gaq && _gaq.push(['_trackEvent', 'Modify', 'Create Indented Reply']);
-      current_blip.dom.parentNode.insertBefore(create_reply_box(true),current_blip.dom.nextSibling);
-      context_box.className = "thread";
-      context_box.style.display = '';
-      reply_text.focus();
+			var box = create_reply_box(true);
+      current_blip.dom.parentNode.insertBefore(box,current_blip.dom.nextSibling);
+      box.className = "thread";
+      box.textbox.focus();
       closectx();
     },//*/
     "Delete": function(){
@@ -208,8 +189,9 @@ function create_contextmenu(blip){
     },
     "Edit": function(){
 			window._gaq && _gaq.push(['_trackEvent', 'Modify', 'Edit existing blip']);
-			
-      current_blip.dom.parentNode.insertBefore(create_edit_box(),current_blip.dom.nextSibling);
+			var box = create_edit_box();
+      current_blip.dom.parentNode.insertBefore(box,current_blip.dom.nextSibling);
+      
       //TODO: MAKE THIS PURTIER
       var rep_start = 0;
       try{
@@ -218,8 +200,8 @@ function create_contextmenu(blip){
         if(i < l) rep_start = current_blip.annotations[i].range.end;
       }catch(err){}
       
-      edit_text.value = current_blip.content.substr(rep_start + 1); //first char is a newline
-      edit_text.focus();
+      box.textbox.value = current_blip.content.substr(rep_start + 1); //first char is a newline
+      box.textbox.focus();
       closectx();
     }
   };
