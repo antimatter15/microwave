@@ -124,7 +124,7 @@ function onLine(){
 var cachequeue = [], db = null;
 function open_db(){
 	if(!window.db && window.openDatabase){
-		window.db = openDatabase('waves', '1.0', 'Offline Wave Cache', 5 * 1024 * 1024);
+		window.db = openDatabase('waves', '1.0', 'Offline Wave Cache', 1024 * 1024);
 	}
 }
 
@@ -633,6 +633,8 @@ function diff(a, b){
 
 
 var current_blip = null, context_box, reply_box, reply_text, cancel, post;
+
+
 function create_reply_box(indented){
   if(window.content_box){
     try{
@@ -1315,6 +1317,10 @@ function getUsername(){
   };
 }
 
+function clean_text(text){
+	return text.replace(/[\0-\x09\x0b-\x1f\x7f\x80-\x9f\u2028\u2029\ufff9\ufffa\ufffb\u200e\u200f\u202a-\u202e]/g,'');
+}
+
 
 wave = {
   robot:{
@@ -1396,9 +1402,11 @@ wave = {
     },
     //this is actually pretty different from others, it's just a shortcut for another one
     "replace": function(content, blipId, waveId, waveletId){
+			content = clean_text(content);
       return wave.document.modify({modifyHow: "REPLACE", values: ['\n'+content]}, blipId, waveId, waveletId)
     },
     "replace_range": function(content, start, end, blipId, waveId, waveletId){
+			content = clean_text(content);
       return wave.document.modify_range({modifyHow: "REPLACE", values: [content]}, start, end, blipId, waveId, waveletId)
     },
     "update_element": function(properties, blipId, waveId, waveletId){
@@ -1423,9 +1431,11 @@ wave = {
     },
     
     "insert": function(content, blipId, waveId, waveletId){
+			content = clean_text(content);
       return wave.document.modify({modifyHow: "INSERT", values: ['\n'+content]}, blipId, waveId, waveletId)
     },
     "append": function(content, blipId, waveId, waveletId){
+			content = clean_text(content);
       return wave.document.modify({modifyHow: "INSERT_AFTER", values: [content]}, blipId, waveId, waveletId)
     },
 
