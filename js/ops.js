@@ -15,7 +15,6 @@ function clean_text(text){
 	return text.replace(/[\0-\x09\x0b-\x1f\x7f\x80-\x9f\u2028\u2029\ufff9\ufffa\ufffb\u200e\u200f\u202a-\u202e]/g,'');
 }
 
-
 wave = {
   robot:{
     fetchWave: function(waveId, waveletId){
@@ -124,6 +123,24 @@ wave = {
       })
     },
     
+    "upload_attachment": function(contents, caption, blipId, waveId, waveletid){
+			return queueOp('wave.document.modify', {
+				"blipId": blipId, 
+				"waveletId": waveletId, 
+				"waveId": waveId, 
+				"modifyAction": 
+					{
+						"modifyHow": "INSERT_AFTER", 
+						"elements": [{
+							"type": "ATTACHMENT", 
+							"properties":  {
+								"caption": caption, 
+								"data": contents + "\n"
+							}
+						}]
+					}
+				})
+		},
     "insert": function(content, blipId, waveId, waveletId){
 			content = clean_text(content);
       return wave.document.modify({modifyHow: "INSERT", values: ['\n'+content]}, blipId, waveId, waveletId)
