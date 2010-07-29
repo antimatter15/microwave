@@ -1,15 +1,157 @@
+function OperationQueue(){
+  this.op_len = 0;
+  this.ops = [];
+}
+OperationQueue.prototype.new_operation = function(method, params){
+  var op = new Operation('op'+(this.op_len++), method, params);
+  this.ops.push(op);
+  return op
+}
+
+
+OperationQueue.prototype.serialize = function(){
+  for(var l = this.ops.length, i = 0, s = []; i < l; i++) s.push(this.ops[i].op);
+  return s;
+}
+
+
+OperationQueue.prototype.document_modify = function(waveId, waveletId, blipId){
+  return this.new_operation('document.modify', {waveId: waveId, waveletId: waveletId, blipId: blipId})
+}
+
+
+function Operation(id, method, params){
+  this.op = {
+    id: id,
+    method: 'wave.'+method,
+    params: params || {}
+  };
+}
+
+Operation.prototype.set_param = function(param, value){
+  this.op.params[param] = value;
+}
+
 function Annotation(name, value, start, end){
-  return {
-    serialize: function(){
-      return {'name': name,
-            'value': value,
-            'range': {'start': start,
-                      'end': end}}
+  this.start = start;
+  this.end = end;
+  this.value = value;
+  this.name = name;
+  this.serialize = function(){
+    return {
+      name: this.name, 
+      value: this.value, 
+      range: {
+        start: this.start, 
+        end: this.end
+      }
     }
+  }
+  this._shift = function(where, inc){
+    if(this.start >= where) this.start += inc;
+    if(this.end >= where) this.end += inc;
   }
 }
 
 
+function Annotations(blip){
+  this.blip = blip;
+  this.store = {};
+  
+  this._add_internal = function(name, value, start, end){
+    if(name in this.store){
+      var new_list = [];
+      var existing_list = this.store[name];
+      for(var l = existing_list.length, i = 0; i < l; i++){
+        var existing = existing_list[i];
+        if(start > existing.end || end < existing.start)
+          new_list.push(existing);
+        else {
+          if(existing.value == value){
+            start = Math.min(existing.start, start);
+            end = Math.max(existing.end, end);
+          }else{
+            if(existing.start < start) new_list.push(new Annotation(existing.name, existing.value, existing.start, start));
+            if(existing.end > end) new_list.push(new Annotation(existing.name, existing.value, existing.end, end));
+          }
+        }
+      }
+      new_list.push(new Annotation(name, value, start, end));
+      this.store[name] = new_list;
+    }
+  }
+  this._delete_internal = function(name, start, end){
+    if(!(name in this.store)) return;
+    if(end < 0 || !end) end = this.blip._content.length + end;
+    var new_list = [];
+    var existing_list = this.store[name];
+    for(var l = existing_list.length, i = 0; i < l; i++){
+      var existing = existing_list[i];
+      if(start > existing.end || end < existing.start)
+        new_list.push(existing);
+      else if(start < existing.start && end > existing.end){
+        continue;
+      }else{
+        if(existing.start < start) new_list.push(new Annotation(existing.name, existing.value, existing.start, start));
+        if(existing.end > end) new_list.push(new Annotation(existing.name, existing.value, end, existing.end));
+      }
+    }
+    if(new_list.length) this.store[name] = new_list;
+    else { delete this.store[name] };
+  }
+  this._shift = function(where, inc){
+    for(var i in this.store){
+      var annotations = this.store[i];
+      for(var k = 0, l = annotations.length; k < l; k++)
+        annotation._shift(where, inc);
+    }
+    for(var name in this.store){
+      var annotations = this.store[name], new_list = [];
+      for(var i = 0, l = annotations.length; i < l; i++){
+        var annotation = annotations[i];
+        if(!annotation) continue;
+        for(var j = i+1; j < l; j++){
+          var next_annotation = annotations[j];
+          if(annotation.end == next_annotation.start && annotation.value == next_annotation.value){
+            annotation.end = next_annotation.end;
+            annotations[j] = null;
+          }
+        }
+        new_list.push(new Annotation(annotation.name, annotation.value, annotation.start, annotation.end));
+      }
+      this.store[name] = new_list
+    }
+  }
+  //todo: serialize
+  //todo: names
+}
+
+
+function Blip(json, operation_queue){
+  //this.blip_id = json.blipId;
+  //this._reply_threads = reply_threads || [];
+  //this._thread = thread;
+  this._operation_queue = operation_queue;
+  this._content = json.content;
+  this.json = json;
+  //i dont care about other blips?
+  this._annotations = new Annotations(this);
+  for(var i = 0, annjson, l = json.annotations.length; i < l; i++){
+    annjson = json.annotations[i];
+    this._annotations._add_internal(annjson.name, annjson.value, annjson.range.start, annjson.range.end)
+  }
+  
+  this._shift  = function(where, inc){
+    var new_elements = {};
+    for(var idx in this._elements){
+      var el = this._elements[idx];
+      if(idx >= where) idx += inc;
+      new_elements[idx] = el;
+    }
+    this._elements = new_elements;
+    this._annotations._shift(where, inc);
+  }
+}
 
 function BlipRefs(blip, maxres){
   this._blip = blip;
@@ -36,16 +178,6 @@ function BlipRefs(blip, maxres){
       obj._params = {modifyQuery: query}
     }
   }
-  this.range = function(blip, begin, end){
-    var obj = new BlipRefs(blip);
-    obj._begin = begin;
-    obj._end = end;
-    obj._hits = function(){
-      return [begin, end]
-    }
-    obj._params = {range: {start: begin, end: end}}
-    return obj
-  }
   //this._elem_matches
   this._find = function(what, maxres){
     var restrictions = [].slice.call(arguments, 2),
@@ -54,7 +186,7 @@ function BlipRefs(blip, maxres){
       throw "StopIteration"
     }
     if(typeof what == 'string'){
-      var index = blip._content.find(what)
+      var index = blip.content.indexOf(what)
       var count = 0;
       while(index != -1){
         count += 1;
@@ -78,7 +210,7 @@ function BlipRefs(blip, maxres){
     for(var i = 0, l = hits.length; i < l; i++){
       var start = hits[i][0], end = hits[i][0];
       var hit_found = true;
-      var bliplen = blip.length //erm what? is it blip.contents.length?
+      var bliplen = blip._content.length //erm what? is it blip.contents.length?
       if(start < 0){
         start += bliplen;
         if(end == 0) end += bliplen;
@@ -137,10 +269,9 @@ function BlipRefs(blip, maxres){
       }
     }
     if(!hit_found) return;
-    var operation = blip._operation_uque.document_modify(blip.wave_id, blip.wavelet_id, blip.blip_id);
-    var items = self._params.items();
-    for(var i in items)
-      operation.set_param(param, value);
+    var operation = blip._operation_queue.document_modify(blip.json.waveId, blip.json.waveletId, blip.json.blip_id);
+    for(var param in this._params)
+      operation.set_param(param, this._params[param]);
     modify_action = {modifyHow: modify_how};
     if(modify_how == 'DELETE'){
     }else if(modify_how == 'UPDATE_ELEMENT'){
@@ -193,3 +324,13 @@ function BlipRefs(blip, maxres){
   }
 }
 
+BlipRefs.range = function(blip, begin, end){
+  var obj = new BlipRefs(blip);
+  obj._begin = begin;
+  obj._end = end;
+  obj._hits = function(){
+    return [begin, end]
+  }
+  obj._params = {range: {start: begin, end: end}}
+  return obj
+}
