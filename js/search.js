@@ -144,12 +144,7 @@ function extend_search(startIndex, callback){
         var content = '<div id="'+item.waveId+'" class="search '+resultClass(item.waveId)+'">'+
 						'<div class="date">'+time+'<br>'+msg+cache+'</div><span class="title_'+(item.unreadCount > 0 ? "unread": "read")+
 						'">' + item.title+"</span> <span class='snippet'>"+ item.snippet +"</span> </div>";
-        
-        if(item.waveId.indexOf('treq') != -1){
-          shtml += '<a class="searchlink">'+content+'</a>'
-        }else{
-          shtml += '<a href="#wave:'+item.waveId+'" class="searchlink" onclick=\'ch(this)\'>'+content+'</a>';
-        }
+				shtml += '<a href="#wave:'+item.waveId+'" class="searchlink" onclick=\'ch(this)\'>'+content+'</a>';
       }
     }
     search_container.innerHTML += shtml;
