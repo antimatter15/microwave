@@ -869,7 +869,7 @@ function create_contextmenu(blip){
 		}*/
   };
   if(blip.blipId == msg.data.waveletData.rootBlipId){
-    actions['Change Title'] = function(){
+    actions['Title'] = function(){
       var title = prompt("Enter new wavelet title", msg.data.waveletData.title);
       window._gaq && _gaq.push(['_trackEvent', 'Modify', 'Change Wavelet Title']);
       if(title){

@@ -45,6 +45,10 @@ if(opt.bigspace === undefined && mobilewebkit){
 	opt.fn.set('bigspace', true);
 }
 
+if(opt.swipe === undefined && mobilewebkit){
+	opt.fn.set('swipe', true);
+}
+
 if(opt.multipane === undefined && screen_size > 900){
   //default multipane on large screened
   opt.fn.set('multipane', true);
