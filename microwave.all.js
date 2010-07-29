@@ -1866,10 +1866,12 @@ var id_count = 0;
 function logoff(){
 	if(confirm("Are you sure you want to log off?")){
 		var xhr = new(window.ActiveXObject||XMLHttpRequest)('Microsoft.XMLHTTP');
-		xhr.open('GET', '/logoff', true);
+		xhr.open('GET', '/logout', true);
 		xhr.onreadystatechange = function(){
 			if(xhr.readyState == 4){
-				getEl('login').style.display = 'none';
+				getEl('login').style.display = '';
+				getEl('appheader').style.display = 'none';
+				getEl('content').style.display = 'none';
 			}
 		}
 		xhr.send(null);
