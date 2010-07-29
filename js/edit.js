@@ -35,12 +35,16 @@ function create_magic_box(name, submit_callback){
 			current_blip = null;
 		}
   }
+  var submitted = false;
   submitbtn.onclick = function(){
     textbox.disabled = "disabled";
     submitbtn.disabled = 'disabled';
-    setTimeout(function(){
-      submit_callback(textbox.value);
-    },100);
+    if(!submitted){
+      submitted = true;
+      setTimeout(function(){
+        submit_callback(textbox.value);
+      },100);
+    }
   }
   
 
