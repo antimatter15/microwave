@@ -563,6 +563,10 @@ document.body.onclick = function(e){
 	}
 }
 
+function doNothing(){
+	//well, i guess that's what I do
+}
+
 function blip_render(blipid, parent){ //a wrapper around renderBlip that adds chrome related things
   var blip = msg.data.blips[blipid];
   if(!blip || blip.dom) return; //already rendered, go on
@@ -596,6 +600,11 @@ function blip_render(blipid, parent){ //a wrapper around renderBlip that adds ch
   info.innerHTML = "<div style='float:right;color:#555'>"+format_time(blip.lastModifiedTime).toString()+nextblip;//<b>By</b> ";
   info.appendChild(userList(blip.contributors));
 
+	if(mobilewebkit){
+		//iphone doesnt trigger events unless there's an immediate handler. I think.
+		doc.onclick = doNothing;
+		info.onclick = doNothing
+	}
   doc.insertBefore(info, doc.firstChild);
   parent.appendChild(doc);
   
