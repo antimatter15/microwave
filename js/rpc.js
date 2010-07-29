@@ -1,4 +1,3 @@
-
 var queue = [];
 var callbacks = {};
 var id_count = 0;
