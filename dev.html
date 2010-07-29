@@ -30,7 +30,7 @@ RELEASE-->
   <body class="online">
     <div id='appheader'>
 		   <div style="float:right">
-		     <input type="checkbox" id="chronos" name="chronos" onchange="current_wave && current_page && (loadWave(current_wave),runQueue())">
+		     <input type="checkbox" id="chronos" name="chronos" onchange="current_wave && (current_page||opt.multipane) && (loadWave(current_wave),runQueue())">
 		     <label for="chronos">Chronological</label> /
 		     <a href='javascript:logoff()' style='text-decoration: none'>Logoff</a>
 		   </div>
