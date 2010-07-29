@@ -634,6 +634,7 @@ function create_wave(){
     callbacks[wave.robot.createWavelet([], xcf)] = function(json){
       loading(loadID);
       setTimeout(function(){
+        search_outdated = true;
         hashHandler('wave:'+json.data.waveId, true);runQueue();
       },100)
     }
