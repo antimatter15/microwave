@@ -412,8 +412,8 @@ if(opt.keyboard){
 if(opt.swipe){
 	(function(){ //yay closures!
 		var touchX = 0, touchY = 0, startTouchX = 0, startTouchY = 0, startTouchEl, touchEl, startTouchTime = 0;
-		var ythresh = 10;
-		var xthresh = 30; //stolen from jquery.swipe's defaults
+		var ythresh = 30;
+		var xthresh = 60;
 		
 		var tS = function(e){
 			if(e.touches.length == 1){
@@ -447,10 +447,10 @@ if(opt.swipe){
 					if(Math.abs(xdelta) > xthresh){
 						if(xdelta > 0){
 							//left
-							blip_prev(el.blipId);
+							blip_next(el.blipId);
 						}else{
 							//right  
-							blip_next(el.blipId);
+							blip_prev(el.blipId);
 						}
 					}
 				}
