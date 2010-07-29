@@ -197,10 +197,10 @@ if(opt.swipe){
 					if(Math.abs(xdelta) > xthresh){
 						if(xdelta > 0){
 							//left
-							blip_prev(el.blipId);
+							blip_next(el.blipId);
 						}else{
 							//right  
-							blip_next(el.blipId);
+							blip_prev(el.blipId);
 						}
 					}
 				}
