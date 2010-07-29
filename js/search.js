@@ -140,7 +140,7 @@ function extend_search(startIndex, callback){
         :("<span class='read_msg'>"+item.blipCount+" msgs</span>");
         
         var time = format_time(item.lastModified);
-				var cache = opt.offline?'<br><span class="cachestate">cache</span>':'';
+				var cache = opt.offline?' <span class="cachestate">cache</span>':'';
         var content = '<div id="'+item.waveId+'" class="search '+resultClass(item.waveId)+'">'+
 						'<div class="date">'+time+'<br>'+msg+cache+'</div><span class="title_'+(item.unreadCount > 0 ? "unread": "read")+
 						'">' + item.title+"</span> <span class='snippet'>"+ item.snippet +"</span> </div>";

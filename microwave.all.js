@@ -270,7 +270,7 @@ opt.x.render_state = 'If a gadget can not be internally rendered, display the ga
 
 opt.x.bigspace = "Add a large blank space under waves so the keyboard isn't messed up"
 
-opt.x.recursive_renderer = 'Use old version of tree wave renderer, only works on Wave Protocol 0.21 or below';
+
 opt.x.no_sig = 'Do not automatically add <i>posted with micro-wave</i> signature';
 
 
@@ -2127,16 +2127,11 @@ function extend_search(startIndex, callback){
         :("<span class='read_msg'>"+item.blipCount+" msgs</span>");
         
         var time = format_time(item.lastModified);
-				var cache = opt.offline?'<br><span class="cachestate">cache</span>':'';
+				var cache = opt.offline?' <span class="cachestate">cache</span>':'';
         var content = '<div id="'+item.waveId+'" class="search '+resultClass(item.waveId)+'">'+
 						'<div class="date">'+time+'<br>'+msg+cache+'</div><span class="title_'+(item.unreadCount > 0 ? "unread": "read")+
 						'">' + item.title+"</span> <span class='snippet'>"+ item.snippet +"</span> </div>";
-        
-        if(item.waveId.indexOf('treq') != -1){
-          shtml += '<a class="searchlink">'+content+'</a>'
-        }else{
-          shtml += '<a href="#wave:'+item.waveId+'" class="searchlink" onclick=\'ch(this)\'>'+content+'</a>';
-        }
+				shtml += '<a href="#wave:'+item.waveId+'" class="searchlink" onclick=\'ch(this)\'>'+content+'</a>';
       }
     }
     search_container.innerHTML += shtml;
@@ -2359,10 +2354,10 @@ function loadWave(waveId, waveletId){
     if(getEl("chronos").checked){
       chronological_blip_render(wavedata)
     }else{
-      if(opt.recursive_renderer || !msg.data.waveletData.rootThread){
-        recursive_blip_render(msg.data.waveletData.rootBlipId, wavedata);
-      }else{
+      if(msg.data.waveletData.rootThread){
         bootstrap_thread_render(wavedata);
+      }else{
+        recursive_blip_render(msg.data.waveletData.rootBlipId, wavedata);
       }
     }
     var tags = document.createElement('div');
