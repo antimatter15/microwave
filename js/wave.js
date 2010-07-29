@@ -13,7 +13,9 @@ function loadWave(waveId, waveletId){
   	waveletId = waveletId || waveId.replace(/[\/!].+/,'!conv+root');
 	}
   var load_callback = function(waveContent){
-		window._gaq && _gaq.push(['_trackEvent', 'Wave', 'Load Wave', waveContent.data.waveletData.title]);
+    try{
+  		window._gaq && _gaq.push(['_trackEvent', 'Wave', 'Load Wave', waveContent.data.waveletData.title]);
+		}catch(err){}
     loading(loadId);
     console.log(waveContent);
     if(waveContent.error){
