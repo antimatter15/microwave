@@ -20,7 +20,7 @@ opt.x.render_state = 'If a gadget can not be internally rendered, display the ga
 
 opt.x.bigspace = "Add a large blank space under waves so the keyboard isn't messed up"
 
-opt.x.recursive_renderer = 'Use old version of tree wave renderer, only works on Wave Protocol 0.21 or below';
+
 opt.x.no_sig = 'Do not automatically add <i>posted with micro-wave</i> signature';
 
 

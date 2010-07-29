@@ -123,10 +123,10 @@ function loadWave(waveId, waveletId){
     if(getEl("chronos").checked){
       chronological_blip_render(wavedata)
     }else{
-      if(opt.recursive_renderer || !msg.data.waveletData.rootThread){
-        recursive_blip_render(msg.data.waveletData.rootBlipId, wavedata);
-      }else{
+      if(msg.data.waveletData.rootThread){
         bootstrap_thread_render(wavedata);
+      }else{
+        recursive_blip_render(msg.data.waveletData.rootBlipId, wavedata);
       }
     }
     var tags = document.createElement('div');
