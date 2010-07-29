@@ -1878,7 +1878,6 @@ function renderBlip(markup){
 //File: js/rpc.js
 
 
-
 var queue = [];
 var callbacks = {};
 var id_count = 0;

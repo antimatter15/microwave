@@ -30,7 +30,7 @@
   <body class="online">
     <div id='appheader'>
 		   <div style="float:right">
-		     <input type="checkbox" id="chronos" name="chronos" onchange="current_wave && (loadWave(current_wave),runQueue())">
+		     <input type="checkbox" id="chronos" name="chronos" onchange="current_wave && (current_page||opt.multipane) && (loadWave(current_wave),runQueue())">
 		     <label for="chronos">Chronological</label> /
 		     <a href='javascript:logoff()' style='text-decoration: none'>Logoff</a>
 		   </div>
@@ -39,7 +39,6 @@
 				<div style="padding-bottom:3px;">
 				  <form class="searchbox" name="searchbox" onsubmit="autosearchbox();return false">
 				    <div class="button" onclick="autosearchbox();return false">
-				      <!--<div style='margin-left: 6px; margin-top: -1px' id="search_go">&#9654;</div>-->
 				      <div class="css_search_go" id="search_go"></div>
 				      
 				    </div>
@@ -59,7 +58,6 @@
 				<div style="padding-bottom:5px;">
 					<form class="searchbox" onsubmit="autosearch('in:inbox');return false" action="#">
 						<div class="button" onclick="autosearch('in:inbox');return false">
-							<!--<div style='margin-left: 6px; margin-top: -1px' id="search_go">&#9654;</div>-->
 				      <div class="css_search_go" id="search_go"></div>
 						</div>
 						<input type="text" id="offline_status" value="Offline" class="query" disabled>
