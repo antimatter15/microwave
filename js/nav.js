@@ -163,7 +163,7 @@ window.onresize = document.onscroll = window.onscroll = update_scroll;
 
 if(mobilewebkit){
   setInterval(document.onscroll, 1000);
-  document.addEventListener('touchmove', update_scroll);
+  //document.addEventListener('touchmove', update_scroll);
 }
 
 
