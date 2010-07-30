@@ -9,7 +9,7 @@ if (!this.JSON) {
 				stringify: function(obj){
 					var enc = JSON.stringify; // for purposes of recursion
 
-					if (typeof obj == "boolean" || typeof obj == "number") {
+					if (typeof obj == "boolean" || typeof obj == "number" || obj === null || typeof obj == 'undefined') {
 						return obj + ''; // should work...
 					} else if (typeof obj == "string") {
 						// a large portion of this is stolen from Douglas Crockford's json2.js
