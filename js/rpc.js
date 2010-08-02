@@ -86,6 +86,7 @@ function runQueue(){
             //alert('There was a server error, please try again. A');
             //if(xhr.responseText)alert(xhr.responseText);
 						console.log('Server Error: Could not parse as JSON', xhr.responseText)
+						error('JSON not parseable.');
           }
           }
       }
@@ -106,7 +107,8 @@ function runQueue(){
               //alert('Your login token has expired\n'+xhr.responseText)
               //return location = '/?force_auth=true';
             }
-            console.log("Error "+json[i].error.code+": "+json[i].error.message)
+            console.log("Error "+json[i].error.code+": "+json[i].error.message);
+						error(json[i].error.message)
           }
         }
       }
@@ -122,6 +124,7 @@ function runQueue(){
         }
         if(!cb_result){
           console.log('Server Error: Error not caught.', xhr.status);
+					error("No data was returned in the server response.")
         }
       }
     }

@@ -71,7 +71,7 @@ blockquote {
 }
 
 
-.info, .wavelet, .alert, .tags, .message, .minimize, .gadget, .contextmenu, .footer {
+.info, .wavelet, .alert, .tags, .message, .minimize, .gadget, .contextmenu, .footer, #error {
   border-radius: 3px;
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
@@ -578,4 +578,9 @@ body.online .offline {
 .rightlink {
 	float: right;
 	text-decoration: none;
+}
+
+
+#error {
+	background-color: #FFA6B0;
 }
