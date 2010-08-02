@@ -95,13 +95,20 @@ var unread_blips = {};
 
 opt.c.largeFont(opt.largeFont);
 
-
-
+function runTouchScroll(elements){
+	for(var i = 0; i < elements.length; i++){
+	    var el = elements[i];
+	    console.log(el);
+	    if(typeof(el) == "string") el = getEl(el);
+	    window['touchscroll'+i] = new TouchScroll(el, {elastic: true});
+	}
+}
 
 function addTouchScroll(){
     var TS_CSS = 'js/lib/touchscroll.css';
     var TS_JS = 'js/lib/touchscroll.min.js';
     var elements = arguments;
+		if(window.TouchScroll) return runTouchScroll(elements);
     var link = document.createElement('link');
     link.href = TS_CSS;
     link.type = 'text/css';
@@ -111,12 +118,7 @@ function addTouchScroll(){
     script.src = TS_JS;
     script.onload = function(){
         setTimeout(function(){
-            for(var i = 0; i < elements.length; i++){
-                var el = elements[i];
-                console.log(el);
-                if(typeof(el) == "string") el = getEl(el);
-                window['touchscroll'+i] = new TouchScroll(el, {elastic: true});
-            }
+					runTouchScroll(elements)
         },100)
     }
     document.body.appendChild(script)
