@@ -2,7 +2,14 @@ var small_screen = true;
 var oauth_key, oauth_secret;
 oauth_key = localStorage.getItem('oauth_key');
 oauth_secret = localStorage.getItem('oauth_secret');
-			
+
+if(opt.offline == undefined) opt.fn.set('offline',true);
+
+function logoff(){
+	logoff_ui();
+	console.log('hello world')
+}
+
  function finish_setup(){
    var v = getEl('login_code_box').value.toLowerCase();
    var xhr = new XMLHttpRequest();
@@ -19,7 +26,7 @@ oauth_secret = localStorage.getItem('oauth_secret');
          oauth_secret = parts[1];
 				 localStorage.setItem('oauth_secret', oauth_secret);
          getEl('appheader').style.display = "";
-         getEl('setupoauth').style.display = "none";
+         getEl('login').style.display = "none";
          startup()
        }else{
          getEl('login_error').style.display = ''
@@ -47,24 +54,25 @@ setTimeout(function(){
 if(!oauth_key || !oauth_secret){
   window.NO_STARTUP = true;
   setTimeout(function(){
+      getEl('content').style.display = "none";
       getEl('appheader').style.display = "none";
-      getEl('setupoauth').style.display = "";
+      getEl('login').style.display = "";
+			getEl('loading').style.display = 'none'
   },200);
 }
 
-//    import json
-    self.response.out.write(json.dumps(head))
     
     
     
 window.doXHR = function(postdata, callback){
+	if(!oauth_key || !oauth_secret) return console.log('operation cancelled. no keys.');
   var xhr = new XMLHttpRequest();
   //TODO: addd signature as header
   xhr.open('POST', 'https://www-opensocial.googleusercontent.com/api/rpc', true);
   xhr.setRequestHeader('Content-Type','application/json');
   xhr.setRequestHeader('Authorization',to_header(create_signature()));
   xhr.onreadystatechange = function(){
-	//console.log(xhr.readyState, xhr.status, xhr.responseText);
+	console.log(xhr.readyState, xhr.status, xhr.responseText, xhr.statusText);
     if(xhr.readyState == 4){
       callback(xhr);
     }

@@ -218,7 +218,15 @@ function create_contextmenu(blip){
       box.textbox.focus();
       closectx();
     }/*,
-    "Attach File": function(){
+    "Attach Photo": function(){
+			navigator.camera.getPicture(function(data){
+				wave.blip.upload_attachment(data, 'new upload', current_blip.blipId, current_blip.waveId, current_blip.waveletId);
+				loadWave(current_blip.waveId);
+				runQueue();
+			});
+			closectx();
+		},
+		"Attach File": function(){
 			wave.blip.upload_attachment(btoa('hello world'), 'helloworld.txt', current_blip.blipId, current_blip.waveId, current_blip.waveletId);
 			loadWave(current_blip.waveId);
 			runQueue();

@@ -17,33 +17,23 @@ function create_signature(){
     
   for(var i in param) 
     out.push("oauth_"+i+"="+oauth_escape(param[i]));
-  /*
-  param.signature = b64_hmac_sha1(
+  
+	param.signature = b64_hmac_sha1(
 		oauth_escape(consumer_secret) + "&" + oauth_escape(provider_secret), 
 		['POST', oauth_escape(path), oauth_escape(out.join('&'))].join("&"));
-	*/
-  param.signature = b64_hmac_sha1([
-			oauth_escape(consumer_secret), 
-			oauth_escape(provider_secret), 
-			'POST', 
-			oauth_escape(path), 
-			oauth_escape(out.join('&'))
-		 ].join("&"));
-	
-		//param.signature = [consumer_secret, provider_secret, 'POST', path, out.join('&')].map(oauth_sescape).join('&')
 		
-  return params
+  return param
 }
 
 
-function to_header(params){
+function to_header(param){
 	var out = [];
   for(var i in param)
     out.push("oauth_"+i+'="'+oauth_escape(param[i])+'"');
   return 'OAuth '+out.join(", ");
 }
 
-function to_url(params){
+function to_url(param){
 	var out = [];
 	for(var i in param)
     out.push("oauth_"+i+"="+oauth_escape(param[i]));

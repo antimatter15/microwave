@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+  <head>
+    <title>&mu;wave</title>
+    <meta charset="utf-8">
+    <link rel='stylesheet' href="style.css" type="text/css" media="screen,handheld">
+    
+  </head>
+  <body class="online">
+    <div id='appheader'>
+		   <div style="float:right">
+		     <input type="checkbox" id="chronos" name="chronos" onchange="current_wave && (current_page||opt.multipane) && (loadWave(current_wave),runQueue())">
+		     <label for="chronos">Chronological</label> /
+		     <a href='javascript:logoff()' style='text-decoration: none'>Logoff</a>
+		   </div>
+		   <h1 onclick="opt.fn.show()" id='header'>&mu;wave</h1>
+		   <div id="online_head" class="online"> 
+				<div style="padding-bottom:3px;">
+				  <form class="searchbox" name="searchbox" onsubmit="autosearchbox();return false">
+				    <div class="button" onclick="autosearchbox();return false">
+				      <div class="css_search_go" id="search_go"></div>
+				      
+				    </div>
+				    <input type="text" value="in:inbox " id="query" class="query">
+				  </form>
+				</div>
+		     <div class="alert links" id="suggest">
+		       <a href="javascript:create_wave()" style='color: green'>New Wave</a> 
+		       <div style="float:right"> 
+		       	<a href="#search:with:public%20" onclick='ch(this)'>Public</a> /
+		       	<a href="#search:%20" onclick='ch(this)'>All</a> / 
+		       	<a href="#search:in:inbox%20" onclick='ch(this)'>Inbox</a> 
+		       </div> 
+		     </div> 
+		   </div>
+		   <div id="offline_head" class="offline">
+				<div style="padding-bottom:5px;">
+					<form class="searchbox" onsubmit="autosearch('in:inbox');return false" action="#">
+						<div class="button" onclick="autosearch('in:inbox');return false">
+				      <div class="css_search_go"></div>
+						</div>
+						<input type="text" id="offline_status" value="Offline" class="query" disabled>
+					</form>
+				</div>
+			</div>
+		</div>
+		
+		<div id="content">
+      <div id='search_parent_container'>
+        <div id='search_parent'>
+          <div id='search_container'>
+          </div>
+        </div>
+      </div>
+      <div id='wave_container_parent'>
+        <div id='wave_container'>
+        </div>
+      </div>
+      <div id="floating_menu" style="display:none">
+				<table>
+					<tr>
+						<td class="online"><a href="#read" onclick='flicker(this);markWaveRead();return false'>Read</a></td>
+						<td><a href="#newest" onclick='flicker(this);blip_scroll(0);return false'>Newest</a></td>
+						<td><a href="#top" onclick='flicker(this);scroll_wavepanel(0);return false'>Top</a></td>
+					</tr>
+					<tr>
+						<td class="online"><a href="#archive" onclick='flicker(this);archiveWave();return false'>Archive</a></td>
+						<td><a href="#oldest" onclick='flicker(this);blip_scroll(-1);return false'>Oldest</a></td>
+						<td><a href="#bottom" onclick='flicker(this);scroll_wavepanel(-1);return false'>Bottom</a></td>
+					</tr>
+				</table>
+      </div>
+    </div>
+		<div class="wavelet loading" id="loading">
+			<div id="loadingtext"><b>Loading</b> code</div>
+		</div>
+		<div id="login" style="display:none">
+
+			<div style='float:right'>Setup account</div>
+			<h1 style="font-size:18px">&mu;wave</h1>
+<p>
+				The <b>first step</b> is to acquire the login token. Go <a href='http://micro-wave.appspot.com/app/'>here</a>, log in and copy the code given to you on the final step. Once you're done with that, return to this application.
+</p>
+<p>
+				<b>Step two</b> is to enter the code into this application, once you have it, enter it below. (not case sensitive)
+				<input type='text' id='login_code_box'>
+				<button style='display:none' onclick="finish_setup()" id='login_button'>Get me to my inbox.</button>
+</p>
+				<div style='display:none;padding:5px;background-color: orange' id='login_error'>Oops! The key is invalid. Check that you've typed it correctly, and if that doesn't worky, try getting a new token</div>
+
+			
+		</div>
+
+<!--START_JS-->
+<script type="text/javascript" src="js/lib/libopt.js"></script>
+<script type="text/javascript" src="js/globals.js"></script>
+<script type="text/javascript" src="js/privledged.js"></script>
+
+<script type="text/javascript" src="js/lib/oauth.js"></script>
+
+<script type="text/javascript" src="js/offline.js"></script>    
+<script type="text/javascript" src="js/opt.js"></script>
+<script type="text/javascript" src="js/blip.js"></script>
+<script type="text/javascript" src="js/createwave.js"></script>
+<script type="text/javascript" src="js/edit.js"></script>    
+<script type="text/javascript" src="js/gadgets.js"></script>
+<script type="text/javascript" src="js/loading.js"></script>
+<script type="text/javascript" src="js/nav.js"></script>
+<script type="text/javascript" src="js/ops.js"></script>
+<script type="text/javascript" src="js/ordering.js"></script>
+<script type="text/javascript" src="js/render.js"></script>
+<script type="text/javascript" src="js/rpc.js"></script>
+<script type="text/javascript" src="js/search.js"></script>
+<script type="text/javascript" src="js/url.js"></script>
+<script type="text/javascript" src="js/wave.js"></script>
+<script type="text/javascript" src="js/lib/json.js"></script>
+<script type="text/javascript" src="js/startup.js"></script>
+<!--END_JS-->
+
+<!--RELEASE
+<script type="text/javascript" src="microwave.min.js"></script>
+RELEASE-->
+
+
+</body>
+</html>

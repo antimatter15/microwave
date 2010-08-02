@@ -2,20 +2,31 @@ var queue = [];
 var callbacks = {};
 var id_count = 0;
 
-
-function logoff(){
-	if(confirm("Are you sure you want to log off?")){
-		var xhr = new(window.ActiveXObject||XMLHttpRequest)('Microsoft.XMLHTTP');
-		xhr.open('GET', '/logout', true);
-		xhr.onreadystatechange = function(){
-			if(xhr.readyState == 4){
-				getEl('login').style.display = '';
-				getEl('appheader').style.display = 'none';
-				getEl('content').style.display = 'none';
+if(!window.logoff){
+	logoff = function(){
+		if(confirm("Are you sure you want to log off?")){
+			var xhr = new(window.ActiveXObject||XMLHttpRequest)('Microsoft.XMLHTTP');
+			xhr.open('GET', '/logout', true);
+			xhr.onreadystatechange = function(){
+				if(xhr.readyState == 4){
+					logoff_ui();
+				}
 			}
+			xhr.send(null);
 		}
-		xhr.send(null);
 	}
+}
+
+function logoff_ui(){
+	getEl('login').style.display = '';
+	getEl('appheader').style.display = 'none';
+	getEl('content').style.display = 'none';
+}
+
+function logon_ui(){
+	getEl('login').style.display = 'none';
+	getEl('appheader').style.display = '';
+	getEl('content').style.display = '';
 }
 
 function queueOp(method, params, callback){
@@ -58,9 +69,9 @@ function runQueue(){
       try{
         json = JSON.parse(xhr.responseText);
       }catch(err){
-        if(xhr.responseText.indexOf("Error 401") != -1){
-          alert('Your login token has expired\n'+xhr.responseText)
-          return location = '/?force_auth=true';
+        
+				if(xhr.responseText.indexOf("Error 401") != -1){
+          return logoff_ui();
         }
           for(var i = 0; i < ids.length; i++){
           var cb_result = null;
@@ -72,8 +83,9 @@ function runQueue(){
             delete callbacks[id];
           }
           if(!cb_result){
-            alert('There was a server error, please try again. A');
-            if(xhr.responseText)alert(xhr.responseText);
+            //alert('There was a server error, please try again. A');
+            //if(xhr.responseText)alert(xhr.responseText);
+						console.log('Server Error: Could not parse as JSON', xhr.responseText)
           }
           }
       }
@@ -90,30 +102,28 @@ function runQueue(){
           }
           if(json[i].error && !cb_result){
             if(json[i].error.code == 401){
-              
-              alert('Your login token has expired\n'+xhr.responseText)
-              return location = '/?force_auth=true';
+              return logoff_ui()
+              //alert('Your login token has expired\n'+xhr.responseText)
+              //return location = '/?force_auth=true';
             }
-            alert("Error "+json[i].error.code+": "+json[i].error.message)
+            console.log("Error "+json[i].error.code+": "+json[i].error.message)
           }
         }
       }
     }else{
-      
-          for(var i = 0; i < ids.length; i++){
-          var cb_result = null;
-          var id = ids[i];
-          if(callbacks[id]){
-            try{
-              cb_result = callbacks[id]();
-            }catch(err){}
-            delete callbacks[id];
-          }
-          if(!cb_result){
-            alert('There was a server error, please try again. B');
-            if(xhr.responseText)alert(xhr.responseText);
-          }
-          }
+      for(var i = 0; i < ids.length; i++){
+        var cb_result = null;
+        var id = ids[i];
+        if(callbacks[id]){
+          try{
+            cb_result = callbacks[id]();
+          }catch(err){}
+          delete callbacks[id];
+        }
+        if(!cb_result){
+          console.log('Server Error: Error not caught.', xhr.status);
+        }
+      }
     }
   })
   queue = [];
