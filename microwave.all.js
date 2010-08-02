@@ -299,7 +299,7 @@ if(opt.swipe === undefined && mobilewebkit){
 	opt.fn.set('swipe', true);
 }
 
-if(opt.multipane === undefined && screen_size > 900){
+if(opt.multipane === undefined && (screen_size > 900 || navigator.userAgent.indexOf('iPad') != -1)){
   //default multipane on large screened
   opt.fn.set('multipane', true);
   if(mobilewebkit && opt.touchscroll === undefined){
@@ -392,7 +392,7 @@ if(opt.touchscroll && opt.multipane){
 }
 
 
-if(!mobilewebkit && window.addEventListener && opt.keyboard === undefined){
+if(opt.keyboard === undefined){
 	opt.fn.set('keyboard', true)
 }
 
@@ -447,7 +447,7 @@ if(opt.swipe){
 				el = el.parentNode;
 			}
 			if(el.blipId){
-				if(Math.abs(ydelta) < ythresh){
+				if(Math.abs(ydelta) < ythresh && tdelta < 500){
 					if(Math.abs(xdelta) > xthresh){
 						if(xdelta > 0){
 							//left
