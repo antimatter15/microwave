@@ -150,7 +150,8 @@ if(opt.keyboard === undefined){
 
 if(opt.keyboard){
 	document.body.onkeydown = function(e){
-		if(e.target.tagName=='BODY'){
+		if(!e || !e.target){
+		}else if(e.target.tagName=='BODY'){
 			if((e.shiftKey && e.keyCode == 32) || (!e.shiftKey && !e.ctrlKey && e.keyCode == 75)){
 				//up
 				blip_prev(lastscrolled);
