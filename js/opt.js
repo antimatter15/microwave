@@ -142,22 +142,25 @@ if(opt.touchscroll && opt.multipane){
 }
 
 
+if(opt.keyboard === undefined){
+	opt.fn.set('keyboard', true)
+}
 
-
-document.body.onkeydown = function(e){
-	if(e.target.tagName=='BODY'){
-		if((e.shiftKey && e.keyCode == 32) || (!e.shiftKey && !e.ctrlKey && e.keyCode == 75)){
-			//up
-			blip_prev(lastscrolled);
-			e.preventDefault();
-		}else if(e.keyCode==32 || (!e.shiftKey && !e.ctrlKey && e.keyCode == 74)){
-			//down
-			blip_next(lastscrolled)
-			e.preventDefault();
+if(opt.keyboard){
+	document.body.onkeydown = function(e){
+		if(e.target.tagName=='BODY'){
+			if((e.shiftKey && e.keyCode == 32) || (!e.shiftKey && !e.ctrlKey && e.keyCode == 75)){
+				//up
+				blip_prev(lastscrolled);
+				e.preventDefault();
+			}else if(e.keyCode==32 || (!e.shiftKey && !e.ctrlKey && e.keyCode == 74)){
+				//down
+				blip_next(lastscrolled)
+				e.preventDefault();
+			}
 		}
 	}
 }
-
 
 
 if(opt.swipe){
