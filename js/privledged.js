@@ -12,7 +12,7 @@ function logoff(){
 }
 
  function finish_setup(){
-   var v = getEl('login_code_box').value.toLowerCase();
+   var v = trim(getEl('login_code_box').value.toLowerCase());
    var xhr = new XMLHttpRequest();
    xhr.open('GET', "http://micro-wave.appspot.com/app/get_token?code="+v, true);
    xhr.onreadystatechange = function(){
@@ -26,8 +26,7 @@ function logoff(){
 				 localStorage.setItem('oauth_key', oauth_key);
          oauth_secret = parts[1];
 				 localStorage.setItem('oauth_secret', oauth_secret);
-         getEl('appheader').style.display = "";
-         getEl('login').style.display = "none";
+				 logon_ui();
          startup()
        }else{
          getEl('login_error').style.display = ''
@@ -37,10 +36,14 @@ function logoff(){
    xhr.send(null);
  }
  
+function trim(str){
+	return str.replace(/^\s+|\s+$/g,'');
+}
+
 var last_text = '';
 setTimeout(function(){
   if(oauth_key && oauth_secret) return;
-  var v = getEl('login_code_box').value.toLowerCase();
+  var v = trim(getEl('login_code_box').value.toLowerCase());
   if(last_text != v) getEl('login_error').style.display = 'none';
   last_text = v;
   if(/^[a-z]{3}\d\d[a-z]{3}$/.test(v)){
