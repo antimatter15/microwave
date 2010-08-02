@@ -7,7 +7,8 @@ if(opt.offline == undefined) opt.fn.set('offline',true);
 
 function logoff(){
 	logoff_ui();
-	console.log('hello world')
+	localStorage.setItem('oauth_secret','')
+	localStorage.setItem('oauth_key','')
 }
 
  function finish_setup(){

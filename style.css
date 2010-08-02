@@ -584,3 +584,7 @@ body.online .offline {
 #error {
 	background-color: #FFA6B0;
 }
+
+#login {
+	padding: 5px;
+}
