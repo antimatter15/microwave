@@ -49,7 +49,7 @@ if(opt.swipe === undefined && mobilewebkit){
 	opt.fn.set('swipe', true);
 }
 
-if(opt.multipane === undefined && screen_size > 900){
+if(opt.multipane === undefined && (screen_size > 900 || navigator.userAgent.indexOf('iPad') != -1)){
   //default multipane on large screened
   opt.fn.set('multipane', true);
   if(mobilewebkit && opt.touchscroll === undefined){
