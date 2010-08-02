@@ -197,7 +197,7 @@ if(opt.swipe){
 				el = el.parentNode;
 			}
 			if(el.blipId){
-				if(Math.abs(ydelta) < ythresh){
+				if(Math.abs(ydelta) < ythresh && tdelta < 500){
 					if(Math.abs(xdelta) > xthresh){
 						if(xdelta > 0){
 							//left
