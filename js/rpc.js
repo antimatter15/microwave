@@ -18,12 +18,14 @@ if(!window.logoff){
 }
 
 function logoff_ui(){
+  loading(false);
 	getEl('login').style.display = '';
 	getEl('appheader').style.display = 'none';
 	getEl('content').style.display = 'none';
 }
 
 function logon_ui(){
+  loading(false);
 	getEl('login').style.display = 'none';
 	getEl('appheader').style.display = '';
 	getEl('content').style.display = '';

@@ -101,7 +101,16 @@ RELEASE-->
 			<div id="loadingtext"><b>Loading</b> code</div>
 		</div>
 		<div id="login" style="display:none">
-			You are not logged in. <a href="/?force_auth=true">Login</a>
+		   <h1>&mu;wave</h1>
+			<button onclick="if(small_screen){location='/auth?mobile'}else{location='/auth'}" style="font-size:large">Login</button> using your <b>Google Account.</b><br>
+			<p>
+			<b>Privacy</b> In order to use microwave, you must authenticate with your Google Account. 
+			Microwave will only get access to your Google Wave account using the official
+			OAuth API. The application does not store any of the authentication tokens
+			server-side and password information is never sent to this service. You can manually
+			revoke all of microwave's access by going to your Google Account settings page and 
+			clicking <a href='https://www.google.com/accounts/b/0/IssuedAuthSubTokens'>"Change Authorized Websites"</a> and revoking micro-wave.appspot.com.
+			</p>
 		</div>
 
 <!--START_JS-->

@@ -3,7 +3,7 @@ function loading(text, nodelay){
 	var load = getEl("loading");
 	var has_opacity = typeof document.createElement('div').style.opacity != 'undefined';
 	load.style.top = scrollY+'px';
-	if(typeof text == "number"){
+	if(typeof text == "number" || text === false){
     if(has_opacity)
 			load.style.opacity = "0";
 		else
