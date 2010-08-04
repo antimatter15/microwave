@@ -30,7 +30,7 @@ function loadWave(waveId, waveletId){
     }
     
     if(!waveContent.data.waveletData){
-      alert('The server sent nothing')
+      error('The server sent nothing')
       return;
     }
 

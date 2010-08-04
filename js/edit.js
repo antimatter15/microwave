@@ -95,8 +95,8 @@ function create_edit_box(){
 function create_reply_box(indented){ //REMEMBER TO REMOVE INFO ONCE GOOGLE FIXES THE BUG
 	var info = '';
 	if(!indented){
-		info = ' Note the current version of the wave data API does not support creating continuations of a thread, thus all responses will be indented. Hopefully, this will be fixed shortly.'
-		indented = true;
+		//info = ' Note the current version of the wave data API does not support creating continuations of a thread, thus all responses will be indented. Hopefully, this will be fixed shortly.'
+		//indented = true;
 	}
 	var box = create_magic_box('<b>Write a Reply</b>'+info, function(value){
 		if(indented){

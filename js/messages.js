@@ -34,8 +34,9 @@ function loading(text, nodelay){
 function error(text){
 	var e = getEl('error');
 	e.style.display = '';
-	getEl('errortext').innerHTML = text;
+	getEl('errortext').innerHTML += '<div><b>Error:</b> '+text+'</div>';
 	e.onclick = function(){
-		e.style.display = 'none'
+		e.style.display = 'none';
+		getEl('errortext').innerHTML = '';
 	}
 }

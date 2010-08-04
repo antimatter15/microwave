@@ -94,7 +94,7 @@ function renderBlip(markup){
           var cont = document.createElement('div');
           cont.style.margin = '10px'
           cont.innerHTML = '<b>'+el.properties.mimeType+'</b> '+el.properties.caption+'<br>';
-          if(el.properties.mimeType.indexOf('image/') == 0){
+          if(el.properties.mimeType && el.properties.mimeType.indexOf('image/') == 0){
 						renderImage(el.properties.attachmentUrl, cont)
             
           }else{
