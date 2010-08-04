@@ -345,13 +345,20 @@ var unread_blips = {};
 
 opt.c.largeFont(opt.largeFont);
 
-
-
+function runTouchScroll(elements){
+	for(var i = 0; i < elements.length; i++){
+	    var el = elements[i];
+	    console.log(el);
+	    if(typeof(el) == "string") el = getEl(el);
+	    window['touchscroll'+i] = new TouchScroll(el, {elastic: true});
+	}
+}
 
 function addTouchScroll(){
     var TS_CSS = 'js/lib/touchscroll.css';
     var TS_JS = 'js/lib/touchscroll.min.js';
     var elements = arguments;
+		if(window.TouchScroll) return runTouchScroll(elements);
     var link = document.createElement('link');
     link.href = TS_CSS;
     link.type = 'text/css';
@@ -361,12 +368,7 @@ function addTouchScroll(){
     script.src = TS_JS;
     script.onload = function(){
         setTimeout(function(){
-            for(var i = 0; i < elements.length; i++){
-                var el = elements[i];
-                console.log(el);
-                if(typeof(el) == "string") el = getEl(el);
-                window['touchscroll'+i] = new TouchScroll(el, {elastic: true});
-            }
+					runTouchScroll(elements)
         },100)
     }
     document.body.appendChild(script)
@@ -398,7 +400,8 @@ if(opt.keyboard === undefined){
 
 if(opt.keyboard){
 	document.body.onkeydown = function(e){
-		if(e.target.tagName=='BODY'){
+		if(!e || !e.target){
+		}else if(e.target.tagName=='BODY'){
 			if((e.shiftKey && e.keyCode == 32) || (!e.shiftKey && !e.ctrlKey && e.keyCode == 75)){
 				//up
 				blip_prev(lastscrolled);
@@ -1168,7 +1171,7 @@ function loading(text, nodelay){
 	var load = getEl("loading");
 	var has_opacity = typeof document.createElement('div').style.opacity != 'undefined';
 	load.style.top = scrollY+'px';
-	if(typeof text == "number"){
+	if(typeof text == "number" || text === false){
     if(has_opacity)
 			load.style.opacity = "0";
 		else
@@ -1204,6 +1207,7 @@ function error(text){
 		e.style.display = 'none'
 	}
 }
+
 
 
 //File: js/nav.js
@@ -1915,12 +1919,14 @@ if(!window.logoff){
 }
 
 function logoff_ui(){
+  loading(false);
 	getEl('login').style.display = '';
 	getEl('appheader').style.display = 'none';
 	getEl('content').style.display = 'none';
 }
 
 function logon_ui(){
+  loading(false);
 	getEl('login').style.display = 'none';
 	getEl('appheader').style.display = '';
 	getEl('content').style.display = '';
