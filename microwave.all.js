@@ -750,8 +750,8 @@ function create_edit_box(){
 function create_reply_box(indented){ //REMEMBER TO REMOVE INFO ONCE GOOGLE FIXES THE BUG
 	var info = '';
 	if(!indented){
-		info = ' Note the current version of the wave data API does not support creating continuations of a thread, thus all responses will be indented. Hopefully, this will be fixed shortly.'
-		indented = true;
+		//info = ' Note the current version of the wave data API does not support creating continuations of a thread, thus all responses will be indented. Hopefully, this will be fixed shortly.'
+		//indented = true;
 	}
 	var box = create_magic_box('<b>Write a Reply</b>'+info, function(value){
 		if(indented){
@@ -1202,9 +1202,10 @@ function loading(text, nodelay){
 function error(text){
 	var e = getEl('error');
 	e.style.display = '';
-	getEl('errortext').innerHTML = text;
+	getEl('errortext').innerHTML += '<div><b>Error:</b> '+text+'</div>';
 	e.onclick = function(){
-		e.style.display = 'none'
+		e.style.display = 'none';
+		getEl('errortext').innerHTML = '';
 	}
 }
 
@@ -1785,7 +1786,7 @@ function renderBlip(markup){
           var cont = document.createElement('div');
           cont.style.margin = '10px'
           cont.innerHTML = '<b>'+el.properties.mimeType+'</b> '+el.properties.caption+'<br>';
-          if(el.properties.mimeType.indexOf('image/') == 0){
+          if(el.properties.mimeType && el.properties.mimeType.indexOf('image/') == 0){
 						renderImage(el.properties.attachmentUrl, cont)
             
           }else{
@@ -2317,7 +2318,7 @@ function loadWave(waveId, waveletId){
     }
     
     if(!waveContent.data.waveletData){
-      alert('The server sent nothing')
+      error('The server sent nothing')
       return;
     }
 
