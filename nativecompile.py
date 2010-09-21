@@ -14,8 +14,10 @@ for match in re.finditer(compile_regex, codes, re.DOTALL):
 			js +=  open(prefix+fn,'r').read() + '\n\n\n'
 		html = codes.replace(match.group(0),'')
 
-#print "Writing concatenated JS"
-#open(prefix+'microwave.native.js','w').write(js)
+print "Writing concatenated JS"
+open(prefix+'microwave.native.js','w').write(js)
+
+#exit();
 
 html = html.replace('<!--RELEASE','')
 html = html.replace('RELEASE-->','')
