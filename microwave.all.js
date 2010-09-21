@@ -606,7 +606,30 @@ function blip_render(blipid, parent){ //a wrapper around renderBlip that adds ch
   
   info.innerHTML = "<div style='float:right;color:#555'>"+format_time(blip.lastModifiedTime).toString()+nextblip;//<b>By</b> ";
   info.appendChild(userList(blip.contributors));
-
+	
+	
+	doc.ondrop = function(e){
+		e.stopPropagation();
+		e.preventDefault();
+		var dt = e.dataTransfer;
+		var files = dt.files;
+		for(var i = 0; i < files.length; i++){
+			var file = files[i];
+			var reader = new FileReader();
+			reader.onload = function(t){
+				var data = t.target.result;
+				if(data.indexOf('data:image/png;base64,') == 0){
+					var b64 = data.substr('data:image/png;base64,'.length);
+					wave.blip.upload_attachment(b64, file.name, blipid, blip.waveId, blip.waveletId)
+				}else{
+					alert('data URL is not base64!')
+				}
+			}
+			reader.readAsDataURL(file);
+		}	
+		loadWave(current_blip.waveId);
+		runQueue();
+	}
 
 	//iphone/opera doesnt trigger events unless there's an immediate handler. I think.
 	doc.onclick = doNothing;
@@ -749,10 +772,12 @@ function create_edit_box(){
 
 function create_reply_box(indented){ //REMEMBER TO REMOVE INFO ONCE GOOGLE FIXES THE BUG
 	var info = '';
+	/*
 	if(!indented){
 		info = ' Note the current version of the wave data API does not support creating continuations of a thread, thus all responses will be indented. Hopefully, this will be fixed shortly.'
 		indented = true;
 	}
+	*/
 	var box = create_magic_box('<b>Write a Reply</b>'+info, function(value){
 		if(indented){
 			wave.blip.contentCreateChild(value,current_blip.blipId,current_blip.waveId,current_blip.waveletId);
