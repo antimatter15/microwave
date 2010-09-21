@@ -3,7 +3,7 @@ function loading(text, nodelay){
 	var load = getEl("loading");
 	var has_opacity = typeof document.createElement('div').style.opacity != 'undefined';
 	load.style.top = scrollY+'px';
-	if(typeof text == "number"){
+	if(typeof text == "number" || text === false){
     if(has_opacity)
 			load.style.opacity = "0";
 		else
@@ -34,8 +34,9 @@ function loading(text, nodelay){
 function error(text){
 	var e = getEl('error');
 	e.style.display = '';
-	getEl('errortext').innerHTML = text;
+	getEl('errortext').innerHTML += '<div><b>Error:</b> '+text+'</div>';
 	e.onclick = function(){
-		e.style.display = 'none'
+		e.style.display = 'none';
+		getEl('errortext').innerHTML = '';
 	}
 }

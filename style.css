@@ -586,6 +586,9 @@ body.online .offline {
 	text-decoration: none;
 }
 
+#floating_menu td {
+  text-align: center;
+}
 
 #error {
 	background-color: #FFA6B0;
