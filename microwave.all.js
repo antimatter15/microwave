@@ -608,28 +608,49 @@ function blip_render(blipid, parent){ //a wrapper around renderBlip that adds ch
   info.appendChild(userList(blip.contributors));
 	
 	
-	doc.ondrop = function(e){
-		e.stopPropagation();
-		e.preventDefault();
-		var dt = e.dataTransfer;
-		var files = dt.files;
-		for(var i = 0; i < files.length; i++){
-			var file = files[i];
-			var reader = new FileReader();
-			reader.onload = function(t){
-				var data = t.target.result;
-				if(data.indexOf('data:image/png;base64,') == 0){
-					var b64 = data.substr('data:image/png;base64,'.length);
-					wave.blip.upload_attachment(b64, file.name, blipid, blip.waveId, blip.waveletId)
-				}else{
-					alert('data URL is not base64!')
+	try{
+		doc.addEventListener("dragenter", function(e){
+			e.stopPropagation();
+			e.preventDefault();
+		}, false);  
+		doc.addEventListener("dragover", function(e){
+			e.stopPropagation();
+			e.preventDefault();
+			loading('Drop file to upload! (Plz no big files)');
+		}, false); 
+		doc.addEventListener("dragend", function(e){
+			e.stopPropagation();
+			e.preventDefault();
+			loading()
+		}, false); 
+		doc.addEventListener("drop", function(e){
+			doc.style.backgroundColor = '';
+			e.stopPropagation();
+			e.preventDefault();
+			var dt = e.dataTransfer;
+			var files = dt.files;
+			for(var i = 0; i < files.length; i++){
+				var file = files[i];
+				var reader = new FileReader();
+				reader.onload = function(t){
+					var data = t.target.result;
+					if(/^data:.+;base64,/.test(data)){
+						var b64 = data.substr(data.indexOf(',')+1);
+						wave.blip.upload_attachment(b64, file.name, blipid, blip.waveId, blip.waveletId);
+						loading('Uploading file '+file.name)
+						runQueue();
+					}else{
+						console.log(data.substr(0,50))
+						alert('data URL is not base64!')
+					}
 				}
-			}
-			reader.readAsDataURL(file);
-		}	
-		loadWave(current_blip.waveId);
-		runQueue();
+				reader.readAsDataURL(file);
+			}	
+		}, false);
+	}catch(err){
+		console.log(err)
 	}
+	
 
 	//iphone/opera doesnt trigger events unless there's an immediate handler. I think.
 	doc.onclick = doNothing;
@@ -897,7 +918,8 @@ function create_contextmenu(blip){
       box.textbox.value = current_blip.content.substr(rep_start + 1); //first char is a newline
       box.textbox.focus();
       closectx();
-    }/*,
+    }/*
+,
     "Attach Photo": function(){
 			navigator.camera.getPicture(function(data){
 				wave.blip.upload_attachment(data, 'new upload', current_blip.blipId, current_blip.waveId, current_blip.waveletId);
@@ -911,7 +933,7 @@ function create_contextmenu(blip){
 			loadWave(current_blip.waveId);
 			runQueue();
 			closectx();
-		}*/
+		}//*/
   };
   if(blip.blipId == msg.data.waveletData.rootBlipId){
     actions['Title'] = function(){

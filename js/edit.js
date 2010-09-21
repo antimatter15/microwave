@@ -219,7 +219,8 @@ function create_contextmenu(blip){
       box.textbox.value = current_blip.content.substr(rep_start + 1); //first char is a newline
       box.textbox.focus();
       closectx();
-    }/*,
+    }/*
+,
     "Attach Photo": function(){
 			navigator.camera.getPicture(function(data){
 				wave.blip.upload_attachment(data, 'new upload', current_blip.blipId, current_blip.waveId, current_blip.waveletId);
@@ -233,7 +234,7 @@ function create_contextmenu(blip){
 			loadWave(current_blip.waveId);
 			runQueue();
 			closectx();
-		}*/
+		}//*/
   };
   if(blip.blipId == msg.data.waveletData.rootBlipId){
     actions['Title'] = function(){
